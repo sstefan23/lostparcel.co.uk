@@ -1,5 +1,6 @@
 // Scroll to products section
 function scrollToProducts() {
+    console.log("Dive In clicked!");
     document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
 }
 

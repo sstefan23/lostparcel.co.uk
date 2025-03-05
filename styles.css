@@ -58,6 +58,7 @@ body {
     border-radius: 50px;
     cursor: pointer;
     transition: transform 0.3s, background-color 0.3s;
+    pointer-events: auto;
 }
 
 .cta-button:hover {
