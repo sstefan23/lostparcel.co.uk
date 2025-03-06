@@ -1,5 +1,18 @@
 console.log("script.js loaded at: " + new Date().toLocaleTimeString());
 
+// Fancy icon animation
+const icons = document.querySelectorAll('.box-icon');
+icons.forEach(icon => {
+    icon.addEventListener('mouseenter', () => {
+        icon.classList.add('animate');
+        console.log(`${icon.parentElement.querySelector('h3').textContent} icon hovered!`);
+    });
+    icon.addEventListener('mouseleave', () => {
+        icon.classList.remove('animate');
+    });
+});
+
+// Peek button alerts (keep this)
 const peekButtons = document.querySelectorAll('.peek-button');
 peekButtons.forEach(button => {
     button.addEventListener('click', () => {
