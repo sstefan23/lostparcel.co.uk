@@ -1,25 +1,23 @@
-console.log("script.js loaded");
+console.log("script.js loaded at: " + new Date().toLocaleTimeString());
 
 function scrollToProducts() {
-    console.log("Dive In clicked at: " + new Date().toLocaleTimeString());
-    const productsSection = document.getElementById('products');
-    if (productsSection) {
-        productsSection.scrollIntoView({ behavior: 'smooth' });
-    } else {
-        console.error("Products section not found!");
-    }
+    console.log("Scroll triggered at: " + new Date().toLocaleTimeString());
+    document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const diveButton = document.querySelector('.cta-button');
-    if (diveButton) {
-        diveButton.addEventListener('click', scrollToProducts);
-    } else {
-        console.error("Dive In button not found!");
-    }
-});
+// Attach listener directly
+const diveButton = document.querySelector('.cta-button');
+if (diveButton) {
+    diveButton.addEventListener('click', () => {
+        console.log("Click detected at: " + new Date().toLocaleTimeString());
+        scrollToProducts();
+    });
+} else {
+    console.error("Dive In button not found!");
+}
 
-document.querySelectorAll('.peek-button').forEach(button => {
+const peekButtons = document.querySelectorAll('.peek-button');
+peekButtons.forEach(button => {
     button.addEventListener('click', () => {
         alert('Sneak peek coming soon—imagine the wild stuff inside!');
     });
