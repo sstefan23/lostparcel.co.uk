@@ -12,10 +12,18 @@ icons.forEach(icon => {
     });
 });
 
-// Peek button alerts (keep this)
+// Peek button alerts
 const peekButtons = document.querySelectorAll('.peek-button');
 peekButtons.forEach(button => {
     button.addEventListener('click', () => {
         alert('Sneak peek coming soon—imagine the wild stuff inside!');
     });
+});
+
+// Tilt effect for box items
+VanillaTilt.init(document.querySelectorAll(".box-item"), {
+    max: 15,       // Max tilt angle (degrees)
+    speed: 400,    // Speed of the tilt animation
+    glare: true,   // Add a shiny glare effect
+    "max-glare": 0.3 // Glare opacity
 });

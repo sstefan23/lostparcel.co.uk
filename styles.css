@@ -31,9 +31,9 @@ body {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: none;
-    opacity: 0.1;
-    animation: drift 20s infinite linear;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+    opacity: 0.3; /* Visible but subtle */
+    animation: drift 30s infinite linear;
 }
 
 .hero-content h1 {
@@ -115,6 +115,7 @@ body {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     transition: transform 0.4s ease, box-shadow 0.4s;
     position: relative;
+    transform-style: preserve-3d;
 }
 
 .box-item:hover {
@@ -216,14 +217,32 @@ footer {
 }
 
 /* Animations */
-@keyframes drift {
-    0% { transform: translate(0, 0); }
-    100% { transform: translate(-50%, -50%); }
+/* BounceSpin - Faster and less loopy */
+@keyframes bounceSpin {
+    0% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.2) rotate(10deg); } /* Reduced scale and rotation */
+    100% { transform: scale(1) rotate(0deg); }
+}
+.box-icon.animate {
+    animation: bounceSpin 0.4s ease-out; /* Single bounce, no infinite */
 }
 
+/* Drift - Slower and more subtle */
+@keyframes drift {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(-25%, -25%); } /* Less extreme shift */
+}
+.hero::before {
+    animation: drift 30s infinite linear; /* Slower drift */
+}
+
+/* FadeInDown - Snappier */
 @keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-20px); }
+    from { opacity: 0; transform: translateY(-15px); } /* Less distance */
     to { opacity: 1; transform: translateY(0); }
+}
+.hero-content h1 {
+    animation: fadeInDown 0.8s ease-out; /* Faster, smoother */
 }
 
 /* Responsive */
