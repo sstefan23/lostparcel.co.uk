@@ -248,7 +248,7 @@ footer {
 /* Responsive */
 @media (max-width: 768px) {
     .hero {
-        height: 80vh; /* Slightly shorter for mobile */
+        height: 100vh; /* Slightly shorter for mobile */
         padding: 0 1rem;
     }
     .hero-content h1 {
