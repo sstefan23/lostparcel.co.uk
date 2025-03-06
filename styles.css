@@ -31,7 +31,7 @@ body {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: url('https://via.placeholder.com/1920x1080?text=Parcel+Pattern') repeat;
+    background: none;
     opacity: 0.1;
     animation: drift 20s infinite linear;
 }
