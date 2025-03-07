@@ -43,15 +43,18 @@ if (diveInButton) {
             const distance = 100 + Math.random() * 100;
             const x = Math.cos(angle) * distance;
             const y = Math.sin(angle) * distance;
-            package.animate([
-                { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-                { transform: `translate(${x}px, ${y}px) scale(0.5)`, opacity: 0 }
-            ], {
-                duration: 1500,
-                easing: 'ease-out',
-                fill: 'forwards'
-            });
-            setTimeout(() => package.remove(), 1500);
+            
+            setTimeout(() => {
+                package.animate([
+                    { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                    { transform: `translate(${x}px, ${y}px) scale(0.5)`, opacity: 0 }
+                ], {
+                    duration: 1500,
+                    easing: 'ease-out',
+                    fill: 'forwards'
+                });
+                setTimeout(() => package.remove(), 1500);
+            }, i * 50); // 50ms stagger
         }
         const productsSection = document.getElementById('products');
         if (productsSection) {
