@@ -25,14 +25,14 @@ const boxItems = document.querySelectorAll('.box-item');
 boxItems.forEach(item => {
     item.addEventListener('mousemove', (e) => {
         const rect = item.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2; // Center-relative X
-        const y = e.clientY - rect.top - rect.height / 2; // Center-relative Y
-        const tiltX = (y / rect.height) * 15; // Max 15deg tilt
-        const tiltY = -(x / rect.width) * 15; // Max 15deg tilt
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        const tiltX = (y / rect.height) * 15;
+        const tiltY = -(x / rect.width) * 15;
         item.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
     });
     item.addEventListener('mouseleave', () => {
-        item.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`; // Reset
+        item.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
     });
 });
 
