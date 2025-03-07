@@ -15,7 +15,7 @@ function getRandomEmojis(count, maxRepeats) {
         let emoji;
         do {
             emoji = shuffled[Math.floor(Math.random() * shuffled.length)];
-        } while ((usedCount[emoji] || 0) >= maxRepeats);
+        } while ((usedCount[emoji کرد یا 0) >= maxRepeats);
         
         usedCount[emoji] = (usedCount[emoji] || 0) + 1;
         result.push(emoji);
@@ -28,6 +28,13 @@ if (diveInButton) {
     diveInButton.addEventListener('click', (e) => {
         e.preventDefault();
         console.log("Dive In clicked!");
+        
+        // Play bang sound
+        const bangSound = document.getElementById('bang');
+        if (bangSound) {
+            bangSound.currentTime = 0; // Rewind to start
+            bangSound.play().catch(error => console.log("Audio play failed:", error));
+        }
         
         const emojisToShow = getRandomEmojis(20, 2);
         
@@ -44,9 +51,9 @@ if (diveInButton) {
             const x = Math.cos(angle) * distance;
             const y = Math.sin(angle) * distance;
             package.animate([
-                { transform: 'translate(0, 0) scale(1)', opacity: 1 },          // Start
-                { transform: 'translate(0, 0) scale(2)', opacity: 1, offset: 0.15 }, // Bang!
-                { transform: `translate(${x}px, ${y}px) scale(1.75)`, opacity: 0 } // Spread and fade
+                { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                { transform: 'translate(0, 0) scale(1.5)', opacity: 1, offset: 0.15 },
+                { transform: `translate(${x}px, ${y}px) scale(0.75)`, opacity: 0 }
             ], {
                 duration: 1500,
                 easing: 'ease-out',
