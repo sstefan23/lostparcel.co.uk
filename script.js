@@ -68,7 +68,7 @@ if (diveInButton) {
     console.log("Button NOT found!");
 }
 
-// Add card slide and shake reset HERE
+// Card slide and shake reset
 const boxItems = document.querySelectorAll('.box-item');
 boxItems.forEach((item, index) => {
     item.style.animation = `slideIn 0.5s ease-out ${index * 0.2}s forwards`;

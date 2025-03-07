@@ -8,17 +8,9 @@ body {
     font-family: 'Poppins', sans-serif;
     background-color: #f0f2f5;
     color: #333;
-    overflow-x: hidden;
-}
-
-body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-}
-
-footer {
-    margin-top: auto;
 }
 
 .hero {
@@ -105,6 +97,7 @@ footer {
     padding: 4rem 2rem;
     background: #d9e8d8;
     text-align: center;
+    overflow: hidden; /* Contain content */
 }
 
 .products h2 {
@@ -129,13 +122,14 @@ footer {
     width: 320px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     position: relative;
-    opacity: 0;
+    opacity: 0; /* For slideIn */
     transition: box-shadow 0.3s ease;
 }
 
 .box-item:hover {
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
     animation: shake 0.5s ease infinite;
+}
 
 .box-icon {
     margin-bottom: 1rem;
@@ -190,8 +184,7 @@ footer {
     color: #fff;
     padding: 2rem;
     text-align: center;
-    position: relative; /* Ensure it stays in flow */
-    clear: both; /* Prevent overlap */
+    margin-top: auto; /* Stick to bottom */
 }
 
 .socials span {
@@ -203,6 +196,16 @@ footer {
 
 .socials span:hover {
     transform: scale(1.3);
+}
+
+@keyframes drift {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(-25%, -25%); }
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-15px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slideIn {
