@@ -1,12 +1,18 @@
 console.log("script.js loaded at: " + new Date().toLocaleTimeString());
 const diveInButton = document.querySelector('.hero .cta-button');
+
+// Array of exciting emojis representing possible wins
+const prizeEmojis = ['📱', '🎮', '👕', '💻', '⌚', '🎧', '📷', '👜', '👟', '🎁'];
+
 if (diveInButton) {
+    console.log("Button found!");
     diveInButton.addEventListener('click', (e) => {
-        e.preventDefault(); // Stops default behavior
+        e.preventDefault();
         console.log("Dive In clicked!");
         for (let i = 0; i < 10; i++) {
             const package = document.createElement('div');
-            package.innerHTML = '📦';
+            // Random emoji from prizeEmojis
+            package.innerHTML = prizeEmojis[Math.floor(Math.random() * prizeEmojis.length)];
             package.classList.add('firework-package');
             const rect = diveInButton.getBoundingClientRect();
             package.style.left = `${rect.left + rect.width / 2}px`;
@@ -26,10 +32,15 @@ if (diveInButton) {
             });
             setTimeout(() => package.remove(), 800);
         }
-        setTimeout(() => {
-            document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
-        }, 800);
-    }); // No passive: true
+        const productsSection = document.getElementById('products');
+        if (productsSection) {
+            setTimeout(() => {
+                productsSection.scrollIntoView({ behavior: 'smooth' });
+            }, 800);
+        } else {
+            console.log("Products section not found!");
+        }
+    });
 } else {
     console.log("Button NOT found!");
 }
