@@ -73,11 +73,6 @@ if (boxItems.length > 0) {
     boxItems.forEach((item, index) => {
         console.log(`Animating box-item ${index}`);
         item.style.animation = `slideIn 0.5s ease-out ${index * 0.2}s forwards`;
-        item.addEventListener('animationend', () => {
-            console.log(`Animation ended for box-item ${index}`);
-            item.style.animation = 'none'; // Clear slideIn for shake
-            item.style.transform = 'translateX(0)'; // Reset transform
-        }, { once: true });
     });
 } else {
     console.log("No box items found!");
