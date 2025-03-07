@@ -61,6 +61,13 @@ body {
     pointer-events: auto;
 }
 
+.hero .cta-button {
+    position: relative;
+    z-index: 9999;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
 .cta-button:hover {
     transform: scale(1.1);
     background-color: #e6b740;
