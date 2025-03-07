@@ -62,10 +62,16 @@ body {
 }
 
 .firework-package {
-    position: absolute; /* Less invasive than fixed */
+    position: absolute;
     font-size: 24px;
-    pointer-events: none; /* No click interference */
-    z-index: 1000; /* Above content */
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.hero .cta-button {
+    position: relative; /* Ensures button stays clickable */
+    z-index: 10;
+    cursor: pointer;
 }
 
 .hero .cta-button {
