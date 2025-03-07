@@ -7,15 +7,15 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f0f2f5; /* Soft gray */
+    background-color: #f0f2f5;
     color: #333;
     overflow-x: hidden;
 }
 
-/* Hero Section with Parallax */
+/* Hero Section */
 .hero {
     height: 100vh;
-    background: linear-gradient(135deg, #a3d4d9 0%, #d9e8d8 100%); /* Soft blue to mint */
+    background: linear-gradient(135deg, #a3d4d9 0%, #d9e8d8 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -32,7 +32,7 @@ body {
     width: 200%;
     height: 200%;
     background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
-    opacity: 0.3; /* Visible but subtle */
+    opacity: 0.3;
     animation: drift 30s infinite linear;
 }
 
@@ -40,7 +40,7 @@ body {
     font-size: 4rem;
     color: #fff;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-    animation: fadeInDown 1s ease;
+    animation: fadeInDown 0.8s ease-out;
 }
 
 .hero-content p {
@@ -52,39 +52,27 @@ body {
 .cta-button {
     padding: 15px 40px;
     font-size: 1.3rem;
-    background-color: #f7c948; /* Soft yellow */
+    background-color: #f7c948;
     color: #333;
     border: none;
     border-radius: 50px;
     cursor: pointer;
     transition: transform 0.3s, background-color 0.3s;
-    pointer-events: auto;
-}
-
-.firework-package {
-    position: absolute;
-    font-size: 28px;
-    pointer-events: none;
-    z-index: 1000;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
-}
-
-.hero .cta-button {
-    position: relative; /* Ensures button stays clickable */
-    z-index: 10;
-    cursor: pointer;
-}
-
-.hero .cta-button {
     position: relative;
-    z-index: 9999;
-    pointer-events: auto !important;
-    cursor: pointer !important;
+    z-index: 10;
 }
 
 .cta-button:hover {
     transform: scale(1.1);
     background-color: #e6b740;
+}
+
+.firework-package {
+    position: absolute;
+    font-size: 36px;
+    pointer-events: none;
+    z-index: 1000;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
 }
 
 /* Intro Section */
@@ -109,7 +97,7 @@ body {
 /* Products Section */
 .products {
     padding: 4rem 2rem;
-    background: #d9e8d8; /* Mint green */
+    background: #d9e8d8;
     text-align: center;
 }
 
@@ -134,13 +122,15 @@ body {
     border-radius: 15px;
     width: 320px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease; /* Faster for responsiveness */
-    transform: perspective(1000px) rotateX(0deg) rotateY(0deg); /* Base 3D perspective */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
     position: relative;
+    opacity: 0; /* For animation */
 }
 
 .box-item:hover {
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15); /* Keep shadow lift */
+    transform: perspective(1000px) rotateX(5deg) rotateY(5deg);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
 }
 
 .box-icon {
@@ -148,31 +138,13 @@ body {
     transition: transform 0.3s ease, text-shadow 0.3s ease;
 }
 
-.box-icon.small {
-    font-size: 2rem; /* Small size */
-}
-
-.box-icon.medium {
-    font-size: 3rem; /* Medium size */
-}
-
-.box-icon.large {
-    font-size: 4rem; /* Large size */
-}
+.box-icon.small { font-size: 2rem; }
+.box-icon.medium { font-size: 3rem; }
+.box-icon.large { font-size: 4rem; }
 
 .box-icon:hover {
-    transform: scale(1.2); /* Slight grow on hover */
-    text-shadow: 0 0 10px #f7c948, 0 0 20px #a3d4d9; /* Glow effect */
-}
-
-.box-icon.animate {
-    animation: bounceSpin 0.6s ease infinite;
-}
-
-@keyframes bounceSpin {
-    0% { transform: scale(1) rotate(0deg); }
-    50% { transform: scale(1.3) rotate(15deg); }
-    100% { transform: scale(1) rotate(0deg); }
+    transform: scale(1.2);
+    text-shadow: 0 0 10px #f7c948, 0 0 20px #a3d4d9;
 }
 
 .box-item h3 {
@@ -199,7 +171,7 @@ body {
     background-color: #8bbfc4;
 }
 
-/* Call to Action Section */
+/* CTA Section */
 .cta {
     padding: 4rem 2rem;
     text-align: center;
@@ -222,7 +194,6 @@ footer {
     color: #fff;
     padding: 2rem;
     text-align: center;
-    position: relative;
 }
 
 .socials span {
@@ -237,97 +208,38 @@ footer {
 }
 
 /* Animations */
-/* BounceSpin - Faster and less loopy */
-@keyframes bounceSpin {
-    0% { transform: scale(1) rotate(0deg); }
-    50% { transform: scale(1.2) rotate(10deg); } /* Reduced scale and rotation */
-    100% { transform: scale(1) rotate(0deg); }
-}
-.box-icon.animate {
-    animation: bounceSpin 0.4s ease-out; /* Single bounce, no infinite */
-}
-
-/* Drift - Slower and more subtle */
 @keyframes drift {
     0% { transform: translate(0, 0); }
-    100% { transform: translate(-25%, -25%); } /* Less extreme shift */
-}
-.hero::before {
-    animation: drift 30s infinite linear; /* Slower drift */
+    100% { transform: translate(-25%, -25%); }
 }
 
-/* FadeInDown - Snappier */
 @keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-15px); } /* Less distance */
+    from { opacity: 0; transform: translateY(-15px); }
     to { opacity: 1; transform: translateY(0); }
 }
-.hero-content h1 {
-    animation: fadeInDown 0.8s ease-out; /* Faster, smoother */
+
+@keyframes slideIn {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    .hero {
-        height: 100vh; /* Slightly shorter for mobile */
-        padding: 0 1rem;
-    }
-    .hero-content h1 {
-        font-size: 3rem; /* Smaller but still bold */
-    }
-    .hero-content p {
-        font-size: 1.4rem;
-    }
-    .cta-button {
-        padding: 22px 60px; /* Slightly smaller */
-        font-size: 1.8rem;
-    }
-    .intro {
-        padding: 2rem 1rem; /* Less vertical space */
-    }
-    .intro h2 {
-        font-size: 1.8rem;
-    }
-    .intro p {
-        font-size: 1rem;
-    }
-    .products {
-        padding: 2rem 1rem;
-    }
-    .products h2 {
-        font-size: 2rem;
-    }
-    .box-grid {
-        flex-direction: column;
-        align-items: center;
-        gap: 1.5rem; /* Tighter spacing */
-    }
-    .box-item {
-        width: 90%; /* Fluid width for smaller screens */
-        max-width: 320px; /* Cap it */
-    }
-    .cta {
-        padding: 2rem 1rem;
-    }
-    .cta h2 {
-        font-size: 1.8rem;
-    }
-    footer {
-        padding: 1.5rem;
-    }
+    .hero { height: 80vh; padding: 0 1rem; }
+    .hero-content h1 { font-size: 3rem; }
+    .hero-content p { font-size: 1.4rem; }
+    .cta-button { padding: 12px 30px; font-size: 1.2rem; }
+    .intro, .products, .cta { padding: 2rem 1rem; }
+    .intro h2, .cta h2 { font-size: 1.8rem; }
+    .products h2 { font-size: 2rem; }
+    .box-grid { flex-direction: column; align-items: center; gap: 1.5rem; }
+    .box-item { width: 90%; max-width: 320px; }
+    footer { padding: 1.5rem; }
 }
 
 @media (max-width: 400px) {
-    .hero-content h1 {
-        font-size: 1.5rem; /* Tiny screens */
-    }
-    .cta-button {
-        padding: 10px 20px;
-        font-size: 1rem;
-    }
-    .box-item h3 {
-        font-size: 1.5rem;
-    }
-    .peek-button {
-        padding: 8px 16px; /* Smaller buttons */
-    }
+    .hero-content h1 { font-size: 1.5rem; }
+    .cta-button { padding: 10px 20px; font-size: 1rem; }
+    .box-item h3 { font-size: 1.5rem; }
+    .peek-button { padding: 8px 16px; }
 }
