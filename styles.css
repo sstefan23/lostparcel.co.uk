@@ -128,12 +128,12 @@ body {
 
 .box-item:hover {
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-    animation: shake 0.5s ease infinite;
+    animation: shake 0.5s ease infinite !important; /* Force it */
 }
 
 .box-icon {
     margin-bottom: 1rem;
-    transition: transform 0.3s ease, text-shadow 0.3s ease; /* Smooth glow */
+    transition: transform 0.3s ease, text-shadow 0.3s ease;
 }
 
 .box-icon.small { font-size: 2rem; }
@@ -141,8 +141,8 @@ body {
 .box-icon.large { font-size: 4rem; }
 
 .box-icon:hover {
-    transform: scale(1.2); /* Slight pop */
-    text-shadow: 0 0 10px #f7c948, 0 0 20px #a3d4d9; /* Glow like before */
+    transform: scale(1.2);
+    text-shadow: 0 0 10px #f7c948, 0 0 20px #a3d4d9;
 }
 
 .box-item h3 {

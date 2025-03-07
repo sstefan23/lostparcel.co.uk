@@ -20,7 +20,6 @@ function getRandomEmojis(count, maxRepeats) {
     return result;
 }
 
-// Fireworks for "Dive In!" button
 if (diveInButton) {
     console.log("Button found!");
     diveInButton.addEventListener('click', (e) => {
@@ -68,16 +67,16 @@ if (diveInButton) {
     console.log("Button NOT found!");
 }
 
-// Card slide and shake reset
 const boxItems = document.querySelectorAll('.box-item');
-console.log("Found " + boxItems.length + " box items"); // Debug
+console.log("Found " + boxItems.length + " box items");
 if (boxItems.length > 0) {
     boxItems.forEach((item, index) => {
         console.log(`Animating box-item ${index}`);
         item.style.animation = `slideIn 0.5s ease-out ${index * 0.2}s forwards`;
         item.addEventListener('animationend', () => {
             console.log(`Animation ended for box-item ${index}`);
-            item.style.transform = 'translateX(0)'; // Reset transform for shake
+            item.style.animation = 'none'; // Clear slideIn for shake
+            item.style.transform = 'translateX(0)'; // Reset transform
         }, { once: true });
     });
 } else {
