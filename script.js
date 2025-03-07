@@ -43,7 +43,7 @@ if (diveInButton) {
             package.style.top = `${rect.top + rect.height / 2}px`;
             document.body.appendChild(package);
             const angle = Math.random() * Math.PI * 2;
-            const distance = 100 + Math.random() * 100;
+            const distance = 150 + Math.random() * 150;
             const x = Math.cos(angle) * distance;
             const y = Math.sin(angle) * distance;
             package.animate([
