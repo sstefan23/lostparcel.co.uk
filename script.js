@@ -46,7 +46,7 @@ if (diveInButton) {
             package.animate([
                 { transform: 'translate(0, 0) scale(1)', opacity: 1 },          // Start
                 { transform: 'translate(0, 0) scale(2)', opacity: 1, offset: 0.15 }, // Bang!
-                { transform: `translate(${x}px, ${y}px) scale(0.75)`, opacity: 0 } // Spread and fade
+                { transform: `translate(${x}px, ${y}px) scale(1.75)`, opacity: 0 } // Spread and fade
             ], {
                 duration: 1500,
                 easing: 'ease-out',
