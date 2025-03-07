@@ -54,7 +54,10 @@ if (diveInButton) {
                 easing: 'ease-out',
                 fill: 'forwards'
             });
-            setTimeout(() => package.remove(), 1500);
+            setTimeout(() => {
+                package.animate([...], { duration: 1500, easing: 'ease-out', fill: 'forwards' });
+                setTimeout(() => package.remove(), 1500);
+            }, i * 50); // 50ms stagger
         }
         const productsSection = document.getElementById('products');
         if (productsSection) {
