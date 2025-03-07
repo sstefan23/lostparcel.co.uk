@@ -97,7 +97,7 @@ body {
     padding: 4rem 2rem;
     background: #d9e8d8;
     text-align: center;
-    overflow: hidden; /* Contain content */
+    overflow: hidden;
 }
 
 .products h2 {
@@ -122,7 +122,7 @@ body {
     width: 320px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     position: relative;
-    opacity: 0; /* For slideIn */
+    opacity: 0; /* Start hidden */
     transition: box-shadow 0.3s ease;
 }
 
@@ -184,7 +184,7 @@ footer {
     color: #fff;
     padding: 2rem;
     text-align: center;
-    margin-top: auto; /* Stick to bottom */
+    margin-top: auto;
 }
 
 .socials span {

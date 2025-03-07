@@ -70,9 +70,16 @@ if (diveInButton) {
 
 // Card slide and shake reset
 const boxItems = document.querySelectorAll('.box-item');
-boxItems.forEach((item, index) => {
-    item.style.animation = `slideIn 0.5s ease-out ${index * 0.2}s forwards`;
-    item.addEventListener('animationend', () => {
-        item.style.transform = 'none'; // Reset for shake
-    }, { once: true });
-});
+console.log("Found " + boxItems.length + " box items"); // Debug
+if (boxItems.length > 0) {
+    boxItems.forEach((item, index) => {
+        console.log(`Animating box-item ${index}`);
+        item.style.animation = `slideIn 0.5s ease-out ${index * 0.2}s forwards`;
+        item.addEventListener('animationend', () => {
+            console.log(`Animation ended for box-item ${index}`);
+            item.style.transform = 'translateX(0)'; // Reset transform for shake
+        }, { once: true });
+    });
+} else {
+    console.log("No box items found!");
+}
