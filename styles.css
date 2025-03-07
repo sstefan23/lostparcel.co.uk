@@ -252,14 +252,14 @@ footer {
         padding: 0 1rem;
     }
     .hero-content h1 {
-        font-size: 10rem; /* Smaller but still bold */
+        font-size: 3rem; /* Smaller but still bold */
     }
     .hero-content p {
         font-size: 1.4rem;
     }
     .cta-button {
-        padding: 18px 50px; /* Slightly smaller */
-        font-size: 1.5rem;
+        padding: 22px 60px; /* Slightly smaller */
+        font-size: 1.8rem;
     }
     .intro {
         padding: 2rem 1rem; /* Less vertical space */
