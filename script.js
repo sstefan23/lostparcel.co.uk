@@ -27,17 +27,17 @@ if (diveInButton) {
                 { transform: 'translate(0, 0) scale(1)', opacity: 1 },
                 { transform: `translate(${x}px, ${y}px) scale(0.5)`, opacity: 0 }
             ], {
-                duration: 800,
+                duration: 1500,
                 easing: 'ease-out',
                 fill: 'forwards'
             });
-            setTimeout(() => package.remove(), 800);
+            setTimeout(() => package.remove(), 1500);
         }
         const productsSection = document.getElementById('products');
         if (productsSection) {
             setTimeout(() => {
                 productsSection.scrollIntoView({ behavior: 'smooth' });
-            }, 800);
+            }, 1500);
         } else {
             console.log("Products section not found!");
         }
