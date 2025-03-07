@@ -2,7 +2,8 @@ console.log("script.js loaded at: " + new Date().toLocaleTimeString());
 const diveInButton = document.querySelector('.hero .cta-button');
 if (diveInButton) {
     diveInButton.addEventListener('click', (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Stops default behavior
+        console.log("Dive In clicked!");
         for (let i = 0; i < 10; i++) {
             const package = document.createElement('div');
             package.innerHTML = '📦';
@@ -28,7 +29,7 @@ if (diveInButton) {
         setTimeout(() => {
             document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
         }, 800);
-    }, { passive: true });
+    }); // No passive: true
 } else {
     console.log("Button NOT found!");
 }
