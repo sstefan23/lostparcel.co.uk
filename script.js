@@ -72,6 +72,9 @@ if (diveInButton) {
 const boxItems = document.querySelectorAll('.box-item');
 boxItems.forEach((item, index) => {
     item.style.animation = `slideIn 0.5s ease-out ${index * 0.2}s forwards`;
+    item.addEventListener('animationend', () => {
+        item.style.animation = 'none'; // Clear slideIn for hover
+    }, { once: true });
 });
 
 // Mini-Fireworks on Peek Buttons
