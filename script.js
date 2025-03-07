@@ -14,6 +14,7 @@ if (diveInButton) {
             // Random emoji from prizeEmojis
             package.innerHTML = prizeEmojis[Math.floor(Math.random() * prizeEmojis.length)];
             package.classList.add('firework-package');
+            package.style.fontSize = `${16 + Math.random() * 16}px`; // 16-32px
             const rect = diveInButton.getBoundingClientRect();
             package.style.left = `${rect.left + rect.width / 2}px`;
             package.style.top = `${rect.top + rect.height / 2}px`;
