@@ -66,37 +66,3 @@ if (diveInButton) {
 } else {
     console.log("Button NOT found!");
 }
-
-const boxItems = document.querySelectorAll('.box-item');
-boxItems.forEach((item, index) => {
-    item.style.animation = `slideIn 0.5s ease-out ${index * 0.2}s forwards`;
-});
-
-const peekButtons = document.querySelectorAll('.peek-button');
-peekButtons.forEach(button => {
-    button.addEventListener('click', (e) => {
-        const rect = button.getBoundingClientRect();
-        for (let i = 0; i < 5; i++) {
-            const spark = document.createElement('div');
-            spark.innerHTML = prizeEmojis[Math.floor(Math.random() * prizeEmojis.length)];
-            spark.classList.add('firework-package');
-            spark.style.fontSize = '20px';
-            spark.style.left = `${rect.left + rect.width / 2}px`;
-            spark.style.top = `${rect.top + rect.height / 2}px`;
-            document.body.appendChild(spark);
-            const angle = Math.random() * Math.PI * 2;
-            const distance = 50 + Math.random() * 50;
-            const x = Math.cos(angle) * distance;
-            const y = Math.sin(angle) * distance;
-            spark.animate([
-                { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-                { transform: `translate(${x}px, ${y}px) scale(0.5)`, opacity: 0 }
-            ], {
-                duration: 800,
-                easing: 'ease-out',
-                fill: 'forwards'
-            });
-            setTimeout(() => spark.remove(), 800);
-        }
-    });
-});
