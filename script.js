@@ -15,7 +15,7 @@ function getRandomEmojis(count, maxRepeats) {
         let emoji;
         do {
             emoji = shuffled[Math.floor(Math.random() * shuffled.length)];
-        } while ((usedCount[emoji کرد یا 0) >= maxRepeats);
+        } while ((usedCount[emoji] || 0) >= maxRepeats);
         
         usedCount[emoji] = (usedCount[emoji] || 0) + 1;
         result.push(emoji);
@@ -28,13 +28,6 @@ if (diveInButton) {
     diveInButton.addEventListener('click', (e) => {
         e.preventDefault();
         console.log("Dive In clicked!");
-        
-        // Play bang sound
-        const bangSound = document.getElementById('bang');
-        if (bangSound) {
-            bangSound.currentTime = 0; // Rewind to start
-            bangSound.play().catch(error => console.log("Audio play failed:", error));
-        }
         
         const emojisToShow = getRandomEmojis(20, 2);
         
