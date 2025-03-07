@@ -20,6 +20,7 @@ function getRandomEmojis(count, maxRepeats) {
     return result;
 }
 
+// Fireworks for "Dive In!" button
 if (diveInButton) {
     console.log("Button found!");
     diveInButton.addEventListener('click', (e) => {
@@ -66,3 +67,12 @@ if (diveInButton) {
 } else {
     console.log("Button NOT found!");
 }
+
+// Add card slide and shake reset HERE
+const boxItems = document.querySelectorAll('.box-item');
+boxItems.forEach((item, index) => {
+    item.style.animation = `slideIn 0.5s ease-out ${index * 0.2}s forwards`;
+    item.addEventListener('animationend', () => {
+        item.style.transform = 'none'; // Reset for shake
+    }, { once: true });
+});
