@@ -6,6 +6,10 @@ if (diveInButton) {
         console.log("Dive In clicked!");
         alert("Button works!");
     });
+    // Test clickability
+    console.log("Is button clickable? " + (diveInButton.style.pointerEvents !== 'none'));
+    diveInButton.addEventListener('mousedown', () => console.log("Mouse down on button"));
+    diveInButton.addEventListener('touchstart', () => console.log("Touch start on button"));
 } else {
     console.log("Button NOT found!");
 }
