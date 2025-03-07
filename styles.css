@@ -98,6 +98,8 @@ body {
 /* ... (keep rest of your CSS unchanged up to Products) */
 
 /* Products Section */
+/* Reset and other sections unchanged */
+
 .products {
     padding: 4rem 2rem;
     background: #d9e8d8;
@@ -125,15 +127,13 @@ body {
     border-radius: 15px;
     width: 320px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s ease; /* Only shadow transitions */
+    transition: box-shadow 0.3s ease;
     position: relative;
     opacity: 0; /* For slideIn */
-    animation: none;
 }
 
 .box-item:hover {
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-    animation: shake 0.5s ease infinite; /* Shake on hover */
 }
 
 .box-icon {
@@ -190,13 +190,7 @@ body {
     to { transform: translateY(0); opacity: 1; }
 }
 
-@keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-5px) rotate(-2deg); }
-    50% { transform: translateX(5px) rotate(2deg); }
-    75% { transform: translateX(-5px) rotate(-2deg); }
-    100% { transform: translateX(0); }
-}
+/* Responsive unchanged */
 
 /* Responsive */
 @media (max-width: 768px) {

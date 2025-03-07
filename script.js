@@ -20,7 +20,6 @@ function getRandomEmojis(count, maxRepeats) {
     return result;
 }
 
-// Fireworks
 if (diveInButton) {
     console.log("Button found!");
     diveInButton.addEventListener('click', (e) => {
@@ -68,18 +67,11 @@ if (diveInButton) {
     console.log("Button NOT found!");
 }
 
-// Box-Item Animation
 const boxItems = document.querySelectorAll('.box-item');
-boxItems.forEach(item => {
-    item.addEventListener('mouseenter', () => {
-        item.style.animation = 'shake 0.5s ease infinite';
-    });
-    item.addEventListener('mouseleave', () => {
-        item.style.animation = 'none';
-    });
+boxItems.forEach((item, index) => {
+    item.style.animation = `slideIn 0.5s ease-out ${index * 0.2}s forwards`;
 });
 
-// Mini-Fireworks on Peek Buttons
 const peekButtons = document.querySelectorAll('.peek-button');
 peekButtons.forEach(button => {
     button.addEventListener('click', (e) => {
