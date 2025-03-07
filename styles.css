@@ -61,6 +61,11 @@ body {
     pointer-events: auto;
 }
 
+.firework-package {
+    position: fixed;
+    font-size: 24px;
+    pointer-events: none;
+
 .hero .cta-button {
     position: relative;
     z-index: 9999;
