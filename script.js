@@ -5,13 +5,11 @@ if (diveInButton) {
     diveInButton.addEventListener('click', (e) => {
         console.log("Dive In clicked!");
         alert("Button works!");
-    });
-    console.log("Is button clickable? " + (diveInButton.style.pointerEvents !== 'none'));
-    diveInButton.addEventListener('mousedown', () => console.log("Mouse down on button"));
-    diveInButton.addEventListener('touchstart', () => console.log("Touch start on button"));
-    // Force cursor and test
+    }, { passive: true });
+    diveInButton.addEventListener('mousedown', () => console.log("Mouse down"));
+    diveInButton.addEventListener('touchstart', () => console.log("Touch start"), { passive: true });
+    diveInButton.addEventListener('pointerdown', () => console.log("Pointer down"));
     diveInButton.style.cursor = 'pointer';
-    diveInButton.addEventListener('click', (e) => console.log("Click event target: " + e.target.tagName));
 } else {
     console.log("Button NOT found!");
 }
