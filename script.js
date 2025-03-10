@@ -79,21 +79,22 @@ if (boxItems.length > 0) {
     console.log("No box items found!");
 }
 
+// Simplified glowing logic with touch support
 const boxIcons = document.querySelectorAll('.box-icon');
-console.log("Found " + boxIcons.length + " box icons");
-if (boxIcons.length > 0) {
-    boxIcons.forEach((icon, index) => {
-        console.log(`Adding click listener to box-icon ${index} (class: ${icon.className})`);
-        icon.addEventListener('click', (e) => {
-            e.stopPropagation();
-            console.log(`Clicked box-icon ${index} - adding glow`);
+console.log("Found " + boxIcons.length + " box icons"); // Should log 3
+boxIcons.forEach((icon, index) => {
+    console.log(`Setting up box-icon ${index} (class: ${icon.className})`);
+    // Add both click and touchstart for mobile compatibility
+    ['click', 'touchstart'].forEach(eventType => {
+        icon.addEventListener(eventType, (e) => {
+            e.preventDefault(); // Prevent default touch behavior
+            e.stopPropagation(); // Stop bubbling
+            console.log(`Box-icon ${index} triggered by ${eventType} - glowing`);
             icon.classList.add('glowing');
             setTimeout(() => {
-                console.log(`Removing glow from box-icon ${index}`);
+                console.log(`Box-icon ${index} glow timeout - removing`);
                 icon.classList.remove('glowing');
-            }, 2000);
+            }, 2000); // 2 seconds for testing
         });
     });
-} else {
-    console.log("No box icons found!");
-}
+});
