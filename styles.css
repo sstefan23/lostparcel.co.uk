@@ -151,6 +151,16 @@ body {
     text-shadow: 0 0 10px #f7c948, 0 0 20px #a3d4d9;
 }
 
+.box-icon:active {
+    transform: scale(1.1); /* Slightly less than hover for tap feedback */
+    text-shadow: 0 0 15px #f7c948, 0 0 25px #a3d4d9; /* Brighter glow on tap */
+}
+
+.box-icon.glowing {
+    transform: scale(1.2);
+    text-shadow: 0 0 10px #f7c948, 0 0 20px #a3d4d9; /* Matches hover glow */
+}
+
 .box-item h3 {
     font-size: 1.8rem;
     color: #6b8290;

@@ -74,6 +74,20 @@ if (boxItems.length > 0) {
         console.log(`Animating box-item ${index}`);
         item.style.animation = `slideIn 0.5s ease-out ${index * 0.2}s forwards`;
     });
+// Add this after your existing boxItems animation code in script.js
+const boxIcons = document.querySelectorAll('.box-icon');
+boxIcons.forEach(icon => {
+    icon.addEventListener('click', () => {
+        // Remove glowing from all icons first
+        boxIcons.forEach(i => i.classList.remove('glowing'));
+        // Add glowing to the clicked icon
+        icon.classList.add('glowing');
+        // Optional: Remove glow after a delay (e.g., 1 second)
+        setTimeout(() => {
+            icon.classList.remove('glowing');
+        }, 1000);
+    });
+});
 } else {
     console.log("No box items found!");
 }
