@@ -127,6 +127,7 @@ body {
     padding: 2rem;
     border-radius: 15px;
     width: 320px;
+    min-height: 340px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     position: relative;
     opacity: 0;
@@ -250,25 +251,33 @@ footer {
 
 @media (max-width: 768px) {
     .hero { 
-        min-height: 100vh; /* Replace height: 80vh */
+        min-height: 100vh; /* From earlier fix, replacing height: 80vh */
         padding: 0 1rem; 
     }
     @supports (-webkit-fill-available: stretch) {
         .hero {
-            min-height: -webkit-fill-available; /* Ensure fullscreen on mobile */
+            min-height: -webkit-fill-available;
         }
     }
     .hero-content h1 { font-size: 3rem; }
     .hero-content p { font-size: 1.4rem; }
-    .cta-button { padding: 12px 30px; font-size: 1.2rem; } /* Or 15px 35px if you want it bigger */
+    .cta-button { padding: 12px 30px; font-size: 1.2rem; }
     .intro, .products, .cta { padding: 2rem 1rem; }
     .intro h2, .cta h2 { font-size: 1.8rem; }
     .products h2 { font-size: 2rem; }
     .box-grid { flex-direction: column; align-items: center; gap: 1.5rem; }
-    .box-item { width: 90%; max-width: 320px; }
+    .box-item { 
+        width: 90%; 
+        max-width: 320px; 
+        min-height: 300px; /* Added for taller cards on mobile */
+        padding: 2rem; /* Explicitly kept from original */
+    }
+    .box-item h3 { font-size: 1.8rem; } /* Added */
+    .box-item p { font-size: 1.1rem; } /* Added */
+    .peek-button { padding: 10px 20px; font-size: 1rem; } /* Added */
     footer { padding: 1.5rem; }
 }
-}
+
 
 @media (max-width: 400px) {
     .hero-content h1 { font-size: 1.5rem; }
