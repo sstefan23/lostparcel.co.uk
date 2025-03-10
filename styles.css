@@ -146,7 +146,9 @@ body {
 .box-icon.medium { font-size: 3rem; }
 .box-icon.large { font-size: 4rem; }
 
-.box-icon:hover {
+.box-icon:hover,
+.box-icon:active,
+.box-icon.glowing {
     transform: scale(1.2);
     text-shadow: 0 0 10px #f7c948, 0 0 20px #a3d4d9;
 }

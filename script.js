@@ -1,10 +1,12 @@
 console.log("script.js loaded at: " + new Date().toLocaleTimeString());
-const diveInButton = document.querySelector('.hero .cta-button');
+
+// Prize emojis for fireworks
 const prizeEmojis = [
     '📱', '🎮', '👕', '💻', '⌚', '🎧', '📷', '👜', '👟', '🎁',
     '💍', '🛍️', '🎤', '📺', '🎲', '🏀', '🎸', '🖥️', '👗', '🚗'
 ];
 
+// Function to get random emojis with max repeat limit
 function getRandomEmojis(count, maxRepeats) {
     const shuffled = [...prizeEmojis].sort(() => 0.5 - Math.random());
     const result = [];
@@ -20,6 +22,8 @@ function getRandomEmojis(count, maxRepeats) {
     return result;
 }
 
+// Dive In button functionality
+const diveInButton = document.querySelector('.hero .cta-button');
 if (diveInButton) {
     console.log("Button found!");
     diveInButton.addEventListener('click', (e) => {
@@ -54,19 +58,20 @@ if (diveInButton) {
             });
             setTimeout(() => package.remove(), 1500);
         }
-        const productsSection = document.getElementById('intro');
-        if (productsSection) {
+        const introSection = document.getElementById('intro');
+        if (introSection) {
             setTimeout(() => {
-                productsSection.scrollIntoView({ behavior: 'smooth' });
+                introSection.scrollIntoView({ behavior: 'smooth' });
             }, 1500);
         } else {
-            console.log("Products section not found!");
+            console.log("Intro section not found!");
         }
     });
 } else {
     console.log("Button NOT found!");
 }
 
+// Box items animation on load
 const boxItems = document.querySelectorAll('.box-item');
 console.log("Found " + boxItems.length + " box items");
 if (boxItems.length > 0) {
@@ -74,20 +79,28 @@ if (boxItems.length > 0) {
         console.log(`Animating box-item ${index}`);
         item.style.animation = `slideIn 0.5s ease-out ${index * 0.2}s forwards`;
     });
-// Add this after your existing boxItems animation code in script.js
-const boxIcons = document.querySelectorAll('.box-icon');
-boxIcons.forEach(icon => {
-    icon.addEventListener('click', () => {
-        // Remove glowing from all icons first
-        boxIcons.forEach(i => i.classList.remove('glowing'));
-        // Add glowing to the clicked icon
-        icon.classList.add('glowing');
-        // Optional: Remove glow after a delay (e.g., 1 second)
-        setTimeout(() => {
-            icon.classList.remove('glowing');
-        }, 1000);
-    });
-});
 } else {
     console.log("No box items found!");
+}
+
+// Box icons glowing on click (for mobile)
+const boxIcons = document.querySelectorAll('.box-icon');
+console.log("Found " + boxIcons.length + " box icons"); // Should log 3
+if (boxIcons.length > 0) {
+    boxIcons.forEach((icon, index) => {
+        console.log(`Adding click listener to box-icon ${index}`);
+        icon.addEventListener('click', () => {
+            // Remove glowing from all icons first
+            boxIcons.forEach(i => i.classList.remove('glowing'));
+            // Add glowing to the clicked icon
+            icon.classList.add('glowing');
+            console.log(`Clicked box-icon ${index} - glowing`);
+            // Remove glow after 1 second
+            setTimeout(() => {
+                icon.classList.remove('glowing');
+            }, 1000);
+        });
+    });
+} else {
+    console.log("No box icons found!");
 }
