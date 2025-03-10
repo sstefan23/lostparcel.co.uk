@@ -131,6 +131,9 @@ body {
     position: relative;
     opacity: 0;
     transition: box-shadow 0.3s ease;
+    display: flex; /* Use flexbox for consistent layout */
+    flex-direction: column;
+    align-items: center;
 }
 
 .box-item:hover {
@@ -138,8 +141,12 @@ body {
 }
 
 .box-icon {
+    font-size: 2rem; /* Default size */
+    height: 4rem; /* Fixed height to match largest icon */
+    line-height: 4rem; /* Center vertically */
     margin-bottom: 1rem;
     transition: transform 0.3s ease, text-shadow 0.3s ease;
+    text-align: center;
 }
 
 .box-icon.small { font-size: 2rem; }
@@ -163,14 +170,17 @@ body {
     text-shadow: 0 0 10px #f7c948, 0 0 20px #a3d4d9; /* Matches hover glow */
 }
 
-.box-item h3 {
+..box-item h3 {
     font-size: 1.8rem;
     color: #6b8290;
+    margin: 0; /* Remove default margins */
+    text-align: center;
 }
 
 .box-item p {
     font-size: 1.1rem;
-    margin: 0.5rem 0 1rem;
+    margin: 0.5rem 0 1rem; /* Consistent spacing */
+    text-align: center;
 }
 
 .peek-button {
@@ -181,6 +191,7 @@ body {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+    margin-top: auto; /* Push button to bottom */
 }
 
 .peek-button:hover {
