@@ -14,7 +14,8 @@ body {
 }
 
 .hero {
-    height: 100vh;
+    min-height: 100vh; /* Changed from height to min-height */
+    height: 100%; /* Fallback */
     background: linear-gradient(135deg, #a3d4d9 0%, #d9e8d8 100%);
     display: flex;
     align-items: center;
@@ -22,6 +23,12 @@ body {
     text-align: center;
     position: relative;
     overflow: hidden;
+}
+
+@supports (-webkit-fill-available: stretch) {
+    .hero {
+        min-height: -webkit-fill-available;
+    }
 }
 
 .hero::before {
@@ -219,16 +226,25 @@ footer {
 }
 
 @media (max-width: 768px) {
-    .hero { height: 80vh; padding: 0 1rem; }
+    .hero { 
+        min-height: 100vh; /* Replace height: 80vh */
+        padding: 0 1rem; 
+    }
+    @supports (-webkit-fill-available: stretch) {
+        .hero {
+            min-height: -webkit-fill-available; /* Ensure fullscreen on mobile */
+        }
+    }
     .hero-content h1 { font-size: 3rem; }
     .hero-content p { font-size: 1.4rem; }
-    .cta-button { padding: 12px 30px; font-size: 1.2rem; }
+    .cta-button { padding: 12px 30px; font-size: 1.2rem; } /* Or 15px 35px if you want it bigger */
     .intro, .products, .cta { padding: 2rem 1rem; }
     .intro h2, .cta h2 { font-size: 1.8rem; }
     .products h2 { font-size: 2rem; }
     .box-grid { flex-direction: column; align-items: center; gap: 1.5rem; }
     .box-item { width: 90%; max-width: 320px; }
     footer { padding: 1.5rem; }
+}
 }
 
 @media (max-width: 400px) {
