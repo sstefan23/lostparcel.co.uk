@@ -135,6 +135,7 @@ body {
     display: flex; /* Use flexbox for consistent layout */
     flex-direction: column;
     align-items: center;
+    justify-content: space-between;
 }
 
 .box-item:hover {
@@ -153,6 +154,14 @@ body {
 .box-icon.small { font-size: 2rem; }
 .box-icon.medium { font-size: 3rem; }
 .box-icon.large { font-size: 4rem; }
+
+.box-text {
+    flex-grow: 1; /* Takes available space */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centers text vertically within its space */
+    text-align: center;
+}
 
 .box-icon:hover,
 .box-icon:active,
@@ -175,13 +184,11 @@ body {
     font-size: 1.8rem;
     color: #6b8290;
     margin: 0; /* Remove default margins */
-    text-align: center;
 }
 
 .box-item p {
     font-size: 1.1rem;
     margin: 0.5rem 0 1rem; /* Consistent spacing */
-    text-align: center;
 }
 
 .peek-button {
@@ -192,7 +199,7 @@ body {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin-top: auto; /* Push button to bottom */
+    margin-top: 1rem; /* Push button to bottom */
 }
 
 .peek-button:hover {
@@ -270,7 +277,8 @@ footer {
         width: 90%; 
         max-width: 320px; 
         min-height: 300px; /* Added for taller cards on mobile */
-        padding: 2rem; /* Explicitly kept from original */
+        padding: 2rem;
+        justify-content: space-between; /* Match desktop */ /* Explicitly kept from original */
     }
     .box-item h3 { font-size: 1.8rem; } /* Added */
     .box-item p { font-size: 1.1rem; } /* Added */
