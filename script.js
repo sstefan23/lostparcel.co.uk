@@ -1,12 +1,10 @@
 console.log("script.js loaded at: " + new Date().toLocaleTimeString());
 
-// Prize emojis for fireworks
 const prizeEmojis = [
     '📱', '🎮', '👕', '💻', '⌚', '🎧', '📷', '👜', '👟', '🎁',
     '💍', '🛍️', '🎤', '📺', '🎲', '🏀', '🎸', '🖥️', '👗', '🚗'
 ];
 
-// Function to get random emojis with max repeat limit
 function getRandomEmojis(count, maxRepeats) {
     const shuffled = [...prizeEmojis].sort(() => 0.5 - Math.random());
     const result = [];
@@ -22,7 +20,6 @@ function getRandomEmojis(count, maxRepeats) {
     return result;
 }
 
-// Dive In button functionality
 const diveInButton = document.querySelector('.hero .cta-button');
 if (diveInButton) {
     console.log("Button found!");
@@ -71,7 +68,6 @@ if (diveInButton) {
     console.log("Button NOT found!");
 }
 
-// Box items animation on load
 const boxItems = document.querySelectorAll('.box-item');
 console.log("Found " + boxItems.length + " box items");
 if (boxItems.length > 0) {
@@ -83,22 +79,19 @@ if (boxItems.length > 0) {
     console.log("No box items found!");
 }
 
-// Box icons glowing on click (for mobile)
 const boxIcons = document.querySelectorAll('.box-icon');
-console.log("Found " + boxIcons.length + " box icons"); // Should log 3
+console.log("Found " + boxIcons.length + " box icons");
 if (boxIcons.length > 0) {
     boxIcons.forEach((icon, index) => {
-        console.log(`Adding click listener to box-icon ${index}`);
-        icon.addEventListener('click', () => {
-            // Remove glowing from all icons first
-            boxIcons.forEach(i => i.classList.remove('glowing'));
-            // Add glowing to the clicked icon
+        console.log(`Adding click listener to box-icon ${index} (class: ${icon.className})`);
+        icon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            console.log(`Clicked box-icon ${index} - adding glow`);
             icon.classList.add('glowing');
-            console.log(`Clicked box-icon ${index} - glowing`);
-            // Remove glow after 1 second
             setTimeout(() => {
+                console.log(`Removing glow from box-icon ${index}`);
                 icon.classList.remove('glowing');
-            }, 1000);
+            }, 2000);
         });
     });
 } else {
