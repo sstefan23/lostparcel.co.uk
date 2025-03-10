@@ -54,7 +54,7 @@ if (diveInButton) {
             });
             setTimeout(() => package.remove(), 1500);
         }
-        const productsSection = document.getElementById('products');
+        const productsSection = document.getElementById('intro');
         if (productsSection) {
             setTimeout(() => {
                 productsSection.scrollIntoView({ behavior: 'smooth' });
