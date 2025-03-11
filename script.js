@@ -6,6 +6,16 @@ document.addEventListener('DOMContentLoaded', () => {
         '💍', '🛍️', '🎤', '📺', '🎲', '🏀', '🎸', '🖥️', '👗', '🚗'
     ];
 
+    // Pause audio on load to reset state
+    const bangSound = document.getElementById('bang');
+    if (bangSound) {
+        bangSound.addEventListener('canplay', () => {
+            bangSound.pause();
+            bangSound.currentTime = 0;
+            console.log("Bang sound paused on load");
+        });
+    }
+
     function getRandomEmojis(count, maxRepeats) {
         const shuffled = [...prizeEmojis].sort(() => 0.5 - Math.random());
         const result = [];
@@ -64,10 +74,8 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.appendChild(debugDiv);
             debugDiv.textContent = "Dive In tapped";
 
-            const bangSound = document.getElementById('bang');
             if (bangSound) {
                 debugDiv.textContent += " | Sound found";
-                bangSound.loop = false;
                 bangSound.muted = false;
                 bangSound.currentTime = 0;
                 bangSound.play()
