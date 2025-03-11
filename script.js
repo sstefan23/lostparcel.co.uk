@@ -73,7 +73,7 @@ console.log("Found " + boxItems.length + " box items");
 if (boxItems.length > 0) {
     boxItems.forEach((item, index) => {
         console.log(`Animating box-item ${index}`);
-        item.style.animation = `slideIn 0.5s ease-out ${index * 0.2}s forwards`;
+        item.style.setProperty('--index', index);
     });
 } else {
     console.log("No box items found!");
