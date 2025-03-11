@@ -217,6 +217,13 @@ body {
     background-color: #8bbfc4;
 }
 
+.firework-package {
+    position: absolute;
+    z-index: 100;
+    font-size: 1.5rem;
+    pointer-events: none; /* Prevents interference with clicks */
+}
+
 .cta {
     padding: 4rem 2rem;
     text-align: center;
@@ -287,12 +294,6 @@ footer {
     80% { transform: translateX(8px) rotate(4deg); }
     90% { transform: translateX(-10px) rotate(-5deg); }
     100% { transform: translateX(10px) rotate(5deg); } /* Ends intense */
-}
-
-.firework-package {
-    position: absolute;
-    z-index: 10;
-    font-size: 1.5rem;
 }
 
 @media (max-width: 768px) {

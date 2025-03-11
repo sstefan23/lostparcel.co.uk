@@ -25,13 +25,16 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Triggering fireworks for element:", element);
         const emojisToShow = getRandomEmojis(10, 2);
         const rect = element.getBoundingClientRect();
+        console.log("Element position - left:", rect.left, "top:", rect.top, "width:", rect.width, "height:", rect.height);
         for (let i = 0; i < 10; i++) {
             const package = document.createElement('div');
             package.innerHTML = emojisToShow[i];
             package.classList.add('firework-package');
-            package.style.left = `${rect.left + rect.width / 2}px`;
-            package.style.top = `${rect.top + rect.height / 2}px`;
+            // Use window.scrollX/Y to adjust for scroll position
+            package.style.left = `${rect.left + rect.width / 2 + window.scrollX}px`;
+            package.style.top = `${rect.top + rect.height / 2 + window.scrollY}px`;
             document.body.appendChild(package);
+            console.log("Firework " + i + " added at left:", package.style.left, "top:", package.style.top);
             const angle = Math.random() * Math.PI * 2;
             const distance = 50 + Math.random() * 50; // 50-100px (note: next time use 200)
             const x = Math.cos(angle) * distance;
@@ -45,7 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 easing: 'ease-out',
                 fill: 'forwards'
             });
-            setTimeout(() => package.remove(), 1000);
+            setTimeout(() => {
+                console.log("Removing firework " + i);
+                package.remove();
+            }, 1000);
         }
     }
 
