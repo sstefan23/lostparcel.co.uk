@@ -22,7 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function triggerFireworks(element) {
-        const emojisToShow = getRandomEmojis(10, 2); // 10 emojis for card explosion
+        console.log("Triggering fireworks for element:", element);
+        const emojisToShow = getRandomEmojis(10, 2);
         const rect = element.getBoundingClientRect();
         for (let i = 0; i < 10; i++) {
             const package = document.createElement('div');
@@ -32,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             package.style.top = `${rect.top + rect.height / 2}px`;
             document.body.appendChild(package);
             const angle = Math.random() * Math.PI * 2;
-            const distance = 50 + Math.random() * 50; // 50-100px for card fireworks
+            const distance = 50 + Math.random() * 50; // 50-100px (note: next time use 200)
             const x = Math.cos(angle) * distance;
             const y = Math.sin(angle) * distance;
             package.animate([
@@ -125,6 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
             observer.observe(item);
             const buyButton = item.querySelector('.peek-button');
             if (buyButton) {
+                console.log("Buy button found in box-item");
                 buyButton.addEventListener('touchstart', (e) => {
                     e.preventDefault();
                     console.log("Buy Now tapped - shaking box!");
@@ -133,12 +135,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         item.classList.remove('shake');
                         console.log("Shake done - triggering fireworks!");
                         triggerFireworks(item);
-                    }, 2000); // 2 seconds shake
+                    }, 2000);
                 });
                 buyButton.addEventListener('click', (e) => {
                     e.preventDefault();
                     buyButton.dispatchEvent(new Event('touchstart'));
                 });
+            } else {
+                console.log("Buy button NOT found in box-item!");
             }
         });
     } else {
