@@ -23,10 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function triggerFireworks(element) {
         console.log("Triggering fireworks for element:", element);
-        const emojisToShow = getRandomEmojis(10, 2);
+        const emojisToShow = getRandomEmojis(15, 2);
         const rect = element.getBoundingClientRect();
         console.log("Element position - left:", rect.left, "top:", rect.top, "width:", rect.width, "height:", rect.height);
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 15; i++) {
             const package = document.createElement('div');
             package.innerHTML = emojisToShow[i];
             package.classList.add('firework-package');
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.appendChild(package);
             console.log("Firework " + i + " added at left:", package.style.left, "top:", package.style.top);
             const angle = Math.random() * Math.PI * 2;
-            const distance = 50 + Math.random() * 50; // 50-100px (note: next time use 200)
+            const distance = 150 + Math.random() * 150; // 50-100px (note: next time use 200)
             const x = Math.cos(angle) * distance;
             const y = Math.sin(angle) * distance;
             package.animate([
