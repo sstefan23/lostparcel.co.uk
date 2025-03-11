@@ -21,16 +21,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return result;
     }
 
+    // Dive In button logic
     const diveInButton = document.querySelector('.hero .cta-button');
     if (diveInButton) {
         console.log("Button found!");
         diveInButton.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            console.log("Dive In tapped!");
+            console.log("Dive In tapped - starting fireworks!");
             const bangSound = document.getElementById('bang');
             if (bangSound) {
+                console.log("Playing bang sound");
                 bangSound.currentTime = 0;
                 bangSound.play().catch(error => console.log("Audio error:", error));
+            } else {
+                console.log("Bang sound not found!");
             }
             const emojisToShow = getRandomEmojis(10, 2);
             for (let i = 0; i < 10; i++) {
@@ -58,6 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const introSection = document.getElementById('intro');
             if (introSection) {
+                console.log("Scrolling to intro section");
                 setTimeout(() => {
                     introSection.scrollIntoView({ behavior: 'smooth' });
                 }, 1000);
@@ -65,8 +70,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("Intro section not found!");
             }
         });
+        // Add click fallback for desktop
+        diveInButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            diveInButton.dispatchEvent(new Event('touchstart')); // Trigger touchstart logic
+        });
     } else {
-        console.log("Button NOT found!");
+        console.log("Button NOT found! Selector: .hero .cta-button");
     }
 
     // Animate cards when they come into view
@@ -77,14 +87,14 @@ document.addEventListener('DOMContentLoaded', () => {
             entries.forEach((entry, index) => {
                 if (entry.isIntersecting) {
                     const item = entry.target;
-                    item.style.setProperty('--index', Array.from(boxItems).indexOf(item)); // Set index
+                    item.style.setProperty('--index', Array.from(boxItems).indexOf(item));
                     item.classList.add('flip-in');
                     console.log(`Box-item ${item.style.getPropertyValue('--index')} flipped in`);
-                    observer.unobserve(item); // Stop observing once animated
+                    observer.unobserve(item);
                 }
             });
         }, {
-            threshold: 0.3 // Trigger when 30% of the card is visible
+            threshold: 0.3
         });
 
         boxItems.forEach(item => {
