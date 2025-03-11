@@ -136,8 +136,11 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    animation: flipIn 0.7s ease-out forwards; /* New animation */
-    animation-delay: calc(var(--index) * 0.15s); /* Staggered delay */
+}
+
+.flip-in {
+    animation: flipIn 0.7s ease-out forwards;
+    animation-delay: calc(var(--index) * 0.15s);
 }
 
 .box-item:hover {
@@ -289,8 +292,6 @@ footer {
         min-height: 300px; /* Added for taller cards on mobile */
         padding: 2rem;
         justify-content: space-between; /* Match desktop */ /* Explicitly kept from original */
-        animation: flipIn 0.7s ease-out forwards; /* Ensure animation applies */
-        animation-delay: calc(var(--index) * 0.15s);
     }
     .box-item h3 { font-size: 1.8rem; } /* Added */
     .box-item p { font-size: 1.1rem; } /* Added */
