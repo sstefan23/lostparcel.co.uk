@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const diveInButton = document.querySelector('.hero .cta-button');
     if (diveInButton) {
         console.log("Button found!");
-        diveInButton.addEventListener('touchstart', (e) => {
+        diveInButton.addEventListener('click', (e) => {
             e.preventDefault();
             console.log("Dive In tapped - starting fireworks!");
             const bangSound = document.getElementById('bang');
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         diveInButton.addEventListener('click', (e) => {
             e.preventDefault();
-            diveInButton.dispatchEvent(new Event('touchstart'));
+            diveInButton.dispatchEvent(new Event('click'));
         });
     } else {
         console.log("Button NOT found! Selector: .hero .cta-button");
