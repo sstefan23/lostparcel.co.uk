@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 package.style.top = `${rect.top + rect.height / 2 + window.scrollY}px`;
                 document.body.appendChild(package);
                 const angle = Math.random() * Math.PI * 2;
-                const distance = 100 + Math.random() * 100;
+                const distance = 200 + Math.random() * 200;
                 const x = Math.cos(angle) * distance;
                 const y = Math.sin(angle) * distance;
                 package.animate([
