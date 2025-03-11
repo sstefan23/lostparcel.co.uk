@@ -62,9 +62,15 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Dive In tapped - starting fireworks!");
             const bangSound = document.getElementById('bang');
             if (bangSound) {
-                console.log("Playing bang sound");
-                bangSound.currentTime = 0;
-                bangSound.play().catch(error => console.log("Audio error:", error));
+                console.log("Attempting to unlock and play bang sound");
+                // Unlock audio context on mobile
+                bangSound.volume = 0; // Silent first play
+                bangSound.play().then(() => {
+                    bangSound.pause(); // Stop silent play
+                    bangSound.volume = 1; // Reset volume
+                    bangSound.currentTime = 0; // Rewind
+                    bangSound.play().catch(error => console.log("Audio error on second play:", error));
+                }).catch(error => console.log("Audio unlock error:", error));
             } else {
                 console.log("Bang sound not found!");
             }
