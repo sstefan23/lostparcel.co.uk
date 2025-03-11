@@ -62,11 +62,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const debugDiv = document.createElement('div');
             debugDiv.style.cssText = 'position: fixed; top: 10px; left: 10px; background: red; color: white; padding: 10px; z-index: 9999;';
             document.body.appendChild(debugDiv);
-            debugDiv.textContent = "Dive In tapped - trying sound";
+            debugDiv.textContent = "Dive In tapped";
 
             const bangSound = document.getElementById('bang');
             if (bangSound) {
                 debugDiv.textContent += " | Sound found";
+                bangSound.muted = false;
                 bangSound.currentTime = 0;
                 bangSound.play()
                     .then(() => debugDiv.textContent += " | Played!")
