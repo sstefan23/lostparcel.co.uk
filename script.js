@@ -23,20 +23,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function triggerFireworks(element) {
         console.log("Triggering fireworks for element:", element);
-        const emojisToShow = getRandomEmojis(15, 2);
+        const emojisToShow = getRandomEmojis(10, 2);
         const rect = element.getBoundingClientRect();
         console.log("Element position - left:", rect.left, "top:", rect.top, "width:", rect.width, "height:", rect.height);
-        for (let i = 0; i < 15; i++) {
+        for (let i = 0; i < 10; i++) {
             const package = document.createElement('div');
             package.innerHTML = emojisToShow[i];
             package.classList.add('firework-package');
-            // Use window.scrollX/Y to adjust for scroll position
             package.style.left = `${rect.left + rect.width / 2 + window.scrollX}px`;
             package.style.top = `${rect.top + rect.height / 2 + window.scrollY}px`;
             document.body.appendChild(package);
             console.log("Firework " + i + " added at left:", package.style.left, "top:", package.style.top);
             const angle = Math.random() * Math.PI * 2;
-            const distance = 150 + Math.random() * 150; // 50-100px (note: next time use 200)
+            const distance = 200;
             const x = Math.cos(angle) * distance;
             const y = Math.sin(angle) * distance;
             package.animate([
@@ -75,11 +74,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 package.innerHTML = emojisToShow[i];
                 package.classList.add('firework-package');
                 const rect = diveInButton.getBoundingClientRect();
-                package.style.left = `${rect.left + rect.width / 2}px`;
-                package.style.top = `${rect.top + rect.height / 2}px`;
+                package.style.left = `${rect.left + rect.width / 2 + window.scrollX}px`;
+                package.style.top = `${rect.top + rect.height / 2 + window.scrollY}px`;
                 document.body.appendChild(package);
                 const angle = Math.random() * Math.PI * 2;
-                const distance = 200 + Math.random() * 200;
+                const distance = 100 + Math.random() * 100;
                 const x = Math.cos(angle) * distance;
                 const y = Math.sin(angle) * distance;
                 package.animate([
@@ -169,4 +168,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 2000);
         });
     });
+
+    const grabMineButton = document.querySelector('.cta .cta-button');
+    if (grabMineButton) {
+        console.log("Grab Mine button found!");
+        grabMineButton.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            console.log("Grab Mine tapped - scrolling to products!");
+            const productsSection = document.getElementById('products');
+            if (productsSection) {
+                productsSection.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                console.log("Products section not found!");
+            }
+        });
+        grabMineButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            grabMineButton.dispatchEvent(new Event('touchstart'));
+        });
+    } else {
+        console.log("Grab Mine button NOT found! Selector: .cta .cta-button");
+    }
 });
