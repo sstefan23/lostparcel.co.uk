@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.appendChild(package);
             console.log("Firework " + i + " added at left:", package.style.left, "top:", package.style.top);
             const angle = Math.random() * Math.PI * 2;
-            const distance = 200;
+            const distance = 300;
             const x = Math.cos(angle) * distance;
             const y = Math.sin(angle) * distance;
             package.animate([
