@@ -1,5 +1,24 @@
 console.log("script.js loaded at: " + new Date().toLocaleTimeString());
 
+// Unlock audio context on first touch
+let audioUnlocked = false;
+document.addEventListener('touchstart', function unlockAudio() {
+    if (!audioUnlocked) {
+        const bangSound = document.getElementById('bang');
+        if (bangSound) {
+            bangSound.volume = 0;
+            bangSound.play().then(() => {
+                bangSound.pause();
+                bangSound.volume = 1;
+                bangSound.currentTime = 0;
+                console.log("Audio context unlocked on first touch");
+                audioUnlocked = true;
+            }).catch(error => console.log("Initial audio unlock failed:", error));
+        }
+        document.removeEventListener('touchstart', unlockAudio);
+    }
+}, { once: true });
+
 document.addEventListener('DOMContentLoaded', () => {
     const prizeEmojis = [
         '📱', '🎮', '👕', '💻', '⌚', '🎧', '📷', '👜', '👟', '🎁',
@@ -35,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.appendChild(package);
             console.log("Firework " + i + " added at left:", package.style.left, "top:", package.style.top);
             const angle = Math.random() * Math.PI * 2;
-            const distance = 300;
+            const distance = 200 + Math.random() * 200;
             const x = Math.cos(angle) * distance;
             const y = Math.sin(angle) * distance;
             package.animate([
@@ -57,20 +76,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const diveInButton = document.querySelector('.hero .cta-button');
     if (diveInButton) {
         console.log("Button found!");
-        diveInButton.addEventListener('click', (e) => {
+        diveInButton.addEventListener('touchstart', (e) => {
             e.preventDefault();
             console.log("Dive In tapped - starting fireworks!");
             const bangSound = document.getElementById('bang');
             if (bangSound) {
-                console.log("Attempting to unlock and play bang sound");
-                // Unlock audio context on mobile
-                bangSound.volume = 0; // Silent first play
-                bangSound.play().then(() => {
-                    bangSound.pause(); // Stop silent play
-                    bangSound.volume = 1; // Reset volume
-                    bangSound.currentTime = 0; // Rewind
-                    bangSound.play().catch(error => console.log("Audio error on second play:", error));
-                }).catch(error => console.log("Audio unlock error:", error));
+                console.log("Playing bang sound");
+                bangSound.currentTime = 0;
+                bangSound.play().catch(error => console.log("Audio play error:", error));
             } else {
                 console.log("Bang sound not found!");
             }
@@ -110,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         diveInButton.addEventListener('click', (e) => {
             e.preventDefault();
-            diveInButton.dispatchEvent(new Event('click'));
+            diveInButton.dispatchEvent(new Event('touchstart'));
         });
     } else {
         console.log("Button NOT found! Selector: .hero .cta-button");
