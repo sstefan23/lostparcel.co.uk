@@ -6,16 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
         '💍', '🛍️', '🎤', '📺', '🎲', '🏀', '🎸', '🖥️', '👗', '🚗'
     ];
 
-    // Pause audio on load to reset state
-    const bangSound = document.getElementById('bang');
-    if (bangSound) {
-        bangSound.addEventListener('canplay', () => {
-            bangSound.pause();
-            bangSound.currentTime = 0;
-            console.log("Bang sound paused on load");
-        });
-    }
-
     function getRandomEmojis(count, maxRepeats) {
         const shuffled = [...prizeEmojis].sort(() => 0.5 - Math.random());
         const result = [];
@@ -74,16 +64,26 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.appendChild(debugDiv);
             debugDiv.textContent = "Dive In tapped";
 
-            if (bangSound) {
-                debugDiv.textContent += " | Sound found";
-                bangSound.muted = false;
-                bangSound.currentTime = 0;
-                bangSound.play()
-                    .then(() => debugDiv.textContent += " | Played!")
-                    .catch(error => debugDiv.textContent += " | Error: " + error.message);
+            const silentSound = document.getElementById('silent');
+            const bangSound = document.getElementById('bang');
+
+            if (silentSound && bangSound) {
+                debugDiv.textContent += " | Sounds found";
+                silentSound.currentTime = 0;
+                silentSound.muted = true;
+                silentSound.play()
+                    .then(() => {
+                        debugDiv.textContent += " | Silent played";
+                        bangSound.currentTime = 0;
+                        bangSound.muted = false;
+                        bangSound.play()
+                            .then(() => debugDiv.textContent += " | Bang played!")
+                            .catch(error => debugDiv.textContent += " | Bang error: " + error.message);
+                    })
+                    .catch(error => debugDiv.textContent += " | Silent error: " + error.message);
                 setTimeout(() => debugDiv.remove(), 3000);
             } else {
-                debugDiv.textContent += " | Sound NOT found!";
+                debugDiv.textContent += " | Sound missing!";
                 setTimeout(() => debugDiv.remove(), 3000);
             }
 
