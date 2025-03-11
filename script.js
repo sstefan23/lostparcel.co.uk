@@ -67,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const bangSound = document.getElementById('bang');
             if (bangSound) {
                 debugDiv.textContent += " | Sound found";
+                bangSound.loop = false;
                 bangSound.muted = false;
                 bangSound.currentTime = 0;
                 bangSound.play()
