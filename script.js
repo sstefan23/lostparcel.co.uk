@@ -36,8 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 console.log("Bang sound not found!");
             }
-            const emojisToShow = getRandomEmojis(10, 2);
-            for (let i = 0; i < 10; i++) {
+            const emojisToShow = getRandomEmojis(20, 2);
+            for (let i = 0; i < 20; i++) {
                 const package = document.createElement('div');
                 package.innerHTML = emojisToShow[i];
                 package.classList.add('firework-package');
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 package.style.top = `${rect.top + rect.height / 2}px`;
                 document.body.appendChild(package);
                 const angle = Math.random() * Math.PI * 2;
-                const distance = 50 + Math.random() * 50;
+                const distance = 200 + Math.random() * 200;
                 const x = Math.cos(angle) * distance;
                 const y = Math.sin(angle) * distance;
                 package.animate([
