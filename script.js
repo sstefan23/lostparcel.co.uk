@@ -21,7 +21,33 @@ document.addEventListener('DOMContentLoaded', () => {
         return result;
     }
 
-    // Dive In button logic
+    function triggerFireworks(element) {
+        const emojisToShow = getRandomEmojis(10, 2); // 10 emojis for card explosion
+        const rect = element.getBoundingClientRect();
+        for (let i = 0; i < 10; i++) {
+            const package = document.createElement('div');
+            package.innerHTML = emojisToShow[i];
+            package.classList.add('firework-package');
+            package.style.left = `${rect.left + rect.width / 2}px`;
+            package.style.top = `${rect.top + rect.height / 2}px`;
+            document.body.appendChild(package);
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 50 + Math.random() * 50; // 50-100px for card fireworks
+            const x = Math.cos(angle) * distance;
+            const y = Math.sin(angle) * distance;
+            package.animate([
+                { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                { transform: 'translate(0, 0) scale(1.5)', opacity: 1, offset: 0.15 },
+                { transform: `translate(${x}px, ${y}px) scale(0.75)`, opacity: 0 }
+            ], {
+                duration: 1000,
+                easing: 'ease-out',
+                fill: 'forwards'
+            });
+            setTimeout(() => package.remove(), 1000);
+        }
+    }
+
     const diveInButton = document.querySelector('.hero .cta-button');
     if (diveInButton) {
         console.log("Button found!");
@@ -70,16 +96,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("Intro section not found!");
             }
         });
-        // Add click fallback for desktop
         diveInButton.addEventListener('click', (e) => {
             e.preventDefault();
-            diveInButton.dispatchEvent(new Event('touchstart')); // Trigger touchstart logic
+            diveInButton.dispatchEvent(new Event('touchstart'));
         });
     } else {
         console.log("Button NOT found! Selector: .hero .cta-button");
     }
 
-    // Animate cards when they come into view
     const boxItems = document.querySelectorAll('.box-item');
     console.log("Found " + boxItems.length + " box items");
     if (boxItems.length > 0) {
@@ -99,6 +123,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         boxItems.forEach(item => {
             observer.observe(item);
+            const buyButton = item.querySelector('.peek-button');
+            if (buyButton) {
+                buyButton.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    console.log("Buy Now tapped - shaking box!");
+                    item.classList.add('shake');
+                    setTimeout(() => {
+                        item.classList.remove('shake');
+                        console.log("Shake done - triggering fireworks!");
+                        triggerFireworks(item);
+                    }, 2000); // 2 seconds shake
+                });
+                buyButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    buyButton.dispatchEvent(new Event('touchstart'));
+                });
+            }
         });
     } else {
         console.log("No box items found!");
