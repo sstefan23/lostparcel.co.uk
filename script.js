@@ -1,24 +1,5 @@
 console.log("script.js loaded at: " + new Date().toLocaleTimeString());
 
-// Unlock audio context on first touch
-let audioUnlocked = false;
-document.addEventListener('touchstart', function unlockAudio() {
-    if (!audioUnlocked) {
-        const bangSound = document.getElementById('bang');
-        if (bangSound) {
-            bangSound.volume = 0;
-            bangSound.play().then(() => {
-                bangSound.pause();
-                bangSound.volume = 1;
-                bangSound.currentTime = 0;
-                console.log("Audio context unlocked on first touch");
-                audioUnlocked = true;
-            }).catch(error => console.log("Initial audio unlock failed:", error));
-        }
-        document.removeEventListener('touchstart', unlockAudio);
-    }
-}, { once: true });
-
 document.addEventListener('DOMContentLoaded', () => {
     const prizeEmojis = [
         '📱', '🎮', '👕', '💻', '⌚', '🎧', '📷', '👜', '👟', '🎁',
@@ -78,15 +59,24 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Button found!");
         diveInButton.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            console.log("Dive In tapped - starting fireworks!");
+            const debugDiv = document.createElement('div');
+            debugDiv.style.cssText = 'position: fixed; top: 10px; left: 10px; background: red; color: white; padding: 10px; z-index: 9999;';
+            document.body.appendChild(debugDiv);
+            debugDiv.textContent = "Dive In tapped - trying sound";
+
             const bangSound = document.getElementById('bang');
             if (bangSound) {
-                console.log("Playing bang sound");
+                debugDiv.textContent += " | Sound found";
                 bangSound.currentTime = 0;
-                bangSound.play().catch(error => console.log("Audio play error:", error));
+                bangSound.play()
+                    .then(() => debugDiv.textContent += " | Played!")
+                    .catch(error => debugDiv.textContent += " | Error: " + error.message);
+                setTimeout(() => debugDiv.remove(), 3000);
             } else {
-                console.log("Bang sound not found!");
+                debugDiv.textContent += " | Sound NOT found!";
+                setTimeout(() => debugDiv.remove(), 3000);
             }
+
             const emojisToShow = getRandomEmojis(20, 2);
             for (let i = 0; i < 20; i++) {
                 const package = document.createElement('div');
@@ -113,12 +103,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const introSection = document.getElementById('intro');
             if (introSection) {
-                console.log("Scrolling to intro section");
+                debugDiv.textContent += " | Scrolling...";
                 setTimeout(() => {
                     introSection.scrollIntoView({ behavior: 'smooth' });
                 }, 1000);
             } else {
-                console.log("Intro section not found!");
+                debugDiv.textContent += " | Intro not found";
             }
         });
         diveInButton.addEventListener('click', (e) => {
