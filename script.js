@@ -58,12 +58,15 @@ document.addEventListener('DOMContentLoaded', () => {
 if (diveInButton) {
     console.log("Button found!");
 
-    // Зареждане на звука предварително
     const bangSound = document.getElementById('bang');
     if (bangSound) {
-        bangSound.load(); // Увери се, че звукът е зареден
+        bangSound.load(); // Предварително зареждане
         console.log("Bang sound preloaded");
     }
+
+    // Създаване на AudioContext за по-добър контрол
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    let source = null;
 
     diveInButton.addEventListener('touchstart', (e) => {
         e.preventDefault();
@@ -74,14 +77,19 @@ if (diveInButton) {
         document.body.appendChild(debugDiv);
         debugDiv.textContent = "Dive In tapped";
 
-        if (bangSound) {
+        if (bangSound && audioContext) {
             debugDiv.textContent += " | Sound found";
+            if (audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    console.log("AudioContext resumed");
+                });
+            }
+
             bangSound.currentTime = 0; // Рестартирай звука
-            bangSound.muted = false; // Увери се, че не е заглушен
             try {
                 bangSound.play();
                 debugDiv.textContent += " | Bang played!";
-                console.log("Bang duration: " + bangSound.duration); // Провери дължината на звука
+                console.log("Bang duration: " + bangSound.duration);
             } catch (error) {
                 debugDiv.textContent += " | Bang error: " + error.message;
                 console.error("Play failed:", error);
