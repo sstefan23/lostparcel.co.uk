@@ -64,6 +64,18 @@ if (diveInButton) {
         console.log("Bang sound preloaded");
     }
 
+    let isAudioUnlocked = false;
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    // Създаване на безшумен звук динамично
+    function createSilentAudio() {
+        const buffer = audioContext.createBuffer(1, audioContext.sampleRate, audioContext.sampleRate);
+        const source = audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.connect(audioContext.destination);
+        return source;
+    }
+
     diveInButton.addEventListener('touchstart', (e) => {
         e.preventDefault();
         console.log("Touchstart triggered at: " + new Date().toLocaleTimeString());
@@ -75,22 +87,43 @@ if (diveInButton) {
 
         if (bangSound) {
             debugDiv.textContent += " | Sound found";
-            bangSound.currentTime = 0; // Рестартирай звука
-            bangSound.muted = false; // Увери се, че не е заглушен
-            try {
-                const playPromise = bangSound.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        debugDiv.textContent += " | Bang played!";
-                        console.log("Bang duration: " + bangSound.duration);
+
+            if (!isAudioUnlocked) {
+                // Отключване на аудиото с безшумен звук
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume().then(() => {
+                        console.log("AudioContext resumed");
+                        const silentSource = createSilentAudio();
+                        silentSource.start();
+                        silentSource.stop(audioContext.currentTime + 0.1); // 0.1 секунда тишина
+                        isAudioUnlocked = true;
+                        console.log("Audio unlocked with silent sound");
+
+                        // Пускане на bangSound веднага след отключване
+                        bangSound.currentTime = 0;
+                        bangSound.muted = false;
+                        bangSound.play().then(() => {
+                            debugDiv.textContent += " | Bang played!";
+                            console.log("Bang duration: " + bangSound.duration);
+                        }).catch(error => {
+                            debugDiv.textContent += " | Bang error: " + error.message;
+                            console.error("Bang play failed:", error);
+                        });
                     }).catch(error => {
-                        debugDiv.textContent += " | Bang error: " + error.message;
-                        console.error("Play failed:", error);
+                        console.error("AudioContext resume failed:", error);
                     });
                 }
-            } catch (error) {
-                debugDiv.textContent += " | Bang error: " + error.message;
-                console.error("Play failed:", error);
+            } else {
+                // Ако аудиото вече е отключено, пускаме директно
+                bangSound.currentTime = 0;
+                bangSound.muted = false;
+                bangSound.play().then(() => {
+                    debugDiv.textContent += " | Bang played!";
+                    console.log("Bang duration: " + bangSound.duration);
+                }).catch(error => {
+                    debugDiv.textContent += " | Bang error: " + error.message;
+                    console.error("Bang play failed:", error);
+                });
             }
         } else {
             debugDiv.textContent += " | Sound missing!";
