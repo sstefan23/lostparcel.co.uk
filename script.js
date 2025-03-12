@@ -59,23 +59,28 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Button found!");
         diveInButton.addEventListener('touchstart', (e) => {
             e.preventDefault();
+            console.log("Touchstart triggered at: " + new Date().toLocaleTimeString());
+
             const debugDiv = document.createElement('div');
             debugDiv.style.cssText = 'position: fixed; top: 10px; left: 10px; background: red; color: white; padding: 10px; z-index: 9999;';
             document.body.appendChild(debugDiv);
             debugDiv.textContent = "Dive In tapped";
-        
+
             const bangSound = document.getElementById('bang');
             if (bangSound) {
                 debugDiv.textContent += " | Sound found";
                 bangSound.currentTime = 0; // Рестартирай звука
-                bangSound.play()
-                    .then(() => debugDiv.textContent += " | Bang played!")
-                    .catch(error => debugDiv.textContent += " | Bang error: " + error.message);
-                setTimeout(() => debugDiv.remove(), 3000);
+                try {
+                    bangSound.play();
+                    debugDiv.textContent += " | Bang played!";
+                } catch (error) {
+                    debugDiv.textContent += " | Bang error: " + error.message;
+                    console.error("Play failed:", error);
+                }
             } else {
                 debugDiv.textContent += " | Sound missing!";
-                setTimeout(() => debugDiv.remove(), 3000);
             }
+            setTimeout(() => debugDiv.remove(), 3000);
 
             const emojisToShow = getRandomEmojis(20, 2);
             for (let i = 0; i < 20; i++) {
