@@ -6,18 +6,30 @@
     <title>Checkout - LostParcel.co.uk</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+        }
         .checkout-container {
             max-width: 600px;
-            margin: 50px auto;
+            margin: 20px auto;
             padding: 20px;
-            text-align: center;
             background: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-        .checkout-container h2 {
+        .section {
+            padding: 20px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .section:last-child {
+            border-bottom: none;
+        }
+        .section h2 {
             color: #ff007a;
             margin-bottom: 20px;
+            text-align: center;
         }
         .product-row {
             display: flex;
@@ -25,7 +37,6 @@
             justify-content: space-between;
             margin-bottom: 20px;
             padding: 10px;
-            border-bottom: 1px solid #ddd;
         }
         .product-row .emoji {
             font-size: 30px;
@@ -70,6 +81,7 @@
             color: #ff007a;
             margin: 20px 0;
             font-weight: bold;
+            text-align: center;
         }
         .checkout-form label {
             display: block;
@@ -85,7 +97,7 @@
             border-radius: 5px;
             font-size: 16px;
         }
-        .checkout-form button, .continue-button {
+        .continue-button, .checkout-form button {
             background: #ff007a;
             color: white;
             padding: 12px 24px;
@@ -95,18 +107,18 @@
             font-size: 18px;
             transition: transform 0.3s ease;
             width: 100%;
-            margin: 10px 0;
+            margin: 20px 0;
         }
-        .checkout-form button:hover, .continue-button:hover {
+        .continue-button:hover, .checkout-form button:hover {
             transform: scale(1.05);
         }
     </style>
 </head>
 <body>
     <div class="checkout-container">
-        <h2>Checkout</h2>
-        <form class="checkout-form" id="payment-form">
-            <!-- Продукт 1: Small Parcel -->
+        <!-- Секция 1: Избор на пакети -->
+        <div class="section" id="package-section">
+            <h2>Select Your Packages</h2>
             <div class="product-row">
                 <span class="emoji">📦</span>
                 <span class="name">Small Parcel</span>
@@ -117,8 +129,6 @@
                 </div>
                 <span class="price" id="small-price">£0</span>
             </div>
-
-            <!-- Продукт 2: Medium Parcel -->
             <div class="product-row">
                 <span class="emoji">📦📦</span>
                 <span class="name">Medium Parcel</span>
@@ -129,8 +139,6 @@
                 </div>
                 <span class="price" id="medium-price">£0</span>
             </div>
-
-            <!-- Продукт 3: Large Parcel -->
             <div class="product-row">
                 <span class="emoji">📦📦📦</span>
                 <span class="name">Large Parcel</span>
@@ -141,45 +149,57 @@
                 </div>
                 <span class="price" id="large-price">£0</span>
             </div>
-
-            <!-- Обща сума -->
             <div class="total-price" id="total-price">Total: £0</div>
-
-            <!-- Бутон за доставка -->
             <button type="button" class="continue-button" id="continue-to-shipping">Continue to Shipping</button>
+        </div>
 
-            <!-- Данни за карта -->
-            <label for="card-number">Card Number</label>
-            <input type="text" id="card-number" placeholder="1234 5678 9012 3456" required>
-            <label for="card-name">Name on Card</label>
-            <input type="text" id="card-name" placeholder="John Doe" required>
-            <label for="card-expiry">Expiry Date</label>
-            <input type="text" id="card-expiry" placeholder="MM/YY" required>
-            <label for="card-cvc">CVC</label>
-            <input type="text" id="card-cvc" placeholder="123" required>
-            <button type="submit">Pay Now</button>
-        </form>
+        <!-- Секция 2: Данни за доставка -->
+        <div class="section" id="shipping-section">
+            <h2>Shipping Details</h2>
+            <form class="checkout-form">
+                <label for="full-name">Full Name</label>
+                <input type="text" id="full-name" placeholder="John Doe" required>
+                <label for="address">Address</label>
+                <input type="text" id="address" placeholder="123 Main St" required>
+                <label for="city">City</label>
+                <input type="text" id="city" placeholder="London" required>
+                <label for="postal-code">Postal Code</label>
+                <input type="text" id="postal-code" placeholder="SW1A 1AA" required>
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" placeholder="+44 123 456 7890" required>
+                <button type="button" class="continue-button" id="continue-to-payment">Continue to Payment</button>
+            </form>
+        </div>
+
+        <!-- Секция 3: Данни за плащане -->
+        <div class="section" id="payment-section">
+            <h2>Payment Details</h2>
+            <form class="checkout-form" id="payment-form">
+                <label for="card-number">Card Number</label>
+                <input type="text" id="card-number" placeholder="1234 5678 9012 3456" required>
+                <label for="card-name">Name on Card</label>
+                <input type="text" id="card-name" placeholder="John Doe" required>
+                <label for="card-expiry">Expiry Date</label>
+                <input type="text" id="card-expiry" placeholder="MM/YY" required>
+                <label for="card-cvc">CVC</label>
+                <input type="text" id="card-cvc" placeholder="123" required>
+                <button type="submit">Pay Now</button>
+            </form>
+        </div>
     </div>
     <script src="script.js"></script>
     <script>
-        const prices = {
-            small: 10,
-            medium: 20,
-            large: 30
-        };
-
+        const prices = { small: 10, medium: 20, large: 30 };
         const quantities = {
             small: document.querySelector('.quantity[data-product="small"]'),
             medium: document.querySelector('.quantity[data-product="medium"]'),
             large: document.querySelector('.quantity[data-product="large"]')
         };
-
         const priceDisplays = {
             small: document.getElementById('small-price'),
             medium: document.getElementById('medium-price'),
             large: document.getElementById('large-price')
         };
-
         const totalPrice = document.getElementById('total-price');
 
         function updatePrices() {
@@ -191,6 +211,7 @@
                 total += price;
             }
             totalPrice.textContent = `Total: £${total}`;
+            return total;
         }
 
         document.querySelectorAll('.quantity-controls button').forEach(button => {
@@ -217,11 +238,22 @@
         updatePrices();
 
         document.getElementById('continue-to-shipping').addEventListener('click', () => {
-            const total = totalPrice.textContent;
-            console.log(`Redirecting to shipping with ${total}`);
-            // Тук можеш да добавиш пренасочване към страница за доставка, напр.:
-            // window.location.href = "shipping.html";
-            alert(`Proceeding to shipping with ${total} (Demo)`);
+            const total = updatePrices();
+            if (total > 0) {
+                document.getElementById('shipping-section').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                alert('Please select at least one package!');
+            }
+        });
+
+        document.getElementById('continue-to-payment').addEventListener('click', () => {
+            const shippingFields = ['full-name', 'address', 'city', 'postal-code', 'phone'];
+            const allFilled = shippingFields.every(id => document.getElementById(id).value.trim() !== '');
+            if (allFilled) {
+                document.getElementById('payment-section').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                alert('Please fill in all shipping details!');
+            }
         });
 
         document.getElementById('payment-form').addEventListener('submit', (e) => {
@@ -230,10 +262,23 @@
                 small: quantities.small.value,
                 medium: quantities.medium.value,
                 large: quantities.large.value,
-                total: totalPrice.textContent
+                total: updatePrices()
             };
-            console.log("Payment submitted!", order);
-            alert(`Payment processing...\nSmall: ${order.small}, Medium: ${order.medium}, Large: ${order.large}\n${order.total}\n(This is a demo!)`);
+            const shipping = {
+                fullName: document.getElementById('full-name').value,
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                postalCode: document.getElementById('postal-code').value,
+                phone: document.getElementById('phone').value
+            };
+            const payment = {
+                cardNumber: document.getElementById('card-number').value,
+                cardName: document.getElementById('card-name').value,
+                cardExpiry: document.getElementById('card-expiry').value,
+                cardCvc: document.getElementById('card-cvc').value
+            };
+            console.log('Order:', order, 'Shipping:', shipping, 'Payment:', payment);
+            alert(`Purchase completed!\nTotal: £${order.total}\n(This is a demo!)`);
         });
     </script>
 </body>
