@@ -75,34 +75,22 @@ if (diveInButton) {
 
         if (bangSound) {
             debugDiv.textContent += " | Sound found";
-
-            // Създаване и активиране на AudioContext в рамките на жеста
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioContext.state === 'suspended') {
-                audioContext.resume().then(() => {
-                    console.log("AudioContext resumed");
-                    bangSound.currentTime = 0; // Рестартирай звука
-                    try {
-                        bangSound.play();
+            bangSound.currentTime = 0; // Рестартирай звука
+            bangSound.muted = false; // Увери се, че не е заглушен
+            try {
+                const playPromise = bangSound.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
                         debugDiv.textContent += " | Bang played!";
                         console.log("Bang duration: " + bangSound.duration);
-                    } catch (error) {
+                    }).catch(error => {
                         debugDiv.textContent += " | Bang error: " + error.message;
                         console.error("Play failed:", error);
-                    }
-                }).catch(err => {
-                    console.error("AudioContext resume failed:", err);
-                });
-            } else {
-                bangSound.currentTime = 0; // Рестартирай звука
-                try {
-                    bangSound.play();
-                    debugDiv.textContent += " | Bang played!";
-                    console.log("Bang duration: " + bangSound.duration);
-                } catch (error) {
-                    debugDiv.textContent += " | Bang error: " + error.message;
-                    console.error("Play failed:", error);
+                    });
                 }
+            } catch (error) {
+                debugDiv.textContent += " | Bang error: " + error.message;
+                console.error("Play failed:", error);
             }
         } else {
             debugDiv.textContent += " | Sound missing!";
