@@ -55,74 +55,84 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const diveInButton = document.querySelector('.hero .cta-button');
-    if (diveInButton) {
-        console.log("Button found!");
-        diveInButton.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            console.log("Touchstart triggered at: " + new Date().toLocaleTimeString());
+if (diveInButton) {
+    console.log("Button found!");
 
-            const debugDiv = document.createElement('div');
-            debugDiv.style.cssText = 'position: fixed; top: 10px; left: 10px; background: red; color: white; padding: 10px; z-index: 9999;';
-            document.body.appendChild(debugDiv);
-            debugDiv.textContent = "Dive In tapped";
-
-            const bangSound = document.getElementById('bang');
-            if (bangSound) {
-                debugDiv.textContent += " | Sound found";
-                bangSound.currentTime = 0; // Рестартирай звука
-                try {
-                    bangSound.play();
-                    debugDiv.textContent += " | Bang played!";
-                } catch (error) {
-                    debugDiv.textContent += " | Bang error: " + error.message;
-                    console.error("Play failed:", error);
-                }
-            } else {
-                debugDiv.textContent += " | Sound missing!";
-            }
-            setTimeout(() => debugDiv.remove(), 3000);
-
-            const emojisToShow = getRandomEmojis(20, 2);
-            for (let i = 0; i < 20; i++) {
-                const package = document.createElement('div');
-                package.innerHTML = emojisToShow[i];
-                package.classList.add('firework-package');
-                const rect = diveInButton.getBoundingClientRect();
-                package.style.left = `${rect.left + rect.width / 2 + window.scrollX}px`;
-                package.style.top = `${rect.top + rect.height / 2 + window.scrollY}px`;
-                document.body.appendChild(package);
-                const angle = Math.random() * Math.PI * 2;
-                const distance = 200 + Math.random() * 200;
-                const x = Math.cos(angle) * distance;
-                const y = Math.sin(angle) * distance;
-                package.animate([
-                    { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-                    { transform: 'translate(0, 0) scale(1.5)', opacity: 1, offset: 0.15 },
-                    { transform: `translate(${x}px, ${y}px) scale(0.75)`, opacity: 0 }
-                ], {
-                    duration: 1000,
-                    easing: 'ease-out',
-                    fill: 'forwards'
-                });
-                setTimeout(() => package.remove(), 1000);
-            }
-            const introSection = document.getElementById('intro');
-            if (introSection) {
-                debugDiv.textContent += " | Scrolling...";
-                setTimeout(() => {
-                    introSection.scrollIntoView({ behavior: 'smooth' });
-                }, 1000);
-            } else {
-                debugDiv.textContent += " | Intro not found";
-            }
-        });
-        diveInButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            diveInButton.dispatchEvent(new Event('touchstart'));
-        });
-    } else {
-        console.log("Button NOT found! Selector: .hero .cta-button");
+    // Зареждане на звука предварително
+    const bangSound = document.getElementById('bang');
+    if (bangSound) {
+        bangSound.load(); // Увери се, че звукът е зареден
+        console.log("Bang sound preloaded");
     }
+
+    diveInButton.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        console.log("Touchstart triggered at: " + new Date().toLocaleTimeString());
+
+        const debugDiv = document.createElement('div');
+        debugDiv.style.cssText = 'position: fixed; top: 10px; left: 10px; background: red; color: white; padding: 10px; z-index: 9999;';
+        document.body.appendChild(debugDiv);
+        debugDiv.textContent = "Dive In tapped";
+
+        if (bangSound) {
+            debugDiv.textContent += " | Sound found";
+            bangSound.currentTime = 0; // Рестартирай звука
+            bangSound.muted = false; // Увери се, че не е заглушен
+            try {
+                bangSound.play();
+                debugDiv.textContent += " | Bang played!";
+                console.log("Bang duration: " + bangSound.duration); // Провери дължината на звука
+            } catch (error) {
+                debugDiv.textContent += " | Bang error: " + error.message;
+                console.error("Play failed:", error);
+            }
+        } else {
+            debugDiv.textContent += " | Sound missing!";
+        }
+        setTimeout(() => debugDiv.remove(), 3000);
+
+        const emojisToShow = getRandomEmojis(20, 2);
+        for (let i = 0; i < 20; i++) {
+            const package = document.createElement('div');
+            package.innerHTML = emojisToShow[i];
+            package.classList.add('firework-package');
+            const rect = diveInButton.getBoundingClientRect();
+            package.style.left = `${rect.left + rect.width / 2 + window.scrollX}px`;
+            package.style.top = `${rect.top + rect.height / 2 + window.scrollY}px`;
+            document.body.appendChild(package);
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 200 + Math.random() * 200;
+            const x = Math.cos(angle) * distance;
+            const y = Math.sin(angle) * distance;
+            package.animate([
+                { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                { transform: 'translate(0, 0) scale(1.5)', opacity: 1, offset: 0.15 },
+                { transform: `translate(${x}px, ${y}px) scale(0.75)`, opacity: 0 }
+            ], {
+                duration: 1000,
+                easing: 'ease-out',
+                fill: 'forwards'
+            });
+            setTimeout(() => package.remove(), 1000);
+        }
+        const introSection = document.getElementById('intro');
+        if (introSection) {
+            debugDiv.textContent += " | Scrolling...";
+            setTimeout(() => {
+                introSection.scrollIntoView({ behavior: 'smooth' });
+            }, 1000);
+        } else {
+            debugDiv.textContent += " | Intro not found";
+        }
+    });
+
+    diveInButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        diveInButton.dispatchEvent(new Event('touchstart'));
+    });
+} else {
+    console.log("Button NOT found! Selector: .hero .cta-button");
+}
 
     const boxItems = document.querySelectorAll('.box-item');
     console.log("Found " + boxItems.length + " box items");
