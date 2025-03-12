@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - LostParcel.co.uk</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Свързва се със същия CSS -->
+    <link rel="stylesheet" href="styles.css">
     <style>
         .checkout-container {
             max-width: 600px;
@@ -24,7 +24,7 @@
             margin: 10px 0 5px;
             text-align: left;
         }
-        .checkout-form input {
+        .checkout-form select, .checkout-form input {
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
@@ -32,7 +32,32 @@
             border-radius: 5px;
             font-size: 16px;
         }
-        .checkout-form button {
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .quantity-controls button {
+            background: #ff007a;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .quantity-controls input {
+            width: 50px;
+            text-align: center;
+        }
+        .total-price {
+            font-size: 24px;
+            color: #ff007a;
+            margin: 20px 0;
+        }
+        .checkout-form button[type="submit"] {
             background: #ff007a;
             color: white;
             padding: 12px 24px;
@@ -51,6 +76,26 @@
     <div class="checkout-container">
         <h2>Complete Your Purchase</h2>
         <form class="checkout-form" id="payment-form">
+            <!-- Избор на вид пакет -->
+            <label for="package-type">Select Package Type</label>
+            <select id="package-type" name="package-type" required>
+                <option value="small" data-price="10">Small Lost Parcel - £10</option>
+                <option value="medium" data-price="20">Medium Lost Parcel - £20</option>
+                <option value="large" data-price="30">Large Lost Parcel - £30</option>
+            </select>
+
+            <!-- Избор на брой -->
+            <label>Quantity</label>
+            <div class="quantity-controls">
+                <button type="button" id="decrease">-</button>
+                <input type="number" id="quantity" name="quantity" value="1" min="1" required>
+                <button type="button" id="increase">+</button>
+            </div>
+
+            <!-- Обща стойност -->
+            <div class="total-price" id="total-price">Total: £10</div>
+
+            <!-- Данни за карта -->
             <label for="card-number">Card Number</label>
             <input type="text" id="card-number" placeholder="1234 5678 9012 3456" required>
             
@@ -68,11 +113,49 @@
     </div>
     <script src="script.js"></script>
     <script>
+        // Логика за изчисление на общата стойност
+        const packageType = document.getElementById('package-type');
+        const quantityInput = document.getElementById('quantity');
+        const increaseBtn = document.getElementById('increase');
+        const decreaseBtn = document.getElementById('decrease');
+        const totalPrice = document.getElementById('total-price');
+
+        function updateTotal() {
+            const price = parseFloat(packageType.selectedOptions[0].getAttribute('data-price'));
+            const quantity = parseInt(quantityInput.value);
+            const total = price * quantity;
+            totalPrice.textContent = `Total: £${total}`;
+        }
+
+        // Събития за промяна
+        packageType.addEventListener('change', updateTotal);
+        quantityInput.addEventListener('input', () => {
+            if (quantityInput.value < 1) quantityInput.value = 1;
+            updateTotal();
+        });
+        increaseBtn.addEventListener('click', () => {
+            quantityInput.value = parseInt(quantityInput.value) + 1;
+            updateTotal();
+        });
+        decreaseBtn.addEventListener('click', () => {
+            if (parseInt(quantityInput.value) > 1) {
+                quantityInput.value = parseInt(quantityInput.value) - 1;
+                updateTotal();
+            }
+        });
+
+        // Първоначално изчисление
+        updateTotal();
+
+        // Обработка на плащането (демо)
         document.getElementById('payment-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            console.log("Payment submitted!");
-            alert("Payment processing... (This is a demo!)");
-            // Тук можеш да добавиш логика за обработка на плащане с API
+            const selectedPackage = packageType.value;
+            const quantity = quantityInput.value;
+            const total = totalPrice.textContent;
+            console.log(`Payment submitted! Package: ${selectedPackage}, Quantity: ${quantity}, Total: ${total}`);
+            alert(`Payment processing...\nPackage: ${selectedPackage}\nQuantity: ${quantity}\n${total}\n(This is a demo!)`);
+            // Тук можеш да добавиш API за плащане
         });
     </script>
 </body>
