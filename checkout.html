@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - LostParcel.co.uk</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Свързва се със същия CSS -->
+    <style>
+        .checkout-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .checkout-container h2 {
+            color: #ff007a;
+            margin-bottom: 20px;
+        }
+        .checkout-form label {
+            display: block;
+            margin: 10px 0 5px;
+            text-align: left;
+        }
+        .checkout-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #ff007a;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .checkout-form button {
+            background: #ff007a;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+        .checkout-form button:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="checkout-container">
+        <h2>Complete Your Purchase</h2>
+        <form class="checkout-form" id="payment-form">
+            <label for="card-number">Card Number</label>
+            <input type="text" id="card-number" placeholder="1234 5678 9012 3456" required>
+            
+            <label for="card-name">Name on Card</label>
+            <input type="text" id="card-name" placeholder="John Doe" required>
+            
+            <label for="card-expiry">Expiry Date</label>
+            <input type="text" id="card-expiry" placeholder="MM/YY" required>
+            
+            <label for="card-cvc">CVC</label>
+            <input type="text" id="card-cvc" placeholder="123" required>
+            
+            <button type="submit">Pay Now</button>
+        </form>
+    </div>
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('payment-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            console.log("Payment submitted!");
+            alert("Payment processing... (This is a demo!)");
+            // Тук можеш да добавиш логика за обработка на плащане с API
+        });
+    </script>
+</body>
+</html>

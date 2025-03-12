@@ -173,49 +173,55 @@ if (diveInButton) {
     console.log("Button NOT found! Selector: .hero .cta-button");
 }
 
-    const boxItems = document.querySelectorAll('.box-item');
-    console.log("Found " + boxItems.length + " box items");
-    if (boxItems.length > 0) {
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach((entry, index) => {
-                if (entry.isIntersecting) {
-                    const item = entry.target;
-                    item.style.setProperty('--index', Array.from(boxItems).indexOf(item));
-                    item.classList.add('flip-in');
-                    console.log(`Box-item ${item.style.getPropertyValue('--index')} flipped in`);
-                    observer.unobserve(item);
-                }
-            });
-        }, {
-            threshold: 0.3
-        });
-
-        boxItems.forEach(item => {
-            observer.observe(item);
-            const buyButton = item.querySelector('.peek-button');
-            if (buyButton) {
-                console.log("Buy button found in box-item");
-                buyButton.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    console.log("Buy Now tapped - shaking box!");
-                    item.classList.add('shake');
-                    setTimeout(() => {
-                        item.classList.remove('shake');
-                        console.log("Shake done - triggering fireworks!");
-                        triggerFireworks(item);
-                    }, 2000);
-                });
-                buyButton.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    buyButton.dispatchEvent(new Event('touchstart'));
-                });
-            } else {
-                console.log("Buy button NOT found in box-item!");
+const boxItems = document.querySelectorAll('.box-item');
+console.log("Found " + boxItems.length + " box items");
+if (boxItems.length > 0) {
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                const item = entry.target;
+                item.style.setProperty('--index', Array.from(boxItems).indexOf(item));
+                item.classList.add('flip-in');
+                console.log(`Box-item ${item.style.getPropertyValue('--index')} flipped in`);
+                observer.unobserve(item);
             }
         });
-    } else {
-        console.log("No box items found!");
-    }
+    }, {
+        threshold: 0.3
+    });
+
+    boxItems.forEach(item => {
+        observer.observe(item);
+        const buyButton = item.querySelector('.peek-button');
+        if (buyButton) {
+            console.log("Buy button found in box-item");
+            buyButton.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                console.log("Buy Now tapped - shaking box!");
+                item.classList.add('shake');
+                setTimeout(() => {
+                    item.classList.remove('shake');
+                    console.log("Shake done - triggering fireworks!");
+                    triggerFireworks(item);
+
+                    // Пренасочване след анимацията
+                    setTimeout(() => {
+                        console.log("Redirecting to checkout...");
+                        window.location.href = "checkout.html"; // Нова страница за плащане
+                    }, 1000); // 1 секунда след зарята (общо 3 секунди от клика)
+                }, 2000); // 2 секунди за разтърсването
+            });
+            buyButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                buyButton.dispatchEvent(new Event('touchstart'));
+            });
+        } else {
+            console.log("Buy button NOT found in box-item!");
+        }
+    });
+} else {
+    console.log("No box items found!");
+}
 
     const boxIcons = document.querySelectorAll('.box-icon');
     console.log("Found " + boxIcons.length + " box icons");
