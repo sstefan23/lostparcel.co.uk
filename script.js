@@ -66,6 +66,7 @@ if (diveInButton) {
 
     let isAudioUnlocked = false;
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
 
     // Създаване на безшумен звук
     function createSilentAudio() {
@@ -88,34 +89,32 @@ if (diveInButton) {
         if (bangSound) {
             debugDiv.textContent += " | Sound found";
 
-            if (!isAudioUnlocked) {
-                // Активиране на AudioContext и пускане на безшумен звук
+            if (!isAudioUnlocked && isChrome) {
+                // Специална логика за Chrome
                 audioContext.resume().then(() => {
                     console.log("AudioContext resumed");
                     const silentSource = createSilentAudio();
                     silentSource.start();
-                    silentSource.stop(audioContext.currentTime + 0.1); // 0.1 секунда тишина
+                    silentSource.stop(audioContext.currentTime + 0.01); // 10ms тишина
                     isAudioUnlocked = true;
                     console.log("Audio unlocked with silent sound");
 
-                    // Пускане на bangSound с минимално закъснение
-                    setTimeout(() => {
-                        bangSound.currentTime = 0;
-                        bangSound.muted = false;
-                        bangSound.play().then(() => {
-                            debugDiv.textContent += " | Bang played!";
-                            console.log("Bang duration: " + bangSound.duration);
-                        }).catch(error => {
-                            debugDiv.textContent += " | Bang error: " + error.message;
-                            console.error("Bang play failed:", error);
-                        });
-                    }, 1); // 1ms закъснение, за да се уверим, че аудиото е отключено
+                    // Пускане на bangSound веднага след отключване
+                    bangSound.currentTime = 0;
+                    bangSound.muted = false;
+                    bangSound.play().then(() => {
+                        debugDiv.textContent += " | Bang played!";
+                        console.log("Bang duration: " + bangSound.duration);
+                    }).catch(error => {
+                        debugDiv.textContent += " | Bang error: " + error.message;
+                        console.error("Bang play failed:", error);
+                    });
                 }).catch(error => {
                     debugDiv.textContent += " | Resume error: " + error.message;
                     console.error("AudioContext resume failed:", error);
                 });
             } else {
-                // Ако аудиото е отключено, пускаме директно
+                // За други браузъри или след отключване
                 bangSound.currentTime = 0;
                 bangSound.muted = false;
                 bangSound.play().then(() => {
