@@ -10,38 +10,42 @@
             margin: 0;
             font-family: Arial, sans-serif;
             background: #f9f9f9;
+            overflow-x: hidden;
         }
         .checkout-container {
             max-width: 600px;
-            margin: 20px auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin: 0 auto;
+            padding: 0;
         }
         .section {
-            padding: 20px 0;
-            border-bottom: 1px solid #ddd;
-        }
-        .section:last-child {
-            border-bottom: none;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         .section h2 {
             color: #ff007a;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             text-align: center;
         }
         .product-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            width: 100%;
             margin-bottom: 20px;
             padding: 10px;
         }
         .product-row .emoji {
-            font-size: 30px;
-            margin-right: 10px;
+            margin-right: 15px;
         }
+        .product-row .emoji.small { font-size: 20px; }
+        .product-row .emoji.medium { font-size: 30px; }
+        .product-row .emoji.large { font-size: 40px; }
         .product-row .name {
             flex: 1;
             text-align: left;
@@ -107,6 +111,7 @@
             font-size: 18px;
             transition: transform 0.3s ease;
             width: 100%;
+            max-width: 300px;
             margin: 20px 0;
         }
         .continue-button:hover, .checkout-form button:hover {
@@ -120,7 +125,7 @@
         <div class="section" id="package-section">
             <h2>Select Your Packages</h2>
             <div class="product-row">
-                <span class="emoji">📦</span>
+                <span class="emoji small">📦</span>
                 <span class="name">Small Parcel</span>
                 <div class="quantity-controls">
                     <button type="button" class="decrease" data-product="small">-</button>
@@ -130,7 +135,7 @@
                 <span class="price" id="small-price">£0</span>
             </div>
             <div class="product-row">
-                <span class="emoji">📦📦</span>
+                <span class="emoji medium">📦</span>
                 <span class="name">Medium Parcel</span>
                 <div class="quantity-controls">
                     <button type="button" class="decrease" data-product="medium">-</button>
@@ -140,7 +145,7 @@
                 <span class="price" id="medium-price">£0</span>
             </div>
             <div class="product-row">
-                <span class="emoji">📦📦📦</span>
+                <span class="emoji large">📦</span>
                 <span class="name">Large Parcel</span>
                 <div class="quantity-controls">
                     <button type="button" class="decrease" data-product="large">-</button>
