@@ -6,91 +6,99 @@
     <title>Checkout - LostParcel.co.uk</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        body {
-            background: linear-gradient(180deg, #1a1a1a, #333333);
-            min-height: 100vh;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: Arial, sans-serif;
-        }
         .checkout-container {
-            max-width: 400px;
-            margin: 20px;
+            max-width: 600px;
+            margin: 50px auto;
             padding: 20px;
+            text-align: center;
             background: #fff;
             border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         .checkout-container h2 {
-            color: #000;
-            font-size: 24px;
+            color: #ff007a;
             margin-bottom: 20px;
+        }
+        .product-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .product-row .emoji {
+            font-size: 30px;
+            margin-right: 10px;
+        }
+        .product-row .name {
+            flex: 1;
+            text-align: left;
+            font-size: 18px;
+            color: #333;
+        }
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .quantity-controls button {
+            background: #ff007a;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .quantity-controls input {
+            width: 50px;
+            text-align: center;
+            padding: 5px;
+            border: 2px solid #ff007a;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .product-row .price {
+            font-size: 18px;
+            color: #ff007a;
+            min-width: 80px;
+            text-align: right;
+        }
+        .total-price {
+            font-size: 24px;
+            color: #ff007a;
+            margin: 20px 0;
+            font-weight: bold;
         }
         .checkout-form label {
             display: block;
             margin: 10px 0 5px;
             text-align: left;
             color: #333;
-            font-size: 14px;
         }
-        .checkout-form select, .checkout-form input {
+        .checkout-form input {
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
-            background: #e0e0e0;
-            border: none;
+            border: 2px solid #ff007a;
             border-radius: 5px;
             font-size: 16px;
-            color: #000;
         }
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .quantity-controls button {
-            background: #666;
-            color: white;
-            border: none;
-            padding: 5px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s ease;
-        }
-        .quantity-controls button:hover {
-            background: #888;
-        }
-        .quantity-controls input {
-            width: 50px;
-            text-align: center;
-            background: #e0e0e0;
-            border: none;
-            border-radius: 5px;
-        }
-        .total-price {
-            font-size: 20px;
-            color: #000;
-            margin: 20px 0;
-        }
-        .checkout-form button[type="submit"] {
-            background: #007bff;
+        .checkout-form button, .continue-button {
+            background: #ff007a;
             color: white;
             padding: 12px 24px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s ease;
+            font-size: 18px;
+            transition: transform 0.3s ease;
             width: 100%;
+            margin: 10px 0;
         }
-        .checkout-form button:hover {
-            background: #0056b3;
+        .checkout-form button:hover, .continue-button:hover {
+            transform: scale(1.05);
         }
     </style>
 </head>
@@ -98,81 +106,134 @@
     <div class="checkout-container">
         <h2>Checkout</h2>
         <form class="checkout-form" id="payment-form">
-            <!-- Избор на вид пакет -->
-            <label for="package-type">Select Package</label>
-            <select id="package-type" name="package-type" required>
-                <option value="small" data-price="10">Small Lost Parcel - £10</option>
-                <option value="medium" data-price="20">Medium Lost Parcel - £20</option>
-                <option value="large" data-price="30">Large Lost Parcel - £30</option>
-            </select>
-
-            <!-- Избор на брой -->
-            <label>Quantity</label>
-            <div class="quantity-controls">
-                <button type="button" id="decrease">-</button>
-                <input type="number" id="quantity" name="quantity" value="1" min="1" required>
-                <button type="button" id="increase">+</button>
+            <!-- Продукт 1: Small Parcel -->
+            <div class="product-row">
+                <span class="emoji">📦</span>
+                <span class="name">Small Parcel</span>
+                <div class="quantity-controls">
+                    <button type="button" class="decrease" data-product="small">-</button>
+                    <input type="number" class="quantity" data-product="small" value="0" min="0">
+                    <button type="button" class="increase" data-product="small">+</button>
+                </div>
+                <span class="price" id="small-price">£0</span>
             </div>
 
-            <!-- Обща стойност -->
-            <div class="total-price" id="total-price">Total: £10</div>
+            <!-- Продукт 2: Medium Parcel -->
+            <div class="product-row">
+                <span class="emoji">📦📦</span>
+                <span class="name">Medium Parcel</span>
+                <div class="quantity-controls">
+                    <button type="button" class="decrease" data-product="medium">-</button>
+                    <input type="number" class="quantity" data-product="medium" value="0" min="0">
+                    <button type="button" class="increase" data-product="medium">+</button>
+                </div>
+                <span class="price" id="medium-price">£0</span>
+            </div>
+
+            <!-- Продукт 3: Large Parcel -->
+            <div class="product-row">
+                <span class="emoji">📦📦📦</span>
+                <span class="name">Large Parcel</span>
+                <div class="quantity-controls">
+                    <button type="button" class="decrease" data-product="large">-</button>
+                    <input type="number" class="quantity" data-product="large" value="0" min="0">
+                    <button type="button" class="increase" data-product="large">+</button>
+                </div>
+                <span class="price" id="large-price">£0</span>
+            </div>
+
+            <!-- Обща сума -->
+            <div class="total-price" id="total-price">Total: £0</div>
+
+            <!-- Бутон за доставка -->
+            <button type="button" class="continue-button" id="continue-to-shipping">Continue to Shipping</button>
 
             <!-- Данни за карта -->
             <label for="card-number">Card Number</label>
             <input type="text" id="card-number" placeholder="1234 5678 9012 3456" required>
-            
             <label for="card-name">Name on Card</label>
             <input type="text" id="card-name" placeholder="John Doe" required>
-            
             <label for="card-expiry">Expiry Date</label>
             <input type="text" id="card-expiry" placeholder="MM/YY" required>
-            
             <label for="card-cvc">CVC</label>
             <input type="text" id="card-cvc" placeholder="123" required>
-            
-            <button type="submit">Pay with Card</button>
+            <button type="submit">Pay Now</button>
         </form>
     </div>
     <script src="script.js"></script>
     <script>
-        const packageType = document.getElementById('package-type');
-        const quantityInput = document.getElementById('quantity');
-        const increaseBtn = document.getElementById('increase');
-        const decreaseBtn = document.getElementById('decrease');
+        const prices = {
+            small: 10,
+            medium: 20,
+            large: 30
+        };
+
+        const quantities = {
+            small: document.querySelector('.quantity[data-product="small"]'),
+            medium: document.querySelector('.quantity[data-product="medium"]'),
+            large: document.querySelector('.quantity[data-product="large"]')
+        };
+
+        const priceDisplays = {
+            small: document.getElementById('small-price'),
+            medium: document.getElementById('medium-price'),
+            large: document.getElementById('large-price')
+        };
+
         const totalPrice = document.getElementById('total-price');
 
-        function updateTotal() {
-            const price = parseFloat(packageType.selectedOptions[0].getAttribute('data-price'));
-            const quantity = parseInt(quantityInput.value);
-            const total = price * quantity;
+        function updatePrices() {
+            let total = 0;
+            for (const product in quantities) {
+                const qty = parseInt(quantities[product].value) || 0;
+                const price = prices[product] * qty;
+                priceDisplays[product].textContent = `£${price}`;
+                total += price;
+            }
             totalPrice.textContent = `Total: £${total}`;
         }
 
-        packageType.addEventListener('change', updateTotal);
-        quantityInput.addEventListener('input', () => {
-            if (quantityInput.value < 1) quantityInput.value = 1;
-            updateTotal();
-        });
-        increaseBtn.addEventListener('click', () => {
-            quantityInput.value = parseInt(quantityInput.value) + 1;
-            updateTotal();
-        });
-        decreaseBtn.addEventListener('click', () => {
-            if (parseInt(quantityInput.value) > 1) {
-                quantityInput.value = parseInt(quantityInput.value) - 1;
-                updateTotal();
-            }
+        document.querySelectorAll('.quantity-controls button').forEach(button => {
+            button.addEventListener('click', () => {
+                const product = button.getAttribute('data-product');
+                let qty = parseInt(quantities[product].value) || 0;
+                if (button.classList.contains('increase')) {
+                    qty += 1;
+                } else if (button.classList.contains('decrease') && qty > 0) {
+                    qty -= 1;
+                }
+                quantities[product].value = qty;
+                updatePrices();
+            });
         });
 
-        updateTotal();
+        document.querySelectorAll('.quantity').forEach(input => {
+            input.addEventListener('input', () => {
+                if (input.value < 0) input.value = 0;
+                updatePrices();
+            });
+        });
+
+        updatePrices();
+
+        document.getElementById('continue-to-shipping').addEventListener('click', () => {
+            const total = totalPrice.textContent;
+            console.log(`Redirecting to shipping with ${total}`);
+            // Тук можеш да добавиш пренасочване към страница за доставка, напр.:
+            // window.location.href = "shipping.html";
+            alert(`Proceeding to shipping with ${total} (Demo)`);
+        });
 
         document.getElementById('payment-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            const selectedPackage = packageType.value;
-            const quantity = quantityInput.value;
-            const total = totalPrice.textContent;
-            console.log(`Payment submitted! Package: ${selectedPackage}, Quantity: ${quantity}, Total: ${total}`);
-            alert(`Payment processing...\nPackage: ${selectedPackage}\nQuantity: ${quantity}\n${total}\n(This is a demo!)`);
+            const order = {
+                small: quantities.small.value,
+                medium: quantities.medium.value,
+                large: quantities.large.value,
+                total: totalPrice.textContent
+            };
+            console.log("Payment submitted!", order);
+            alert(`Payment processing...\nSmall: ${order.small}, Medium: ${order.medium}, Large: ${order.large}\n${order.total}\n(This is a demo!)`);
         });
     </script>
 </body>
