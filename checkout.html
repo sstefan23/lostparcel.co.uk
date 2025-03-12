@@ -6,31 +6,45 @@
     <title>Checkout - LostParcel.co.uk</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+        body {
+            background: linear-gradient(180deg, #1a1a1a, #333333);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
         .checkout-container {
-            max-width: 600px;
-            margin: 50px auto;
+            max-width: 400px;
+            margin: 20px;
             padding: 20px;
-            text-align: center;
             background: #fff;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            text-align: center;
         }
         .checkout-container h2 {
-            color: #ff007a;
+            color: #000;
+            font-size: 24px;
             margin-bottom: 20px;
         }
         .checkout-form label {
             display: block;
             margin: 10px 0 5px;
             text-align: left;
+            color: #333;
+            font-size: 14px;
         }
         .checkout-form select, .checkout-form input {
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
-            border: 2px solid #ff007a;
+            background: #e0e0e0;
+            border: none;
             border-radius: 5px;
             font-size: 16px;
+            color: #000;
         }
         .quantity-controls {
             display: flex;
@@ -40,44 +54,52 @@
             margin-bottom: 15px;
         }
         .quantity-controls button {
-            background: #ff007a;
+            background: #666;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 5px 12px;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
+            transition: background 0.3s ease;
+        }
+        .quantity-controls button:hover {
+            background: #888;
         }
         .quantity-controls input {
             width: 50px;
             text-align: center;
+            background: #e0e0e0;
+            border: none;
+            border-radius: 5px;
         }
         .total-price {
-            font-size: 24px;
-            color: #ff007a;
+            font-size: 20px;
+            color: #000;
             margin: 20px 0;
         }
         .checkout-form button[type="submit"] {
-            background: #ff007a;
+            background: #007bff;
             color: white;
             padding: 12px 24px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 18px;
-            transition: transform 0.3s ease;
+            font-size: 16px;
+            transition: background 0.3s ease;
+            width: 100%;
         }
         .checkout-form button:hover {
-            transform: scale(1.05);
+            background: #0056b3;
         }
     </style>
 </head>
 <body>
     <div class="checkout-container">
-        <h2>Complete Your Purchase</h2>
+        <h2>Checkout</h2>
         <form class="checkout-form" id="payment-form">
             <!-- Избор на вид пакет -->
-            <label for="package-type">Select Package Type</label>
+            <label for="package-type">Select Package</label>
             <select id="package-type" name="package-type" required>
                 <option value="small" data-price="10">Small Lost Parcel - £10</option>
                 <option value="medium" data-price="20">Medium Lost Parcel - £20</option>
@@ -108,12 +130,11 @@
             <label for="card-cvc">CVC</label>
             <input type="text" id="card-cvc" placeholder="123" required>
             
-            <button type="submit">Pay Now</button>
+            <button type="submit">Pay with Card</button>
         </form>
     </div>
     <script src="script.js"></script>
     <script>
-        // Логика за изчисление на общата стойност
         const packageType = document.getElementById('package-type');
         const quantityInput = document.getElementById('quantity');
         const increaseBtn = document.getElementById('increase');
@@ -127,7 +148,6 @@
             totalPrice.textContent = `Total: £${total}`;
         }
 
-        // Събития за промяна
         packageType.addEventListener('change', updateTotal);
         quantityInput.addEventListener('input', () => {
             if (quantityInput.value < 1) quantityInput.value = 1;
@@ -144,10 +164,8 @@
             }
         });
 
-        // Първоначално изчисление
         updateTotal();
 
-        // Обработка на плащането (демо)
         document.getElementById('payment-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const selectedPackage = packageType.value;
@@ -155,7 +173,6 @@
             const total = totalPrice.textContent;
             console.log(`Payment submitted! Package: ${selectedPackage}, Quantity: ${quantity}, Total: ${total}`);
             alert(`Payment processing...\nPackage: ${selectedPackage}\nQuantity: ${quantity}\n${total}\n(This is a demo!)`);
-            // Тук можеш да добавиш API за плащане
         });
     </script>
 </body>
