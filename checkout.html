@@ -9,7 +9,7 @@
         body {
             margin: 0;
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #fff0f5, #ffe6f0); /* Светъл, розов градиент */
+            background: #f5f6f5; /* Светло сиво за чист фон */
             color: #333;
             overflow-x: hidden;
         }
@@ -27,43 +27,18 @@
             padding: 40px;
             background: #fff;
             border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(255, 0, 122, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             margin: 20px;
             position: relative;
-            overflow: hidden;
-        }
-        .section::before {
-            content: '';
-            position: absolute;
-            top: -50px;
-            left: -50px;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(255, 0, 122, 0.2), transparent);
-            opacity: 0.5;
-            z-index: 0;
-        }
-        .section::after {
-            content: '';
-            position: absolute;
-            bottom: -50px;
-            right: -50px;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(255, 0, 122, 0.2), transparent);
-            opacity: 0.5;
-            z-index: 0;
         }
         .section h2 {
-            color: #ff007a;
+            color: #333;
             font-size: 36px;
             margin-bottom: 40px;
             text-align: center;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             font-weight: bold;
-            position: relative;
-            z-index: 1;
         }
         .product-row {
             display: flex;
@@ -73,16 +48,14 @@
             max-width: 600px;
             margin-bottom: 30px;
             padding: 15px 20px;
-            background: #fff5f8;
-            border: 2px dashed #ff007a;
+            background: #f9f9f9;
+            border: 2px solid #a3d4d9;
             border-radius: 15px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            z-index: 1;
         }
         .product-row:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(255, 0, 122, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
         .product-row .emoji {
             margin-right: 20px;
@@ -95,7 +68,7 @@
             flex: 1;
             text-align: left;
             font-size: 22px;
-            color: #ff007a;
+            color: #333;
             font-weight: bold;
         }
         .quantity-controls {
@@ -104,8 +77,8 @@
             gap: 15px;
         }
         .quantity-controls button {
-            background: #ff007a;
-            color: white;
+            background: #a3d4d9; /* Светло синьо-зелено */
+            color: #fff;
             border: none;
             padding: 10px 15px;
             border-radius: 50%;
@@ -114,14 +87,14 @@
             transition: transform 0.2s ease, background 0.3s ease;
         }
         .quantity-controls button:hover {
-            background: #ff3385;
+            background: #8cc8ce;
             transform: scale(1.15);
         }
         .quantity-controls input {
             width: 60px;
             text-align: center;
             padding: 10px;
-            border: 2px solid #ff007a;
+            border: 2px solid #a3d4d9;
             border-radius: 10px;
             font-size: 18px;
             color: #333;
@@ -130,35 +103,31 @@
         }
         .product-row .price {
             font-size: 22px;
-            color: #ff007a;
+            color: #333;
             min-width: 80px;
             text-align: right;
             font-weight: bold;
         }
         .total-price {
-            font-size: 32px;
-            color: #ff007a;
-            margin: 40px 0;
+            font-size: 24px; /* По-малък от преди */
+            color: #333;
+            margin: 30px 0;
             font-weight: bold;
             text-align: center;
-            background: #fff5f8;
-            padding: 15px 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(255, 0, 122, 0.2);
-            position: relative;
-            z-index: 1;
+            background: #f9f9f9;
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
         .checkout-form {
             width: 100%;
             max-width: 500px;
-            position: relative;
-            z-index: 1;
         }
         .checkout-form label {
             display: block;
             margin: 15px 0 5px;
             text-align: left;
-            color: #ff007a;
+            color: #333;
             font-size: 18px;
             font-weight: bold;
         }
@@ -166,7 +135,7 @@
             width: 100%;
             padding: 12px;
             margin-bottom: 20px;
-            border: 2px solid #ff007a;
+            border: 2px solid #a3d4d9;
             border-radius: 10px;
             font-size: 16px;
             color: #333;
@@ -174,13 +143,13 @@
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
         .checkout-form input:focus {
-            border-color: #ff3385;
-            box-shadow: 0 0 10px rgba(255, 0, 122, 0.3);
+            border-color: #8cc8ce;
+            box-shadow: 0 0 10px rgba(163, 212, 217, 0.3);
             outline: none;
         }
         .continue-button, .checkout-form button {
-            background: #ff007a;
-            color: white;
+            background: #f7c948; /* Ярко жълто */
+            color: #333;
             padding: 15px 40px;
             border: none;
             border-radius: 15px;
@@ -193,12 +162,12 @@
             max-width: 400px;
             margin: 40px auto 0;
             display: block;
-            box-shadow: 0 5px 20px rgba(255, 0, 122, 0.4);
+            box-shadow: 0 5px 20px rgba(247, 201, 72, 0.4);
         }
         .continue-button:hover, .checkout-form button:hover {
-            background: #ff3385;
+            background: #f7d268;
             transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(255, 0, 122, 0.5);
+            box-shadow: 0 8px 25px rgba(247, 201, 72, 0.5);
         }
     </style>
 </head>
