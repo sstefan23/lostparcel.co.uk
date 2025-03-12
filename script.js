@@ -64,10 +64,6 @@ if (diveInButton) {
         console.log("Bang sound preloaded");
     }
 
-    // Създаване на AudioContext за по-добър контрол
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    let source = null;
-
     diveInButton.addEventListener('touchstart', (e) => {
         e.preventDefault();
         console.log("Touchstart triggered at: " + new Date().toLocaleTimeString());
@@ -77,22 +73,36 @@ if (diveInButton) {
         document.body.appendChild(debugDiv);
         debugDiv.textContent = "Dive In tapped";
 
-        if (bangSound && audioContext) {
+        if (bangSound) {
             debugDiv.textContent += " | Sound found";
+
+            // Създаване и активиране на AudioContext в рамките на жеста
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
             if (audioContext.state === 'suspended') {
                 audioContext.resume().then(() => {
                     console.log("AudioContext resumed");
+                    bangSound.currentTime = 0; // Рестартирай звука
+                    try {
+                        bangSound.play();
+                        debugDiv.textContent += " | Bang played!";
+                        console.log("Bang duration: " + bangSound.duration);
+                    } catch (error) {
+                        debugDiv.textContent += " | Bang error: " + error.message;
+                        console.error("Play failed:", error);
+                    }
+                }).catch(err => {
+                    console.error("AudioContext resume failed:", err);
                 });
-            }
-
-            bangSound.currentTime = 0; // Рестартирай звука
-            try {
-                bangSound.play();
-                debugDiv.textContent += " | Bang played!";
-                console.log("Bang duration: " + bangSound.duration);
-            } catch (error) {
-                debugDiv.textContent += " | Bang error: " + error.message;
-                console.error("Play failed:", error);
+            } else {
+                bangSound.currentTime = 0; // Рестартирай звука
+                try {
+                    bangSound.play();
+                    debugDiv.textContent += " | Bang played!";
+                    console.log("Bang duration: " + bangSound.duration);
+                } catch (error) {
+                    debugDiv.textContent += " | Bang error: " + error.message;
+                    console.error("Play failed:", error);
+                }
             }
         } else {
             debugDiv.textContent += " | Sound missing!";
