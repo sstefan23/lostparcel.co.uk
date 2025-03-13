@@ -26,17 +26,17 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 40px;
+            padding: 20px; /* Намалено от 40px */
             background: #fff;
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             margin: 20px;
-            position: relative;
+            box-sizing: border-box;
         }
         .section h2 {
             color: #333;
-            font-size: 36px;
-            margin: 0 0 40px 0;
+            font-size: 28px; /* Намалено от 36px */
+            margin: 0 0 20px 0; /* Намалено от 40px */
             text-align: center;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -47,47 +47,47 @@
             max-width: 600px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 10px; /* Намалено от 20px */
         }
         .product-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 15px 20px;
+            padding: 10px 15px; /* Намалено от 15px 20px */
             background: #f9f9f9;
             border: 2px solid #a3d4d9;
-            border-radius: 15px;
+            border-radius: 10px; /* Намалено от 15px */
             transition: transform 0.3s ease;
         }
         .product-row:hover {
             transform: translateY(-3px);
         }
         .product-row .emoji {
-            margin-right: 20px;
+            margin-right: 15px; /* Намалено от 20px */
         }
-        .product-row .emoji.small { font-size: 24px; }
-        .product-row .emoji.medium { font-size: 36px; }
-        .product-row .emoji.large { font-size: 48px; }
+        .product-row .emoji.small { font-size: 20px; } /* Намалено от 24px */
+        .product-row .emoji.medium { font-size: 30px; } /* Намалено от 36px */
+        .product-row .emoji.large { font-size: 40px; } /* Намалено от 48px */
         .product-row .name {
             flex: 1;
             text-align: left;
-            font-size: 20px;
+            font-size: 18px; /* Намалено от 20px */
             color: #333;
             font-weight: bold;
         }
         .quantity-controls {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px; /* Намалено от 10px */
         }
         .quantity-controls button {
             background: #a3d4d9;
             color: #fff;
             border: none;
-            padding: 8px 12px;
+            padding: 6px 10px; /* Намалено от 8px 12px */
             border-radius: 50%;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 16px; /* Намалено от 18px */
             transition: background 0.3s ease, transform 0.2s ease;
         }
         .quantity-controls button:hover {
@@ -95,29 +95,29 @@
             transform: scale(1.1);
         }
         .quantity-controls input {
-            width: 50px;
+            width: 40px; /* Намалено от 50px */
             text-align: center;
-            padding: 8px;
+            padding: 6px; /* Намалено от 8px */
             border: 2px solid #a3d4d9;
-            border-radius: 10px;
-            font-size: 16px;
+            border-radius: 8px; /* Намалено от 10px */
+            font-size: 14px; /* Намалено от 16px */
             color: #333;
             background: #fff;
         }
         .product-row .price {
-            font-size: 20px;
+            font-size: 18px; /* Намалено от 20px */
             color: #333;
-            min-width: 70px;
+            min-width: 60px; /* Намалено от 70px */
             text-align: right;
             font-weight: bold;
         }
         .total-price {
-            font-size: 22px;
+            font-size: 20px; /* Намалено от 22px */
             color: #333;
-            margin: 20px 0;
-            padding: 10px 20px;
+            margin: 15px 0; /* Намалено от 20px */
+            padding: 8px 15px; /* Намалено от 10px 20px */
             background: #f9f9f9;
-            border-radius: 10px;
+            border-radius: 8px; /* Намалено от 10px */
             font-weight: bold;
             text-align: center;
         }
@@ -126,21 +126,21 @@
             max-width: 500px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 10px; /* Намалено от 15px */
         }
         .checkout-form label {
-            margin: 5px 0;
+            margin: 3px 0; /* Намалено от 5px */
             text-align: left;
             color: #333;
-            font-size: 16px;
+            font-size: 14px; /* Намалено от 16px */
             font-weight: bold;
         }
         .checkout-form input {
             width: 100%;
-            padding: 12px;
+            padding: 10px; /* Намалено от 12px */
             border: 2px solid #a3d4d9;
-            border-radius: 10px;
-            font-size: 16px;
+            border-radius: 8px; /* Намалено от 10px */
+            font-size: 14px; /* Намалено от 16px */
             color: #333;
             background: #fff;
             transition: border-color 0.3s ease;
@@ -152,17 +152,17 @@
         .continue-button, .checkout-form button {
             background: #f7c948;
             color: #333;
-            padding: 15px 30px;
+            padding: 12px 25px; /* Намалено от 15px 30px */
             border: none;
-            border-radius: 15px;
+            border-radius: 12px; /* Намалено от 15px */
             cursor: pointer;
-            font-size: 20px;
+            font-size: 18px; /* Намалено от 20px */
             font-weight: bold;
             text-transform: uppercase;
             transition: background 0.3s ease, transform 0.2s ease;
             width: 100%;
-            max-width: 300px;
-            margin: 30px auto 0;
+            max-width: 250px; /* Намалено от 300px */
+            margin: 20px auto 0; /* Намалено от 30px */
         }
         .continue-button:hover, .checkout-form button:hover {
             background: #f7d268;
