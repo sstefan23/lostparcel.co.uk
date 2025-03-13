@@ -8,17 +8,29 @@
         body {
             margin: 0;
             font-family: 'Arial', sans-serif;
-            background: #f5f6f5;
+            background: linear-gradient(135deg, #f5f6f5, #e0e7ff);
             color: #333;
             overflow-x: hidden;
+            position: relative;
+        }
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
         }
         .checkout-container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 0;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            position: relative;
+            z-index: 1;
         }
         .section {
             height: 100vh;
@@ -26,47 +38,84 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            background: #fff;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(240, 245, 255, 0.6));
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
             margin: 20px;
             box-sizing: border-box;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            animation: fadeInGlass 0.8s ease-out;
+        }
+        @keyframes fadeInGlass {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .section h2 {
-            color: #333;
-            font-size: 28px;
-            margin: 0 0 20px 0;
-            margin-top: -20px; /* Вдигане на текста нагоре */
+            color: #181714;
+            font-size: 34px;
+            margin: 20px 0 20px 0;
             text-align: center;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 4px;
             font-weight: bold;
+            text-shadow: 0 2px 10px rgba(247, 201, 72, 0.3);
+            animation: glowIn 1s ease-out;
+        }
+        @keyframes glowIn {
+            from { opacity: 0; text-shadow: none; }
+            to { opacity: 1; text-shadow: 0 2px 10px rgba(247, 201, 72, 0.3); }
         }
         .products-container {
             width: 100%;
-            max-width: 600px;
+            max-width: 700px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 15px;
         }
         .product-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 15px;
-            background: #f9f9f9;
+            padding: 15px 20px;
+            background: linear-gradient(90deg, rgba(250, 250, 250, 0.5), rgba(255, 255, 255, 0.5));
             border: 2px solid #a3d4d9;
-            border-radius: 10px;
-            transition: transform 0.3s ease;
-            height: 60px; /* Фиксирана височина за еднакъв размер */
+            border-radius: 15px;
+            height: 60px;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 20px rgba(163, 212, 217, 0.2);
+            animation: slideInProduct 0.6s ease-out forwards;
+        }
+        .product-row:nth-child(1) { animation-delay: 0.1s; }
+        .product-row:nth-child(2) { animation-delay: 0.2s; }
+        .product-row:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes slideInProduct {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
         .product-row:hover {
-            transform: translateY(-3px);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(163, 212, 217, 0.5);
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.7), rgba(250, 250, 250, 0.7));
         }
         .product-row .emoji {
             margin-right: 15px;
-            font-size: 24px; /* Единен размер за емотикони */
+            font-size: 26px;
+            transition: transform 0.3s ease, font-size 0.3s ease;
+        }
+        .product-row:nth-child(1):hover .emoji {
+            font-size: 30px;
+            transform: scale(1.15) rotate(15deg);
+        }
+        .product-row:nth-child(2):hover .emoji {
+            font-size: 39px;
+            transform: scale(1.15) rotate(15deg);
+        }
+        .product-row:nth-child(3):hover .emoji {
+            font-size: 52px;
+            transform: scale(1.15) rotate(15deg);
         }
         .product-row .name {
             flex: 1;
@@ -78,31 +127,62 @@
         .quantity-controls {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         .quantity-controls button {
             background: #a3d4d9;
             color: #fff;
             border: none;
-            padding: 6px 10px;
+            padding: 8px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             cursor: pointer;
             font-size: 16px;
-            transition: background 0.3s ease, transform 0.2s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 15px rgba(163, 212, 217, 0.5);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .quantity-controls button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+        .quantity-controls button:hover::before {
+            width: 100px;
+            height: 100px;
         }
         .quantity-controls button:hover {
-            background: #8cc8ce;
+            background: #f7c948;
             transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(247, 201, 72, 0.6);
         }
         .quantity-controls input {
             width: 40px;
             text-align: center;
             padding: 6px;
             border: 2px solid #a3d4d9;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 14px;
             color: #333;
-            background: #fff;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+        }
+        .quantity-controls input:focus {
+            border-color: #f7c948;
+            box-shadow: 0 0 10px rgba(247, 201, 72, 0.4);
+            outline: none;
         }
         .product-row .price {
             font-size: 18px;
@@ -112,65 +192,115 @@
             font-weight: bold;
         }
         .total-price {
-            font-size: 20px;
+            font-size: 22px;
             color: #333;
-            margin: 15px 0;
-            padding: 8px 15px;
-            background: #f9f9f9;
-            border-radius: 8px;
+            margin: 20px 0;
+            padding: 12px 25px;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.6), rgba(240, 245, 255, 0.6));
+            border-radius: 15px;
             font-weight: bold;
             text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(8px);
+            animation: pulseTotal 2s infinite ease-in-out;
+        }
+        @keyframes pulseTotal {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
         }
         .checkout-form {
             width: 100%;
-            max-width: 500px;
+            max-width: 480px; /* Увеличено от 450px */
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px; /* Увеличено от 10px */
         }
         .checkout-form label {
-            margin: 3px 0;
+            margin: 3px 0; /* Увеличено от 2px */
             text-align: left;
             color: #333;
-            font-size: 14px;
+            font-size: 14px; /* Увеличено от 13px */
             font-weight: bold;
+            animation: fadeInLabel 0.6s ease-out forwards;
+        }
+        .checkout-form label:nth-child(1) { animation-delay: 0.1s; }
+        .checkout-form label:nth-child(3) { animation-delay: 0.2s; }
+        .checkout-form label:nth-child(5) { animation-delay: 0.3s; }
+        .checkout-form label:nth-child(7) { animation-delay: 0.4s; }
+        .checkout-form label:nth-child(9) { animation-delay: 0.5s; }
+        @keyframes fadeInLabel {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .checkout-form input {
             width: 100%;
-            padding: 10px;
+            padding: 10px; /* Увеличено от 8px */
             border: 2px solid #a3d4d9;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 12px; /* Увеличено от 10px */
+            font-size: 14px; /* Увеличено от 13px */
             color: #333;
-            background: #fff;
-            transition: border-color 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+            animation: popInInput 0.6s ease-out forwards;
+        }
+        .checkout-form input:nth-child(2) { animation-delay: 0.2s; }
+        .checkout-form input:nth-child(4) { animation-delay: 0.3s; }
+        .checkout-form input:nth-child(6) { animation-delay: 0.4s; }
+        .checkout-form input:nth-child(8) { animation-delay: 0.5s; }
+        .checkout-form input:nth-child(10) { animation-delay: 0.6s; }
+        @keyframes popInInput {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
         .checkout-form input:focus {
-            border-color: #8cc8ce;
+            border-color: #f7c948;
+            box-shadow: 0 0 12px rgba(247, 201, 72, 0.5);
             outline: none;
         }
         .continue-button, .checkout-form button {
-            background: #f7c948;
+            background: linear-gradient(45deg, #f7c948, #ffeb3b);
             color: #333;
-            padding: 12px 25px;
+            padding: 14px 35px; /* Увеличено от 12px 30px */
             border: none;
-            border-radius: 12px;
+            border-radius: 20px;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 18px; /* Увеличено от 16px */
             font-weight: bold;
             text-transform: uppercase;
-            transition: background 0.3s ease, transform 0.2s ease;
+            transition: all 0.4s ease;
             width: 100%;
-            max-width: 250px;
+            max-width: 280px; /* Увеличено от 250px */
             margin: 20px auto 0;
+            box-shadow: 0 8px 25px rgba(247, 201, 72, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        .continue-button::before, .checkout-form button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            transition: all 0.6s ease;
+        }
+        .continue-button:hover::before, .checkout-form button:hover::before {
+            left: 100%;
         }
         .continue-button:hover, .checkout-form button:hover {
-            background: #f7d268;
-            transform: scale(1.05);
+            background: linear-gradient(45deg, #fdd835, #fff176);
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 12px 30px rgba(253, 216, 53, 0.7);
+        }
+        .continue-button:active, .checkout-form button:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
 <body>
+    <canvas class="particles"></canvas>
     <div class="checkout-container">
         <!-- Секция 1: Избор на пакети -->
         <div class="section" id="package-section">
@@ -246,6 +376,68 @@
         </div>
     </div>
     <script>
+        const canvas = document.querySelector('.particles');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray = [];
+        const numberOfParticles = 40;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 4 + 2;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+                this.color = Math.random() < 0.5 ? '#f7c948' : '#a3d4d9';
+                this.life = Math.random() * 60 + 60;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.life--;
+                if (this.x < 0 || this.x > canvas.width) this.speedX = -this.speedX;
+                if (this.y < 0 || this.y > canvas.height) this.speedY = -this.speedY;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.life / 120;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+                if (particlesArray[i].life <= 0) {
+                    particlesArray.splice(i, 1);
+                    i--;
+                    particlesArray.push(new Particle());
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
         const prices = { small: 10, medium: 20, large: 30 };
         const quantities = {
             small: document.querySelector('.quantity[data-product="small"]'),
