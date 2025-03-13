@@ -26,7 +26,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px; /* Намалено от 40px */
+            padding: 20px;
             background: #fff;
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
@@ -35,8 +35,9 @@
         }
         .section h2 {
             color: #333;
-            font-size: 28px; /* Намалено от 36px */
-            margin: 0 0 20px 0; /* Намалено от 40px */
+            font-size: 28px;
+            margin: 0 0 20px 0;
+            margin-top: -20px; /* Вдигане на текста нагоре */
             text-align: center;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -47,47 +48,46 @@
             max-width: 600px;
             display: flex;
             flex-direction: column;
-            gap: 10px; /* Намалено от 20px */
+            gap: 10px;
         }
         .product-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 15px; /* Намалено от 15px 20px */
+            padding: 10px 15px;
             background: #f9f9f9;
             border: 2px solid #a3d4d9;
-            border-radius: 10px; /* Намалено от 15px */
+            border-radius: 10px;
             transition: transform 0.3s ease;
+            height: 60px; /* Фиксирана височина за еднакъв размер */
         }
         .product-row:hover {
             transform: translateY(-3px);
         }
         .product-row .emoji {
-            margin-right: 15px; /* Намалено от 20px */
+            margin-right: 15px;
+            font-size: 24px; /* Единен размер за емотикони */
         }
-        .product-row .emoji.small { font-size: 20px; } /* Намалено от 24px */
-        .product-row .emoji.medium { font-size: 30px; } /* Намалено от 36px */
-        .product-row .emoji.large { font-size: 40px; } /* Намалено от 48px */
         .product-row .name {
             flex: 1;
             text-align: left;
-            font-size: 18px; /* Намалено от 20px */
+            font-size: 18px;
             color: #333;
             font-weight: bold;
         }
         .quantity-controls {
             display: flex;
             align-items: center;
-            gap: 8px; /* Намалено от 10px */
+            gap: 8px;
         }
         .quantity-controls button {
             background: #a3d4d9;
             color: #fff;
             border: none;
-            padding: 6px 10px; /* Намалено от 8px 12px */
+            padding: 6px 10px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 16px; /* Намалено от 18px */
+            font-size: 16px;
             transition: background 0.3s ease, transform 0.2s ease;
         }
         .quantity-controls button:hover {
@@ -95,29 +95,29 @@
             transform: scale(1.1);
         }
         .quantity-controls input {
-            width: 40px; /* Намалено от 50px */
+            width: 40px;
             text-align: center;
-            padding: 6px; /* Намалено от 8px */
+            padding: 6px;
             border: 2px solid #a3d4d9;
-            border-radius: 8px; /* Намалено от 10px */
-            font-size: 14px; /* Намалено от 16px */
+            border-radius: 8px;
+            font-size: 14px;
             color: #333;
             background: #fff;
         }
         .product-row .price {
-            font-size: 18px; /* Намалено от 20px */
+            font-size: 18px;
             color: #333;
-            min-width: 60px; /* Намалено от 70px */
+            min-width: 60px;
             text-align: right;
             font-weight: bold;
         }
         .total-price {
-            font-size: 20px; /* Намалено от 22px */
+            font-size: 20px;
             color: #333;
-            margin: 15px 0; /* Намалено от 20px */
-            padding: 8px 15px; /* Намалено от 10px 20px */
+            margin: 15px 0;
+            padding: 8px 15px;
             background: #f9f9f9;
-            border-radius: 8px; /* Намалено от 10px */
+            border-radius: 8px;
             font-weight: bold;
             text-align: center;
         }
@@ -126,21 +126,21 @@
             max-width: 500px;
             display: flex;
             flex-direction: column;
-            gap: 10px; /* Намалено от 15px */
+            gap: 10px;
         }
         .checkout-form label {
-            margin: 3px 0; /* Намалено от 5px */
+            margin: 3px 0;
             text-align: left;
             color: #333;
-            font-size: 14px; /* Намалено от 16px */
+            font-size: 14px;
             font-weight: bold;
         }
         .checkout-form input {
             width: 100%;
-            padding: 10px; /* Намалено от 12px */
+            padding: 10px;
             border: 2px solid #a3d4d9;
-            border-radius: 8px; /* Намалено от 10px */
-            font-size: 14px; /* Намалено от 16px */
+            border-radius: 8px;
+            font-size: 14px;
             color: #333;
             background: #fff;
             transition: border-color 0.3s ease;
@@ -152,17 +152,17 @@
         .continue-button, .checkout-form button {
             background: #f7c948;
             color: #333;
-            padding: 12px 25px; /* Намалено от 15px 30px */
+            padding: 12px 25px;
             border: none;
-            border-radius: 12px; /* Намалено от 15px */
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 18px; /* Намалено от 20px */
+            font-size: 18px;
             font-weight: bold;
             text-transform: uppercase;
             transition: background 0.3s ease, transform 0.2s ease;
             width: 100%;
-            max-width: 250px; /* Намалено от 300px */
-            margin: 20px auto 0; /* Намалено от 30px */
+            max-width: 250px;
+            margin: 20px auto 0;
         }
         .continue-button:hover, .checkout-form button:hover {
             background: #f7d268;
@@ -177,7 +177,7 @@
             <h2>Select Your Packages</h2>
             <div class="products-container">
                 <div class="product-row">
-                    <span class="emoji small">📦</span>
+                    <span class="emoji">📦</span>
                     <span class="name">Small Parcel</span>
                     <div class="quantity-controls">
                         <button type="button" class="decrease" data-product="small">-</button>
@@ -187,7 +187,7 @@
                     <span class="price" id="small-price">£0</span>
                 </div>
                 <div class="product-row">
-                    <span class="emoji medium">📦</span>
+                    <span class="emoji">📦</span>
                     <span class="name">Medium Parcel</span>
                     <div class="quantity-controls">
                         <button type="button" class="decrease" data-product="medium">-</button>
@@ -197,7 +197,7 @@
                     <span class="price" id="medium-price">£0</span>
                 </div>
                 <div class="product-row">
-                    <span class="emoji large">📦</span>
+                    <span class="emoji">📦</span>
                     <span class="name">Large Parcel</span>
                     <div class="quantity-controls">
                         <button type="button" class="decrease" data-product="large">-</button>
