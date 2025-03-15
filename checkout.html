@@ -564,11 +564,7 @@
         .modal-confirm {
             margin-top: 20px;
         }
-    </style>
-</head>
 
-<body>
-    <style>
         input.error {
             background-color: rgb(238, 255, 0) !important;
             /* Оранжев фон */
@@ -580,6 +576,9 @@
             outline: none !important;
         }
     </style>
+</head>
+
+<body>
     <canvas class="particles"></canvas>
     <div class="checkout-container">
         <!-- Секция 1: Избор на пакети -->
@@ -657,7 +656,7 @@
             <div id="summary-content"></div>
             <button class="continue-button modal-confirm" id="confirm-order">Confirm & Proceed</button>
         </div>
-    </div> ето и скрипт тага
+    </div>
     <script>
         const canvas = document.querySelector('.particles');
         const ctx = canvas.getContext('2d');
@@ -781,8 +780,6 @@
 
         // Отваряне на modal при "Continue to Payment"
         document.getElementById('continue-to-payment').addEventListener('click', () => {
-            console.log('Button clicked!');
-
             const fields = {
                 'full-name': {
                     value: document.getElementById('full-name').value.trim(),
@@ -818,7 +815,6 @@
             Object.keys(fields).forEach(id => {
                 const input = document.getElementById(id);
                 input.classList.remove('error');
-                console.log(`Cleared error class for ${id}`);
             });
 
             // Проверка на всяко поле
@@ -826,7 +822,6 @@
                 const input = document.getElementById(id);
                 if (!field.validate(field.value)) {
                     input.classList.add('error');
-                    console.log(`Added error class to ${id}`);
                     errorMessages.push(field.message);
                     isValid = false;
                 }
@@ -836,11 +831,9 @@
             isFormValid = isValid;
 
             if (isValid) {
-                console.log('Validation passed, opening modal...');
                 updateSummary();
                 // Сега скролването ще се случи само след потвърждение в модала
             } else {
-                console.log('Validation failed:', errorMessages);
                 alert('Please correct the following errors:\n' + errorMessages.join('\n'));
             }
         });
@@ -933,7 +926,6 @@
                 });
             },
             onError: (err) => {
-                console.error('Payment error:', err);
                 alert('An error occurred during payment. Please try again.');
             }
         }).render('#paypal-button-container');
