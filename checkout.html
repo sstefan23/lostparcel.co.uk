@@ -1,18 +1,20 @@
-<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - LostParcel.co.uk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #f5f6f5, #e0e7ff);
+            background: linear-gradient(135deg, #34d399 0%, #9dc8fc 100%);
             color: #333;
             overflow-x: hidden;
             position: relative;
         }
+
         .particles {
             position: fixed;
             top: 0;
@@ -22,6 +24,7 @@
             pointer-events: none;
             z-index: 0;
         }
+
         .checkout-container {
             max-width: 900px;
             margin: 0 auto;
@@ -32,6 +35,7 @@
             position: relative;
             z-index: 1;
         }
+
         .section {
             height: 100vh;
             display: flex;
@@ -48,25 +52,43 @@
             border: 1px solid rgba(255, 255, 255, 0.7);
             animation: fadeInGlass 0.8s ease-out;
         }
+
         @keyframes fadeInGlass {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+
         .section h2 {
-            color: #f7c948;
+            color: #df8e31;
             font-size: 34px;
             margin: 20px 0 20px 0;
             text-align: center;
             text-transform: uppercase;
             letter-spacing: 4px;
             font-weight: bold;
-            text-shadow: 0 2px 10px rgba(247, 201, 72, 0.3);
+            font-family: 'Poppins', sans-serif;
             animation: glowIn 1s ease-out;
         }
+
         @keyframes glowIn {
-            from { opacity: 0; text-shadow: none; }
-            to { opacity: 1; text-shadow: 0 2px 10px rgba(247, 201, 72, 0.3); }
+            from {
+                opacity: 0;
+                text-shadow: none;
+            }
+
+            to {
+                opacity: 1;
+                text-shadow: 0 2px 10px rgba(247, 201, 72, 0.3);
+            }
         }
+
         .products-container {
             width: 100%;
             max-width: 700px;
@@ -74,6 +96,7 @@
             flex-direction: column;
             gap: 15px;
         }
+
         .product-row {
             display: flex;
             align-items: center;
@@ -88,35 +111,58 @@
             box-shadow: 0 10px 20px rgba(163, 212, 217, 0.2);
             animation: slideInProduct 0.6s ease-out forwards;
         }
-        .product-row:nth-child(1) { animation-delay: 0.1s; }
-        .product-row:nth-child(2) { animation-delay: 0.2s; }
-        .product-row:nth-child(3) { animation-delay: 0.3s; }
-        @keyframes slideInProduct {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
+
+        .product-row:nth-child(1) {
+            animation-delay: 0.1s;
         }
+
+        .product-row:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .product-row:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes slideInProduct {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         .product-row:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(163, 212, 217, 0.5);
             background: linear-gradient(90deg, rgba(255, 255, 255, 0.7), rgba(250, 250, 250, 0.7));
         }
+
         .product-row .emoji {
             margin-right: 15px;
             font-size: 26px;
             transition: transform 0.3s ease, font-size 0.3s ease;
         }
+
         .product-row:nth-child(1):hover .emoji {
             font-size: 30px;
             transform: scale(1.15) rotate(15deg);
         }
+
         .product-row:nth-child(2):hover .emoji {
             font-size: 39px;
             transform: scale(1.15) rotate(15deg);
         }
+
         .product-row:nth-child(3):hover .emoji {
             font-size: 52px;
             transform: scale(1.15) rotate(15deg);
         }
+
         .product-row .name {
             flex: 1;
             text-align: left;
@@ -124,11 +170,13 @@
             color: #333;
             font-weight: bold;
         }
+
         .quantity-controls {
             display: flex;
             align-items: center;
             gap: 10px;
         }
+
         .quantity-controls button {
             background: #a3d4d9;
             color: #fff;
@@ -147,6 +195,7 @@
             align-items: center;
             justify-content: center;
         }
+
         .quantity-controls button::before {
             content: '';
             position: absolute;
@@ -159,15 +208,18 @@
             transform: translate(-50%, -50%);
             transition: width 0.4s ease, height 0.4s ease;
         }
+
         .quantity-controls button:hover::before {
             width: 100px;
             height: 100px;
         }
+
         .quantity-controls button:hover {
             background: #f7c948;
             transform: scale(1.1);
             box-shadow: 0 5px 20px rgba(247, 201, 72, 0.6);
         }
+
         .quantity-controls input {
             width: 40px;
             text-align: center;
@@ -179,11 +231,13 @@
             background: rgba(255, 255, 255, 0.9);
             transition: all 0.3s ease;
         }
+
         .quantity-controls input:focus {
             border-color: #f7c948;
             box-shadow: 0 0 10px rgba(247, 201, 72, 0.4);
             outline: none;
         }
+
         .product-row .price {
             font-size: 18px;
             color: #333;
@@ -191,6 +245,7 @@
             text-align: right;
             font-weight: bold;
         }
+
         .total-price {
             font-size: 22px;
             color: #333;
@@ -204,11 +259,21 @@
             backdrop-filter: blur(8px);
             animation: pulseTotal 2s infinite ease-in-out;
         }
+
         @keyframes pulseTotal {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
+
         .checkout-form {
             width: 100%;
             max-width: 480px;
@@ -216,6 +281,7 @@
             flex-direction: column;
             gap: 12px;
         }
+
         .checkout-form label {
             margin: 3px 0;
             text-align: left;
@@ -224,15 +290,39 @@
             font-weight: bold;
             animation: fadeInLabel 0.6s ease-out forwards;
         }
-        .checkout-form label:nth-child(1) { animation-delay: 0.1s; }
-        .checkout-form label:nth-child(3) { animation-delay: 0.2s; }
-        .checkout-form label:nth-child(5) { animation-delay: 0.3s; }
-        .checkout-form label:nth-child(7) { animation-delay: 0.4s; }
-        .checkout-form label:nth-child(9) { animation-delay: 0.5s; }
-        @keyframes fadeInLabel {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        .checkout-form label:nth-child(1) {
+            animation-delay: 0.1s;
         }
+
+        .checkout-form label:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .checkout-form label:nth-child(5) {
+            animation-delay: 0.3s;
+        }
+
+        .checkout-form label:nth-child(7) {
+            animation-delay: 0.4s;
+        }
+
+        .checkout-form label:nth-child(9) {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes fadeInLabel {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .checkout-form input {
             width: 100%;
             padding: 10px;
@@ -244,21 +334,46 @@
             transition: all 0.3s ease;
             animation: popInInput 0.6s ease-out forwards;
         }
-        .checkout-form input:nth-child(2) { animation-delay: 0.2s; }
-        .checkout-form input:nth-child(4) { animation-delay: 0.3s; }
-        .checkout-form input:nth-child(6) { animation-delay: 0.4s; }
-        .checkout-form input:nth-child(8) { animation-delay: 0.5s; }
-        .checkout-form input:nth-child(10) { animation-delay: 0.6s; }
-        @keyframes popInInput {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+
+        .checkout-form input:nth-child(2) {
+            animation-delay: 0.2s;
         }
+
+        .checkout-form input:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .checkout-form input:nth-child(6) {
+            animation-delay: 0.4s;
+        }
+
+        .checkout-form input:nth-child(8) {
+            animation-delay: 0.5s;
+        }
+
+        .checkout-form input:nth-child(10) {
+            animation-delay: 0.6s;
+        }
+
+        @keyframes popInInput {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
         .checkout-form input:focus {
             border-color: #f7c948;
             box-shadow: 0 0 12px rgba(247, 201, 72, 0.5);
             outline: none;
         }
-        .continue-button, .checkout-form button {
+
+        .continue-button {
             background: linear-gradient(45deg, #f7c948, #ffeb3b);
             color: #333;
             padding: 14px 35px;
@@ -269,18 +384,26 @@
             font-weight: bold;
             text-transform: uppercase;
             transition: all 0.4s ease;
-            width: 280px; /* Фиксирана ширина за единен размер */
-            height: 50px; /* Фиксирана височина за единен размер */
-            max-width: 280px;
-            margin: 20px auto 0;
+            width: 280px;
+            /* Фиксирана ширина */
+            height: 50px;
+            /* Фиксирана височина */
+            min-width: 280px;
+            /* Увери се, че не се свива */
+            min-height: 50px;
+            /* Увери се, че не се свива */
+            margin: 20px auto;
+            /* Уеднаквен margin, центриран */
             box-shadow: 0 8px 25px rgba(247, 201, 72, 0.5);
             position: relative;
             overflow: hidden;
-            display: flex; /* Центриране на текста */
-            justify-content: center; /* Хоризонтално центриране */
-            align-items: center; /* Вертикално центриране */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
         }
-        .continue-button::before, .checkout-form button::before {
+
+        .continue-button::before {
             content: '';
             position: absolute;
             top: 0;
@@ -290,19 +413,186 @@
             background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.5), transparent);
             transition: all 0.6s ease;
         }
-        .continue-button:hover::before, .checkout-form button:hover::before {
+
+        .continue-button:hover::before {
             left: 100%;
         }
-        .continue-button:hover, .checkout-form button:hover {
+
+        .continue-button:hover {
             background: linear-gradient(45deg, #fdd835, #fff176);
             transform: scale(1.05) translateY(-5px);
             box-shadow: 0 12px 30px rgba(253, 216, 53, 0.7);
         }
-        .continue-button:active, .checkout-form button:active {
+
+        .continue-button:active {
             transform: scale(0.98);
+        }
+
+        .order-summary {
+            width: 100%;
+            max-width: 480px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(240, 245, 255, 0.6));
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            margin: 0 auto 25px auto;
+            /* Центриране спрямо родителя */
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            animation: fadeInGlass 0.8s ease-out;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .order-summary h3 {
+            margin: 0 0 15px;
+            font-size: 22px;
+            color: #df8e31;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .summary-container {
+            width: 100%;
+            /* Заема цялата ширина на родителя */
+            max-width: 440px;
+            /* Оставя малко отстъп отстрани */
+            margin: 8px auto;
+            /* Центриране на всеки контейнер */
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 2px solid #a3d4d9;
+            border-radius: 12px;
+            font-size: 16px;
+            color: #333;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+            text-align: left;
+            /* Текстът остава подравнен вляво */
+        }
+
+        .summary-container:hover {
+            background: rgba(255, 255, 255, 0.7);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(163, 212, 217, 0.3);
+            border-color: #f7c948;
+        }
+
+        .summary-container strong {
+            color: #f7c948;
+            font-weight: bold;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            /* Полупрозрачен фон */
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 500px;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(240, 245, 255, 0.6));
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            animation: fadeInModal 0.4s ease-out;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .modal-content h3 {
+            margin: 0 0 15px;
+            font-size: 28px;
+            /* Увеличен от 22px на 28px */
+            color: #df8e31;
+            text-align: center;
+            text-transform: uppercase;
+            /* Вече е uppercase, но потвърждаваме */
+            letter-spacing: 3px;
+            /* Леко увеличено от 2px за по-добър ефект */
+            font-weight: bold;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        @keyframes fadeInModal {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #f7c948;
+        }
+
+        .modal-confirm {
+            margin-top: 20px;
+        }
+
+        input.error {
+            background-color: yellow !important;
+            border: 2px solid red !important;
+        }
+
+        input.error:focus {
+            outline: none !important;
+        }
+
+        #stripe-container,
+        #paypal-button-container,
+        #googlepay-container {
+            margin: 10px 0;
+        }
+
+        .StripeElement {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            max-width: 400px;
+            background-color: white;
+        }
+
+        .StripeElement--invalid {
+            border-color: red;
         }
     </style>
 </head>
+
 <body>
     <canvas class="particles"></canvas>
     <div class="checkout-container">
@@ -367,172 +657,420 @@
         <div class="section" id="payment-section">
             <h2>Payment Details</h2>
             <form class="checkout-form" id="payment-form">
-                <label for="card-number">Card Number</label>
-                <input type="text" id="card-number" placeholder="1234 5678 9012 3456" required>
-                <label for="card-name">Name on Card</label>
-                <input type="text" id="card-name" placeholder="John Doe" required>
-                <label for="card-expiry">Expiry Date</label>
-                <input type="text" id="card-expiry" placeholder="MM/YY" required>
-                <label for="card-cvc">CVC</label>
-                <input type="text" id="card-cvc" placeholder="123" required>
-                <button type="submit">Pay Now</button>
+                <div id="payment-method">
+                    <label><input type="radio" name="payment-option" value="paypal" checked> Pay with PayPal</label>
+                    <label><input type="radio" name="payment-option" value="stripe"> Pay with Card (Stripe)</label>
+                    <label><input type="radio" name="payment-option" value="klarna"> Pay with Klarna</label>
+                    <label><input type="radio" name="payment-option" value="clearpay"> Pay with Clearpay</label>
+                    <label><input type="radio" name="payment-option" value="googlepay"> Pay with Google Pay</label>
+                </div>
+                <div id="paypal-button-container"></div>
+                <div id="stripe-container" style="display: none;"></div>
+                <div id="googlepay-container" style="display: none;"></div>
+                <button type="submit" id="pay-now-button" style="display: none;">Pay Now</button>
             </form>
         </div>
-    </div>
-    <script>
-        const canvas = document.querySelector('.particles');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
 
-        let particlesArray = [];
-        const numberOfParticles = 40;
+        <div class="modal" id="order-summary-modal">
+            <div class="modal-content">
+                <span class="close-modal">×</span>
+                <h3>Order Summary</h3>
+                <div id="summary-content"></div>
+                <button class="continue-button modal-confirm" id="confirm-order">Confirm & Proceed</button>
+            </div>
+        </div>
 
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 4 + 2;
-                this.speedX = Math.random() * 0.5 - 0.25;
-                this.speedY = Math.random() * 0.5 - 0.25;
-                this.color = Math.random() < 0.5 ? '#f7c948' : '#a3d4d9';
-                this.life = Math.random() * 60 + 60;
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                this.life--;
-                if (this.x < 0 || this.x > canvas.width) this.speedX = -this.speedX;
-                if (this.y < 0 || this.y > canvas.height) this.speedY = -this.speedY;
-            }
-            draw() {
-                ctx.fillStyle = this.color;
-                ctx.globalAlpha = this.life / 120;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
 
-        function init() {
-            for (let i = 0; i < numberOfParticles; i++) {
-                particlesArray.push(new Particle());
-            }
-        }
+        <script src="https://js.stripe.com/v3/"></script>
+        <script
+            src="https://www.paypal.com/sdk/js?client-id=AcACWRq55R3S54o2VIwnL1IRWwRPzILPFYaAG9l0xLzoCuoAIdFX5boGpt_vNIiREA_TW479V27G1E6U&currency=GBP"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const canvas = document.querySelector('.particles');
+                const ctx = canvas.getContext('2d');
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
 
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
-                particlesArray[i].draw();
-                if (particlesArray[i].life <= 0) {
-                    particlesArray.splice(i, 1);
-                    i--;
-                    particlesArray.push(new Particle());
+                let particlesArray = [];
+                const numberOfParticles = 80;
+
+                class Particle {
+                    constructor() {
+                        this.x = Math.random() * canvas.width;
+                        this.y = Math.random() * canvas.height;
+                        this.size = Math.random() * 4 + 2;
+                        this.speedX = Math.random() * 0.5 - 0.25;
+                        this.speedY = Math.random() * 0.5 - 0.25;
+                        this.color = Math.random() < 0.5 ? '#f7c948' : '#a3d4d9';
+                        this.life = Math.random() * 60 + 60;
+                    }
+                    update() {
+                        this.x += this.speedX;
+                        this.y += this.speedY;
+                        this.life--;
+                        if (this.x < 0 || this.x > canvas.width) this.speedX = -this.speedX;
+                        if (this.y < 0 || this.y > canvas.height) this.speedY = -this.speedY;
+                    }
+                    draw() {
+                        ctx.fillStyle = this.color;
+                        ctx.globalAlpha = this.life / 120;
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
                 }
-            }
-            requestAnimationFrame(animate);
-        }
 
-        init();
-        animate();
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-
-        const prices = { small: 10, medium: 20, large: 30 };
-        const quantities = {
-            small: document.querySelector('.quantity[data-product="small"]'),
-            medium: document.querySelector('.quantity[data-product="medium"]'),
-            large: document.querySelector('.quantity[data-product="large"]')
-        };
-        const priceDisplays = {
-            small: document.getElementById('small-price'),
-            medium: document.getElementById('medium-price'),
-            large: document.getElementById('large-price')
-        };
-        const totalPrice = document.getElementById('total-price');
-
-        function updatePrices() {
-            let total = 0;
-            for (const product in quantities) {
-                const qty = parseInt(quantities[product].value) || 0;
-                const price = prices[product] * qty;
-                priceDisplays[product].textContent = `£${price}`;
-                total += price;
-            }
-            totalPrice.textContent = `Total: £${total}`;
-            return total;
-        }
-
-        document.querySelectorAll('.quantity-controls button').forEach(button => {
-            button.addEventListener('click', () => {
-                const product = button.getAttribute('data-product');
-                let qty = parseInt(quantities[product].value) || 0;
-                if (button.classList.contains('increase')) {
-                    qty += 1;
-                } else if (button.classList.contains('decrease') && qty > 0) {
-                    qty -= 1;
+                function init() {
+                    for (let i = 0; i < numberOfParticles; i++) {
+                        particlesArray.push(new Particle());
+                    }
                 }
-                quantities[product].value = qty;
+
+                function animate() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    for (let i = 0; i < particlesArray.length; i++) {
+                        particlesArray[i].update();
+                        particlesArray[i].draw();
+                        if (particlesArray[i].life <= 0) {
+                            particlesArray.splice(i, 1);
+                            i--;
+                            particlesArray.push(new Particle());
+                        }
+                    }
+                    requestAnimationFrame(animate);
+                }
+
+                init();
+                animate();
+
+                window.addEventListener('resize', () => {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                });
+
+                const prices = { small: 10, medium: 20, large: 30 };
+                const quantities = {
+                    small: document.querySelector('.quantity[data-product="small"]'),
+                    medium: document.querySelector('.quantity[data-product="medium"]'),
+                    large: document.querySelector('.quantity[data-product="large"]')
+                };
+                const priceDisplays = {
+                    small: document.getElementById('small-price'),
+                    medium: document.getElementById('medium-price'),
+                    large: document.getElementById('large-price')
+                };
+                const totalPrice = document.getElementById('total-price');
+
+                function updatePrices() {
+                    let total = 0;
+                    for (const product in quantities) {
+                        const qty = parseInt(quantities[product].value) || 0;
+                        const price = prices[product] * qty;
+                        priceDisplays[product].textContent = `£${price}`;
+                        total += price;
+                    }
+                    totalPrice.textContent = `Total: £${total}`;
+                    return total;
+                }
+
+                function updateSummary() {
+                    const summaryContent = document.getElementById('summary-content');
+                    const modal = document.getElementById('order-summary-modal');
+
+                    let contentHtml = '';
+                    const smallQty = parseInt(quantities.small.value) || 0;
+                    const mediumQty = parseInt(quantities.medium.value) || 0;
+                    const largeQty = parseInt(quantities.large.value) || 0;
+
+                    if (smallQty > 0) {
+                        contentHtml += `<div class="summary-container">${smallQty} x Small Parcel - £${prices.small * smallQty}</div>`;
+                    }
+                    if (mediumQty > 0) {
+                        contentHtml += `<div class="summary-container">${mediumQty} x Medium Parcel - £${prices.medium * mediumQty}</div>`;
+                    }
+                    if (largeQty > 0) {
+                        contentHtml += `<div class="summary-container">${largeQty} x Large Parcel - £${prices.large * largeQty}</div>`;
+                    }
+                    if (contentHtml === '') {
+                        contentHtml = `<div class="summary-container">No items selected</div>`;
+                    }
+
+                    const shippingInfo = `${document.getElementById('full-name').value}, ${document.getElementById('address').value}, ${document.getElementById('city').value}, ${document.getElementById('postal-code').value}`;
+                    contentHtml += `<div class="summary-container"><strong>Shipping:</strong> ${shippingInfo || 'Not provided'}</div>`;
+                    contentHtml += `<div class="summary-container"><strong>Total:</strong> £${updatePrices()}</div>`;
+
+                    summaryContent.innerHTML = contentHtml;
+                    modal.style.display = 'flex';
+                }
+
+                let isFormValid = false;
+
+                document.getElementById('continue-to-payment').addEventListener('click', () => {
+                    const fields = {
+                        'full-name': {
+                            value: document.getElementById('full-name').value.trim(),
+                            validate: val => val.length >= 2,
+                            message: 'Full name must be at least 2 characters long'
+                        },
+                        'address': {
+                            value: document.getElementById('address').value.trim(),
+                            validate: val => val.length >= 5,
+                            message: 'Address must be at least 5 characters long'
+                        },
+                        'city': {
+                            value: document.getElementById('city').value.trim(),
+                            validate: val => val.length >= 2,
+                            message: 'City must be at least 2 characters long'
+                        },
+                        'postal-code': {
+                            value: document.getElementById('postal-code').value.trim(),
+                            validate: val => /^[A-Z]{1,2}[0-9]{1,2}[A-Z]?\s?[0-9][A-Z]{2}$/i.test(val),
+                            message: 'Invalid UK postal code (e.g., SW1A 1AA)'
+                        },
+                        'phone': {
+                            value: document.getElementById('phone').value.trim(),
+                            validate: val => /^\+44\s?\d{9,10}$/.test(val),
+                            message: 'Invalid UK phone (e.g., +44 123 456 7890)'
+                        }
+                    };
+
+                    let isValid = true;
+                    let errorMessages = [];
+
+                    Object.keys(fields).forEach(id => {
+                        const input = document.getElementById(id);
+                        input.classList.remove('error');
+                    });
+
+                    for (const [id, field] of Object.entries(fields)) {
+                        const input = document.getElementById(id);
+                        if (!field.validate(field.value)) {
+                            input.classList.add('error');
+                            errorMessages.push(field.message);
+                            isValid = false;
+                        }
+                    }
+
+                    isFormValid = isValid;
+
+                    if (isValid) {
+                        updateSummary();
+                    } else {
+                        alert('Please correct the following errors:\n' + errorMessages.join('\n'));
+                    }
+                });
+
+                document.querySelector('.close-modal').addEventListener('click', () => {
+                    document.getElementById('order-summary-modal').style.display = 'none';
+                });
+
+                document.getElementById('confirm-order').addEventListener('click', () => {
+                    document.getElementById('order-summary-modal').style.display = 'none';
+                    if (isFormValid) {
+                        document.getElementById('payment-section').scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        alert('Please correct the shipping details before proceeding to payment.');
+                    }
+                });
+
+                document.querySelectorAll('.quantity-controls button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const modal = document.getElementById('order-summary-modal');
+                        if (modal.style.display === 'flex') updateSummary();
+                    });
+                });
+                document.querySelectorAll('.quantity').forEach(input => {
+                    input.addEventListener('input', () => {
+                        const modal = document.getElementById('order-summary-modal');
+                        if (modal.style.display === 'flex') updateSummary();
+                    });
+                });
+
+                document.querySelectorAll('.quantity-controls button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const product = button.getAttribute('data-product');
+                        let qty = parseInt(quantities[product].value) || 0;
+                        if (button.classList.contains('increase')) {
+                            qty += 1;
+                        } else if (button.classList.contains('decrease') && qty > 0) {
+                            qty -= 1;
+                        }
+                        quantities[product].value = qty;
+                        updatePrices();
+                    });
+                });
+
+                document.querySelectorAll('.quantity').forEach(input => {
+                    input.addEventListener('input', () => {
+                        if (input.value < 0) input.value = 0;
+                        updatePrices();
+                    });
+                });
+
                 updatePrices();
+
+                document.getElementById('continue-to-shipping').addEventListener('click', () => {
+                    const total = updatePrices();
+                    if (total > 0) {
+                        document.getElementById('shipping-section').scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        alert('Please select at least one package!');
+                    }
+                });
+
+                // Stripe интеграция
+                const stripe = Stripe('pk_test_51R2z6B2LbXGLRhiwTDKQ2GLW6Wg0nknwchUkxhEjo5jXjxRnTmXSgqudhVzpT2HfWxRNTrnV0r6ynqLXAOnjBM6X00JWuvskc5'); // Замени с твоя тестов Publishable Key
+                const elements = stripe.elements();
+                const cardElement = elements.create('card', {
+                    style: {
+                        base: {
+                            fontSize: '16px',
+                            color: '#32325d',
+                            fontFamily: '"Poppins", sans-serif',
+                        }
+                    }
+                });
+                cardElement.mount('#stripe-container');
+
+                const paymentRequest = stripe.paymentRequest({
+                    country: 'GB',
+                    currency: 'gbp',
+                    total: {
+                        label: 'Total',
+                        amount: 0,
+                    },
+                    requestPayerName: true,
+                    requestPayerEmail: true,
+                });
+
+                const googlePayElement = elements.create('paymentRequestButton', {
+                    paymentRequest: paymentRequest,
+                });
+                if (paymentRequest.canMakePayment()) {
+                    googlePayElement.mount('#googlepay-container');
+                }
+
+                let paymentMethod = 'paypal';
+
+                paymentRequest.on('paymentmethod', async (event) => {
+                    if (!isFormValid) {
+                        event.complete('fail');
+                        alert('Please correct the shipping details before proceeding to payment.');
+                        return;
+                    }
+                    const total = updatePrices();
+                    if (total <= 0) {
+                        event.complete('fail');
+                        alert('Please select at least one package!');
+                        return;
+                    }
+                    event.complete('success');
+                    alert(`Google Pay payment simulated: ${event.paymentMethod.id}`);
+
+                    cardElement.mount('#stripe-container');
+                    console.log('Stripe card element mounted');
+                    if (result) {
+                        googlePayElement.mount('#googlepay-container');
+                        console.log('Google Pay button mounted');
+                    } else {
+                        console.log('Google Pay not supported');
+                    }
+                });
+
+                document.querySelectorAll('input[name="payment-option"]').forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        paymentMethod = e.target.value;
+                        console.log(`Payment method changed to: ${paymentMethod}`);
+                        document.getElementById('paypal-button-container').style.display = paymentMethod === 'paypal' ? 'block' : 'none';
+                        document.getElementById('stripe-container').style.display = paymentMethod === 'stripe' ? 'block' : 'none';
+                        document.getElementById('googlepay-container').style.display = paymentMethod === 'googlepay' && paymentRequest.canMakePayment() ? 'block' : 'none';
+                    });
+                });
+
+                document.getElementById('payment-form').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    if (!isFormValid) {
+                        alert('Please correct the shipping details before proceeding to payment.');
+                        return;
+                    }
+
+                    const total = updatePrices();
+                    if (total <= 0) {
+                        alert('Please select at least one package!');
+                        return;
+                    }
+
+                    if (paymentMethod === 'stripe') {
+                        const { error, paymentMethod: stripePaymentMethod } = await stripe.createPaymentMethod({
+                            type: 'card',
+                            card: cardElement,
+                        });
+
+                        if (error) {
+                            alert(`Payment error: ${error.message}`);
+                            return;
+                        }
+                        alert(`Stripe payment method created: ${stripePaymentMethod.id}. Server processing is needed for confirmation.`);
+                    } else if (paymentMethod === 'paypal') {
+                        paypal.Buttons({
+                            createOrder: (data, actions) => {
+                                return actions.order.create({
+                                    purchase_units: [{
+                                        amount: {
+                                            value: total.toString(),
+                                            currency_code: 'GBP'
+                                        }
+                                    }]
+                                });
+                            },
+                            onApprove: (data, actions) => {
+                                return actions.order.capture().then(details => {
+                                    const payerName = details.payer.name.given_name;
+                                    alert(`Payment completed successfully by ${payerName}! Total: £${total}`);
+                                });
+                            },
+                            onError: (err) => {
+                                alert('An error occurred during payment. Please try again.');
+                            }
+                        }).render('#paypal-button-container');
+                    } else if (paymentMethod === 'klarna' || paymentMethod === 'clearpay') {
+                        alert(`${paymentMethod} payment initiated. Server processing is needed for confirmation.`);
+                    }
+                });
+
+                paypal.Buttons({
+                    createOrder: (data, actions) => {
+                        if (!isFormValid) {
+                            alert('Please correct the shipping details before proceeding to payment.');
+                            return;
+                        }
+                        const total = updatePrices();
+                        if (total <= 0) {
+                            alert('Please select at least one package!');
+                            return;
+                        }
+                        return actions.order.create({
+                            purchase_units: [{
+                                amount: {
+                                    value: total.toString(),
+                                    currency_code: 'GBP'
+                                }
+                            }]
+                        });
+                    },
+                    onApprove: (data, actions) => {
+                        return actions.order.capture().then(details => {
+                            const payerName = details.payer.name.given_name;
+                            alert(`Payment completed successfully by ${payerName}! Total: £${updatePrices()}`);
+                        });
+                    },
+                    onError: (err) => {
+                        alert('An error occurred during payment. Please try again.');
+                    }
+                }).render('#paypal-button-container');
             });
-        });
-
-        document.querySelectorAll('.quantity').forEach(input => {
-            input.addEventListener('input', () => {
-                if (input.value < 0) input.value = 0;
-                updatePrices();
-            });
-        });
-
-        updatePrices();
-
-        document.getElementById('continue-to-shipping').addEventListener('click', () => {
-            const total = updatePrices();
-            if (total > 0) {
-                document.getElementById('shipping-section').scrollIntoView({ behavior: 'smooth' });
-            } else {
-                alert('Please select at least one package!');
-            }
-        });
-
-        document.getElementById('continue-to-payment').addEventListener('click', () => {
-            const shippingFields = ['full-name', 'address', 'city', 'postal-code', 'phone'];
-            const allFilled = shippingFields.every(id => document.getElementById(id).value.trim() !== '');
-            if (allFilled) {
-                document.getElementById('payment-section').scrollIntoView({ behavior: 'smooth' });
-            } else {
-                alert('Please fill in all shipping details!');
-            }
-        });
-
-        document.getElementById('payment-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const order = {
-                small: quantities.small.value,
-                medium: quantities.medium.value,
-                large: quantities.large.value,
-                total: updatePrices()
-            };
-            const shipping = {
-                fullName: document.getElementById('full-name').value,
-                address: document.getElementById('address').value,
-                city: document.getElementById('city').value,
-                postalCode: document.getElementById('postal-code').value,
-                phone: document.getElementById('phone').value
-            };
-            const payment = {
-                cardNumber: document.getElementById('card-number').value,
-                cardName: document.getElementById('card-name').value,
-                cardExpiry: document.getElementById('card-expiry').value,
-                cardCvc: document.getElementById('card-cvc').value
-            };
-            console.log('Order:', order, 'Shipping:', shipping, 'Payment:', payment);
-            alert(`Purchase completed!\nTotal: £${order.total}\n(This is a demo!)`);
-        });
-    </script>
+        </script>
 </body>
+
 </html>

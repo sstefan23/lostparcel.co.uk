@@ -227,7 +227,7 @@ body {
 .cta {
     padding: 4rem 2rem;
     text-align: center;
-    background: linear-gradient(135deg, #f7c948, #e6b740);
+    background: linear-gradient(135deg, rgb(144 247 155), #9d9686)
 }
 
 .cta h2 {
