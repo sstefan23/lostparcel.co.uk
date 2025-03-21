@@ -36,6 +36,18 @@
             z-index: 1;
         }
 
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+            scroll-snap-type: none !important;
+            overflow-y: scroll !important;
+            /* Увери се, че скролването е разрешено */
+        }
+
+
         .section {
             height: 100vh;
             display: flex;
@@ -48,10 +60,9 @@
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
             margin: 20px;
             box-sizing: border-box;
-            backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.7);
-            animation: fadeInGlass 0.8s ease-out;
         }
+
 
         @keyframes fadeInGlass {
             from {
@@ -804,7 +815,6 @@
 
             function updateSummary() {
                 const summaryContent = document.getElementById('summary-content');
-                const modal = document.getElementById('order-summary-modal');
 
                 let contentHtml = '';
                 const smallQty = parseInt(quantities.small.value) || 0;
@@ -829,72 +839,131 @@
                 contentHtml += `<div class="summary-container"><strong>Total:</strong> £${updatePrices()}</div>`;
 
                 summaryContent.innerHTML = contentHtml;
-                modal.style.display = 'flex'; // Показва modal-а
             }
+
 
             // Глобална променлива за състоянието на валидацията
             let isFormValid = false;
 
             // Отваряне на modal при "Continue to Payment"
-            document.getElementById('continue-to-payment').addEventListener('click', () => {
-                const fields = {
-                    'full-name': {
-                        value: document.getElementById('full-name').value.trim(),
-                        validate: val => val.length >= 2,
-                        message: 'Full name must be at least 2 characters long'
-                    },
-                    'address': {
-                        value: document.getElementById('address').value.trim(),
-                        validate: val => val.length >= 5,
-                        message: 'Address must be at least 5 characters long'
-                    },
-                    'city': {
-                        value: document.getElementById('city').value.trim(),
-                        validate: val => val.length >= 2,
-                        message: 'City must be at least 2 characters long'
-                    },
-                    'postal-code': {
-                        value: document.getElementById('postal-code').value.trim(),
-                        validate: val => /^[A-Z]{1,2}[0-9]{1,2}[A-Z]?\s?[0-9][A-Z]{2}$/i.test(val),
-                        message: 'Invalid UK postal code (e.g., SW1A 1AA)'
-                    },
-                    'phone': {
-                        value: document.getElementById('phone').value.trim(),
-                        validate: val => /^\+44\s?\d{9,10}$/.test(val),
-                        message: 'Invalid UK phone (e.g., +44 123 456 7890)'
-                    }
-                };
+            document.addEventListener('DOMContentLoaded', () => {
+                // Постави целия JavaScript код тук
+                console.log('Attaching event listener to continue-to-payment');
+                const continueToPaymentButton = document.getElementById('continue-to-payment');
+                if (continueToPaymentButton) {
+                    continueToPaymentButton.addEventListener('click', () => {
+                        console.log('Continue to Payment button clicked');
+                        const fields = {
+                            'full-name': {
+                                value: document.getElementById('full-name').value.trim(),
+                                validate: val => val.length >= 2,
+                                message: 'Full name must be at least 2 characters long'
+                            },
+                            'address': {
+                                value: document.getElementById('address').value.trim(),
+                                validate: val => val.length >= 5,
+                                message: 'Address must be at least 5 characters long'
+                            },
+                            'city': {
+                                value: document.getElementById('city').value.trim(),
+                                validate: val => val.length >= 2,
+                                message: 'City must be at least 2 characters long'
+                            },
+                            'postal-code': {
+                                value: document.getElementById('postal-code').value.trim(),
+                                validate: val => /^[A-Z]{1,2}[0-9]{1,2}[A-Z]?\s?[0-9][A-Z]{2}$/i.test(val),
+                                message: 'Invalid UK postal code (e.g., SW1A 1AA)'
+                            },
+                            'phone': {
+                                value: document.getElementById('phone').value.trim(),
+                                validate: val => /^\+44\s?\d{9,10}$/.test(val),
+                                message: 'Invalid UK phone (e.g., +44 123 456 7890)'
+                            }
+                        };
 
-                let isValid = true;
-                let errorMessages = [];
+                        let isValid = true;
+                        let errorMessages = [];
 
-                // Изчистваме предишните грешки
-                Object.keys(fields).forEach(id => {
-                    const input = document.getElementById(id);
-                    input.classList.remove('error');
+                        Object.keys(fields).forEach(id => {
+                            const input = document.getElementById(id);
+                            input.classList.remove('error');
+                        });
+
+                        for (const [id, field] of Object.entries(fields)) {
+                            const input = document.getElementById(id);
+                            if (!field.validate(field.value)) {
+                                input.classList.add('error');
+                                errorMessages.push(field.message);
+                                isValid = false;
+                            }
+                        }
+
+                        isFormValid = isValid;
+
+                        if (isValid) {
+                            console.log('Form is valid, updating summary and scrolling');
+                            updateSummary();
+                            const shippingSection = document.getElementById('shipping-section');
+                            if (shippingSection) {
+                                console.log('Shipping section found, attempting to scroll');
+                                const shippingSectionPosition = shippingSection.getBoundingClientRect().top + window.scrollY;
+                                window.scrollTo({
+                                    top: shippingSectionPosition,
+                                    behavior: 'smooth'
+                                });
+                            } else {
+                                console.error('Shipping section not found');
+                            }
+                            setTimeout(() => {
+                                console.log('Opening modal');
+                                document.getElementById('order-summary-modal').style.display = 'flex';
+                            }, 500);
+                        } else {
+                            alert('Please correct the following errors:\n' + errorMessages.join('\n'));
+                        }
+                    });
+                } else {
+                    console.error('Continue to Payment button not found in DOM');
+                }
+
+                console.log('Attaching event listener to confirm-order');
+                const confirmOrderButton = document.getElementById('confirm-order');
+                if (confirmOrderButton) {
+                    confirmOrderButton.addEventListener('click', () => {
+                        console.log('Confirm & Proceed button clicked');
+                        document.getElementById('order-summary-modal').style.display = 'none';
+                        if (isFormValid) {
+                            document.getElementById('payment-section').scrollIntoView({ behavior: 'smooth' });
+                        } else {
+                            alert('Please correct the shipping details before proceeding to payment.');
+                        }
+                    });
+                } else {
+                    console.error('Confirm & Proceed button not found in DOM');
+                }
+
+                // Добави и другите event listener-и тук (напр. за "Continue to Shipping", quantity controls и т.н.)
+                document.getElementById('continue-to-shipping').addEventListener('click', () => {
+                    document.getElementById('shipping-section').scrollIntoView({ behavior: 'smooth' });
                 });
 
-                // Проверка на всяко поле
-                for (const [id, field] of Object.entries(fields)) {
-                    const input = document.getElementById(id);
-                    if (!field.validate(field.value)) {
-                        input.classList.add('error');
-                        errorMessages.push(field.message);
-                        isValid = false;
-                    }
-                }
+                document.querySelectorAll('.quantity-controls button').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const input = e.target.parentElement.querySelector('input');
+                        let value = parseInt(input.value) || 0;
+                        if (e.target.classList.contains('minus') && value > 0) {
+                            input.value = value - 1;
+                        } else if (e.target.classList.contains('plus')) {
+                            input.value = value + 1;
+                        }
+                        updatePrices();
+                    });
+                });
 
-                // Задаваме състоянието на валидацията
-                isFormValid = isValid;
-
-                if (isValid) {
-                    updateSummary();
-                    // Сега скролването ще се случи само след потвърждение в модала
-                } else {
-                    alert('Please correct the following errors:\n' + errorMessages.join('\n'));
-                }
+                document.querySelector('.close-modal').addEventListener('click', () => {
+                    document.getElementById('order-summary-modal').style.display = 'none';
+                });
             });
-
             // Затваряне на modal
             document.querySelector('.close-modal').addEventListener('click', () => {
                 document.getElementById('order-summary-modal').style.display = 'none';
@@ -955,6 +1024,8 @@
                     alert('Please select at least one package!');
                 }
             });
+
+
 
             paypal.Buttons({
                 createOrder: (data, actions) => {
