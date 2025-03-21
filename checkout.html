@@ -1034,11 +1034,14 @@
                     modal.style.display = 'block';
 
                     // Пример: Попълни обобщението (замени с твоята логика)
+                    const totalInPounds = updatePrices();
+
+                    // Попълни обобщението с динамичната сума
                     const summaryContent = document.getElementById('summary-content');
                     summaryContent.innerHTML = `
-            <p>Total: £10.00</p>
-            <p>Payment Method: ${document.querySelector('input[name="payment-option"]:checked').value}</p>
-        `;
+    <p>Total: £${totalInPounds.toFixed(2)}</p>
+    <p>Payment Method: ${document.querySelector('input[name="payment-option"]:checked').value}</p>
+`;
                 });
 
                 // Затвори модалния прозорец
