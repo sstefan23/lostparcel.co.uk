@@ -1064,12 +1064,19 @@
                         }
 
                         // Изчисли сумата (замени с твоята логика)
+                        console.log('Stripe payment method created:', stripePaymentMethod.id, '. Sending to server...');
+
+                        // Извикай updatePrices() и вземи total (в паундове)
+                        const totalInPounds = updatePrices();
+                        // Умножи по 100, за да е в центове (Stripe очаква сумата в центове)
+                        const total = Math.round(totalInPounds * 100);
+
                         const response = await fetch('https://my-checkout-server-lostparcel-18d58c9d1ce5.herokuapp.com/create-payment-intent', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
                                 payment_method_id: stripePaymentMethod.id,
-                                amount: total // Използвай съществуващата променлива total
+                                amount: total
                             })
                         });
 
