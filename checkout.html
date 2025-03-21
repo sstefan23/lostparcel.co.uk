@@ -1085,9 +1085,49 @@
                         }
 
                         // Потвърди плащането на клиентската страна
+                        console.log('Stripe payment method created:', stripePaymentMethod.id, '. Sending to server...');
+
+                        const total = 1000; // Замени с твоята логика
+
+                        const response = await fetch('https://my-checkout-server-lostparcel-18d58c9d1ce5.herokuapp.com/create-payment-intent', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                payment_method_id: stripePaymentMethod.id,
+                                amount: total
+                            })
+                        });
+
+                        const data = await response.json();
+                        if (data.error) {
+                            console.error('Server error:', data.error);
+                            alert(`Server error: ${data.error}`);
+                            return;
+                        }
+
+                        console.log('Server response:', data);
+
+                        // Провери състоянието на PaymentIntent
+                        const { paymentIntent, error: retrieveError } = await stripe.retrievePaymentIntent(data.client_secret);
+                        if (retrieveError) {
+                            console.error('Error retrieving PaymentIntent:', retrieveError);
+                            alert(`Error retrieving PaymentIntent: ${retrieveError.message}`);
+                            return;
+                        }
+
+                        console.log('PaymentIntent status:', paymentIntent.status);
+
+                        if (paymentIntent.status === 'succeeded') {
+                            console.log('Payment already succeeded:', paymentIntent);
+                            alert(`Payment successful! PaymentIntent ID: ${paymentIntent.id}`);
+                            modal.style.display = 'none';
+                            return;
+                        }
+
+                        // Ако не е успешен, потвърди плащането
                         console.log('Confirming payment with client_secret:', data.client_secret);
                         console.log('Payment method ID:', stripePaymentMethod.id);
-                        const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(data.client_secret, {
+                        const { error: confirmError, paymentIntent: confirmedIntent } = await stripe.confirmCardPayment(data.client_secret, {
                             payment_method: stripePaymentMethod.id
                         });
 
@@ -1097,12 +1137,9 @@
                             return;
                         }
 
-                        console.log('Payment successful:', paymentIntent);
-                        alert(`Payment successful! PaymentIntent ID: ${paymentIntent.id}`);
+                        console.log('Payment successful:', confirmedIntent);
+                        alert(`Payment successful! PaymentIntent ID: ${confirmedIntent.id}`);
                         modal.style.display = 'none';
-
-                        alert(`Payment successful! PaymentIntent ID: ${paymentIntent.id}`);
-                        modal.style.display = 'none'; // Затвори модалния прозорец след успех
                     }
                     // Добави логика за PayPal и Klarna тук
                 });
