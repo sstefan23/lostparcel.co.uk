@@ -1171,10 +1171,10 @@
                             console.error(error);
                             return;
                         }
-                        alert(`Stripe payment method created: ${stripePaymentMethod.id}. Server processing is needed for confirmation.`);
+                        console.log(`Stripe payment method created: ${stripePaymentMethod.id}. Server processing is needed for confirmation.`);
                     } else if (paymentMethod === 'klarna') {
                         // Placeholder за Klarna
-                        alert('Klarna payment initiated. Server processing is needed for confirmation.');
+                        console.log('Klarna payment initiated. Server processing is needed for confirmation.');
                     } else if (paymentMethod === 'paypal') {
                         paypal.Buttons({
                             createOrder: (data, actions) => {
