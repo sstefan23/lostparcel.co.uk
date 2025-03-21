@@ -1085,15 +1085,21 @@
                         }
 
                         // Потвърди плащането на клиентската страна
+                        console.log('Confirming payment with client_secret:', data.client_secret);
+                        console.log('Payment method ID:', stripePaymentMethod.id);
                         const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(data.client_secret, {
                             payment_method: stripePaymentMethod.id
                         });
 
                         if (confirmError) {
+                            console.error('Payment confirmation error:', confirmError);
                             alert(`Payment confirmation error: ${confirmError.message}`);
-                            console.error(confirmError);
                             return;
                         }
+
+                        console.log('Payment successful:', paymentIntent);
+                        alert(`Payment successful! PaymentIntent ID: ${paymentIntent.id}`);
+                        modal.style.display = 'none';
 
                         alert(`Payment successful! PaymentIntent ID: ${paymentIntent.id}`);
                         modal.style.display = 'none'; // Затвори модалния прозорец след успех
