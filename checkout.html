@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - LostParcel.co.uk</title>
+    <script id="paypal-sdk"
+        src="https://www.paypal.com/sdk/js?client-id=AcACWRq55R3S54o2VIwnL1IRWwRPzILPFYaAG9l0xLzoCuoAIdFX5boGpt_vNIiREA_TW479V27G1E6U&currency=GBP"
+        async></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -613,6 +616,49 @@
             color: #333;
             font-weight: bold;
         }
+
+        #payment-request-button {
+            display: none;
+            /* По подразбиране скрит */
+            margin-bottom: 20px;
+        }
+
+        #payment-request-button.active {
+            display: block !important;
+            /* Изрично показване */
+        }
+
+        #stripe-container {
+            display: none;
+            /* По подразбиране скрит */
+            min-height: 50px;
+            /* За да не е празно */
+        }
+
+        #stripe-container.active {
+            display: block !important;
+            /* Изрично показване */
+        }
+
+        #card-element {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 4px;
+            background: #fff;
+            /* Ясен фон */
+        }
+
+        #paypal-button-container {
+            display: none;
+            /* По подразбиране скрит */
+            min-height: 50px;
+            /* За да не е празно */
+        }
+
+        #paypal-button-container.active {
+            display: block !important;
+            /* Изрично показване */
+        }
     </style>
 </head>
 
@@ -681,21 +727,25 @@
             <h2>Payment Details</h2>
             <form class="checkout-form" id="payment-form">
                 <div id="payment-method">
-                    <label><input type="radio" name="payment-option" value="paypal" checked> Pay with PayPal</label>
-                    <label><input type="radio" name="payment-option" value="stripe"> Pay with Card (Stripe)</label>
+                    <label><input type="radio" name="payment-option" value="express-checkout"> Google Pay / Apple
+                        Pay</label>
+                    <label><input type="radio" name="payment-option" value="stripe" checked> Pay with Card
+                        (Stripe)</label>
+                    <label><input type="radio" name="payment-option" value="paypal"> Pay with PayPal</label>
                 </div>
-                <div id="paypal-button-container"></div>
-                <div id="stripe-container" style="display: none;">
+                <div id="payment-request-button" style="display: none; margin-bottom: 20px;"></div>
+                <div id="stripe-container" style="display: block;">
                     <div id="card-element"></div>
                     <div id="card-errors" role="alert"></div>
                 </div>
+                <div id="paypal-button-container" style="display: none;"></div>
                 <button type="submit" class="continue-button">Pay Now</button>
             </form>
         </div>
 
         <div class="modal" id="order-summary-modal">
             <div class="modal-content">
-                <span class="close-modal">×</span>
+                <span class="close-modal"></span>
                 <h3>Order Summary</h3>
                 <div id="summary-content"></div>
                 <button class="continue-button modal-confirm" id="confirm-order">Confirm & Proceed</button>
@@ -708,84 +758,9 @@
 
         <script>
             // Particle animation
-            // Particle animation (оставям я в отделен блок, както беше)
-            // Particle animation (с оптимизация)
+            // Основният код (с корекции за PayPal и Google Pay/Apple Pay)
             document.addEventListener('DOMContentLoaded', () => {
-                const canvas = document.querySelector('.particles');
-                const ctx = canvas.getContext('2d');
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-
-                let particlesArray = [];
-                const numberOfParticles = 80; // Намален брой частици от 80 на 30
-
-                class Particle {
-                    constructor() {
-                        this.x = Math.random() * canvas.width;
-                        this.y = Math.random() * canvas.height;
-                        this.size = Math.random() * 4 + 2;
-                        this.speedX = Math.random() * 0.5 - 0.25;
-                        this.speedY = Math.random() * 0.5 - 0.25;
-                        this.color = Math.random() < 0.5 ? '#f7c948' : '#a3d4d9';
-                        this.life = Math.random() * 60 + 60;
-                    }
-                    update() {
-                        this.x += this.speedX;
-                        this.y += this.speedY;
-                        this.life--;
-                        if (this.x < 0 || this.x > canvas.width) this.speedX = -this.speedX;
-                        if (this.y < 0 || this.y > canvas.height) this.speedY = -this.speedY;
-                    }
-                    draw() {
-                        ctx.fillStyle = this.color;
-                        ctx.globalAlpha = this.life / 120;
-                        ctx.beginPath();
-                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                }
-
-                function init() {
-                    for (let i = 0; i < numberOfParticles; i++) {
-                        particlesArray.push(new Particle());
-                    }
-                }
-
-                let lastFrameTime = 0;
-                const frameInterval = 1000 / 30; // Ограничаваме до 30 FPS
-
-                function animate(currentTime) {
-                    if (currentTime - lastFrameTime < frameInterval) {
-                        requestAnimationFrame(animate);
-                        return;
-                    }
-                    lastFrameTime = currentTime;
-
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    for (let i = 0; i < particlesArray.length; i++) {
-                        particlesArray[i].update();
-                        particlesArray[i].draw();
-                        if (particlesArray[i].life <= 0) {
-                            particlesArray.splice(i, 1);
-                            i--;
-                            particlesArray.push(new Particle());
-                        }
-                    }
-                    requestAnimationFrame(animate);
-                }
-
-                init();
-                requestAnimationFrame(animate);
-
-                window.addEventListener('resize', () => {
-                    canvas.width = window.innerWidth;
-                    canvas.height = window.innerHeight;
-                });
-            });
-
-            // Основният код (с по-строга проверка за PayPal)
-            document.addEventListener('DOMContentLoaded', () => {
-                // Price and quantity logic
+                // Price and quantity logic (без промени)
                 const prices = { small: 10, medium: 20, large: 30 };
                 const quantities = {
                     small: document.querySelector('.quantity[data-product="small"]'),
@@ -846,71 +821,179 @@
                 let lastStripeCall = 0;
                 const stripeCallCooldown = 1000; // 1 секунда
                 let isFormValid = false;
-
-                // Инициализирай Stripe
-                stripe = Stripe('pk_test_51R2z6B2LbXGLRhiwTDKQ2GLW6Wg0nknwchUkxhEjo5jXjxRnTmXSgqudhVzpT2HfWxRNTrnV0r6ynqLXAOnjBM6X00JWuvskc5');
-                if (!isStripeInitialized) {
-                    const elements = stripe.elements();
-                    cardElement = elements.create('card', {
-                        style: {
-                            base: {
-                                fontSize: '16px',
-                                color: '#32325d',
-                                fontFamily: '"Poppins", sans-serif',
-                            }
-                        }
-                    });
-                    cardElement.mount('#card-element');
-
-                    // Показвай грешки при въвеждане на картата
-                    const cardErrors = document.getElementById('card-errors');
-                    cardElement.on('change', (event) => {
-                        if (event.error) {
-                            cardErrors.textContent = event.error.message;
-                        } else {
-                            cardErrors.textContent = '';
-                        }
-                    });
-
-                    isStripeInitialized = true;
-                }
+                let paymentRequest = null; // За Google Pay и Apple Pay
 
                 // Дефинирай контейнерите веднъж в началото
                 const paypalContainer = document.getElementById('paypal-button-container');
                 const stripeContainer = document.getElementById('stripe-container');
+                const paymentRequestButtonContainer = document.getElementById('payment-request-button');
 
-                // Инициализирай PayPal бутони с по-строга проверка
-                if (typeof paypal !== 'undefined' && !isPaypalInitialized && !paypalContainer.hasAttribute('data-rendered')) {
-                    // Увери се, че контейнерът е празен преди рендиране
-                    paypalContainer.innerHTML = '';
-                    paypal.Buttons({
-                        createOrder: (data, actions) => {
-                            const totalInPounds = updatePrices();
-                            return actions.order.create({
-                                purchase_units: [{
-                                    amount: {
-                                        value: totalInPounds.toFixed(2),
-                                        currency_code: 'GBP'
-                                    }
-                                }]
+                // Инициализирай Stripe
+                try {
+                    stripe = Stripe('pk_test_51R2z6B2LbXGLRhiwTDKQ2GLW6Wg0nknwchUkxhEjo5jXjxRnTmXSgqudhVzpT2HfWxRNTrnV0r6ynqLXAOnjBM6X00JWuvskc5');
+                    console.log('Stripe initialized successfully');
+                } catch (error) {
+                    console.error('Failed to initialize Stripe:', error);
+                }
+
+                if (stripe && !isStripeInitialized) {
+                    try {
+                        const elements = stripe.elements();
+                        cardElement = elements.create('card', {
+                            style: {
+                                base: {
+                                    fontSize: '16px',
+                                    color: '#32325d',
+                                    fontFamily: '"Poppins", sans-serif',
+                                }
+                            }
+                        });
+                        cardElement.mount('#card-element');
+                        console.log('Stripe card element mounted successfully');
+
+                        const cardErrors = document.getElementById('card-errors');
+                        cardElement.on('change', (event) => {
+                            if (event.error) {
+                                cardErrors.textContent = event.error.message;
+                            } else {
+                                cardErrors.textContent = '';
+                            }
+                        });
+
+                        isStripeInitialized = true;
+                    } catch (error) {
+                        console.error('Error initializing Stripe card element:', error);
+                    }
+                }
+
+                // Инициализирай Payment Request за Google Pay и Apple Pay
+                async function initializePaymentRequest() {
+                    if (!stripe) {
+                        console.error('Stripe not initialized, cannot create Payment Request');
+                        return;
+                    }
+
+                    const totalInPounds = updatePrices();
+                    try {
+                        paymentRequest = stripe.paymentRequest({
+                            country: 'GB',
+                            currency: 'gbp',
+                            total: {
+                                label: 'Total',
+                                amount: Math.round(totalInPounds * 100), // В пени
+                            },
+                            requestPayerName: true,
+                            requestPayerEmail: true,
+                            requestPayerPhone: true,
+                        });
+                        console.log('Payment Request created successfully');
+
+                        // Проверка дали устройството поддържа Google Pay или Apple Pay
+                        const result = await paymentRequest.canMakePayment();
+                        if (result) {
+                            console.log('Device supports Google Pay/Apple Pay:', result);
+                            const elements = stripe.elements();
+                            const prButton = elements.create('paymentRequestButton', {
+                                paymentRequest: paymentRequest,
+                                style: {
+                                    paymentRequestButton: {
+                                        type: 'default',
+                                        theme: 'dark',
+                                    },
+                                },
                             });
-                        },
-                        onApprove: (data, actions) => {
-                            return actions.order.capture().then(details => {
-                                const payerName = details.payer.name.given_name;
-                                const totalInPounds = updatePrices();
-                                alert(`Payment completed successfully by ${payerName}! Total: £${totalInPounds.toFixed(2)}`);
-                                const modal = document.getElementById('order-summary-modal');
-                                if (modal) modal.style.display = 'none';
-                            });
-                        },
-                        onError: (err) => {
-                            alert('An error occurred during payment. Please try again.');
-                            console.error(err);
+
+                            prButton.mount('#payment-request-button');
+                            paymentRequestButtonContainer.style.display = 'block';
+                            console.log('Payment Request Button mounted successfully');
+
+                            // Ако устройството поддържа Google Pay/Apple Pay, избери опцията по подразбиране
+                            const expressCheckoutOption = document.getElementById('express-checkout');
+                            if (expressCheckoutOption) {
+                                expressCheckoutOption.checked = true;
+                                stripeContainer.style.display = 'none';
+                                paypalContainer.style.display = 'none';
+                            }
+                        } else {
+                            console.log('Device does not support Google Pay/Apple Pay');
+                            paymentRequestButtonContainer.style.display = 'none';
+                            const expressCheckoutOption = document.getElementById('express-checkout');
+                            const expressCheckoutLabel = expressCheckoutOption ? expressCheckoutOption.nextElementSibling : null;
+                            if (expressCheckoutOption && expressCheckoutLabel) {
+                                expressCheckoutOption.style.display = 'none';
+                                expressCheckoutLabel.style.display = 'none';
+                            } else {
+                                console.warn('Express checkout option or label not found in DOM');
+                            }
                         }
-                    }).render('#paypal-button-container');
-                    paypalContainer.setAttribute('data-rendered', 'true'); // Маркираме, че е рендиран
-                    isPaypalInitialized = true;
+                    } catch (error) {
+                        console.error('Error initializing Payment Request:', error);
+                        paymentRequestButtonContainer.style.display = 'none';
+                        const expressCheckoutOption = document.getElementById('express-checkout');
+                        const expressCheckoutLabel = expressCheckoutOption ? expressCheckoutOption.nextElementSibling : null;
+                        if (expressCheckoutOption && expressCheckoutLabel) {
+                            expressCheckoutOption.style.display = 'none';
+                            expressCheckoutLabel.style.display = 'none';
+                        } else {
+                            console.warn('Express checkout option or label not found in DOM');
+                        }
+                    }
+                }
+
+                // Функция за инициализация на PayPal
+                function initializePaypal() {
+                    if (typeof paypal === 'undefined') {
+                        console.warn('PayPal SDK not loaded yet. Retrying in 500ms...');
+                        setTimeout(initializePaypal, 500);
+                        return;
+                    }
+
+                    if (isPaypalInitialized || paypalContainer.hasAttribute('data-rendered')) {
+                        console.log('PayPal already initialized, skipping...');
+                        return;
+                    }
+
+                    try {
+                        paypalContainer.innerHTML = '';
+                        paypal.Buttons({
+                            createOrder: (data, actions) => {
+                                const totalInPounds = updatePrices();
+                                return actions.order.create({
+                                    purchase_units: [{
+                                        amount: {
+                                            value: totalInPounds.toFixed(2),
+                                            currency_code: 'GBP'
+                                        }
+                                    }]
+                                });
+                            },
+                            onApprove: (data, actions) => {
+                                return actions.order.capture().then(details => {
+                                    const payerName = details.payer.name.given_name;
+                                    const totalInPounds = updatePrices();
+                                    alert(`Payment completed successfully by ${payerName}! Total: £${totalInPounds.toFixed(2)}`);
+                                    const modal = document.getElementById('order-summary-modal');
+                                    if (modal) modal.style.display = 'none';
+                                });
+                            },
+                            onError: (err) => {
+                                alert('An error occurred during payment. Please try again.');
+                                console.error('PayPal error:', err);
+                            }
+                        }).render('#paypal-button-container');
+                        paypalContainer.setAttribute('data-rendered', 'true');
+                        isPaypalInitialized = true;
+                        console.log('PayPal initialized successfully');
+                    } catch (error) {
+                        console.error('Error initializing PayPal:', error);
+                    }
+                }
+
+                // Инициализирай Payment Request след зареждане на Stripe
+                if (stripe) {
+                    initializePaymentRequest();
+                } else {
+                    console.error('Stripe not available, skipping Payment Request initialization');
                 }
 
                 // Continue to Shipping button
@@ -1020,6 +1103,16 @@
                         updatePrices();
                         const modal = document.getElementById('order-summary-modal');
                         if (modal && modal.style.display === 'flex') updateSummary();
+
+                        if (paymentRequest) {
+                            const totalInPounds = updatePrices();
+                            paymentRequest.update({
+                                total: {
+                                    label: 'Total',
+                                    amount: Math.round(totalInPounds * 100),
+                                },
+                            });
+                        }
                     });
                 });
 
@@ -1029,6 +1122,16 @@
                         updatePrices();
                         const modal = document.getElementById('order-summary-modal');
                         if (modal && modal.style.display === 'flex') updateSummary();
+
+                        if (paymentRequest) {
+                            const totalInPounds = updatePrices();
+                            paymentRequest.update({
+                                total: {
+                                    label: 'Total',
+                                    amount: Math.round(totalInPounds * 100),
+                                },
+                            });
+                        }
                     });
                 });
 
@@ -1041,8 +1144,33 @@
                 const paymentOptions = document.querySelectorAll('input[name="payment-option"]');
                 paymentOptions.forEach(option => {
                     option.addEventListener('change', () => {
-                        paypalContainer.style.display = option.value === 'paypal' ? 'block' : 'none';
-                        stripeContainer.style.display = option.value === 'stripe' ? 'block' : 'none';
+                        if (option.value === 'express-checkout') {
+                            paymentRequestButtonContainer.classList.add('active');
+                            paymentRequestButtonContainer.style.display = 'block';
+                            stripeContainer.classList.remove('active');
+                            stripeContainer.style.display = 'none';
+                            paypalContainer.classList.remove('active');
+                            paypalContainer.style.display = 'none';
+                        } else if (option.value === 'stripe') {
+                            paymentRequestButtonContainer.classList.remove('active');
+                            paymentRequestButtonContainer.style.display = 'none';
+                            stripeContainer.classList.add('active');
+                            stripeContainer.style.display = 'block';
+                            paypalContainer.classList.remove('active');
+                            paypalContainer.style.display = 'none';
+                        } else if (option.value === 'paypal') {
+                            paymentRequestButtonContainer.classList.remove('active');
+                            paymentRequestButtonContainer.style.display = 'none';
+                            stripeContainer.classList.remove('active');
+                            stripeContainer.style.display = 'none';
+                            paypalContainer.classList.add('active');
+                            paypalContainer.style.display = 'block';
+                            // Инициализирай PayPal само когато потребителят избере тази опция
+                            if (!isPaypalInitialized) {
+                                console.log('Initializing PayPal on demand...');
+                                initializePaypal();
+                            }
+                        }
                     });
                 });
 
@@ -1064,7 +1192,59 @@
 
                     const paymentMethod = document.querySelector('input[name="payment-option"]:checked').value;
 
-                    if (paymentMethod === 'stripe') {
+                    if (paymentMethod === 'express-checkout' && paymentRequest) {
+                        paymentRequest.on('paymentmethod', async (ev) => {
+                            const { paymentMethod } = ev;
+
+                            const total = Math.round(totalInPounds * 100);
+                            const response = await fetch('https://my-checkout-server-lostparcel-18d58c9d1ce5.herokuapp.com/create-payment-intent', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    payment_method_id: paymentMethod.id,
+                                    amount: total
+                                })
+                            });
+
+                            const data = await response.json();
+                            if (data.error) {
+                                console.error('Server error:', data.error);
+                                alert(`Server error: ${data.error}`);
+                                ev.complete('fail');
+                                return;
+                            }
+
+                            const { paymentIntent, error: retrieveError } = await stripe.retrievePaymentIntent(data.client_secret);
+                            if (retrieveError) {
+                                console.error('Error retrieving PaymentIntent:', retrieveError);
+                                alert(`Error retrieving PaymentIntent: ${retrieveError.message}`);
+                                ev.complete('fail');
+                                return;
+                            }
+
+                            if (paymentIntent.status === 'succeeded') {
+                                alert(`Payment successful! PaymentIntent ID: ${paymentIntent.id}`);
+                                ev.complete('success');
+                                return;
+                            }
+
+                            const { error: confirmError, paymentIntent: confirmedIntent } = await stripe.confirmCardPayment(data.client_secret, {
+                                payment_method: paymentMethod.id
+                            });
+
+                            if (confirmError) {
+                                console.error('Payment confirmation error:', confirmError);
+                                alert(`Payment confirmation error: ${confirmError.message}`);
+                                ev.complete('fail');
+                                return;
+                            }
+
+                            alert(`Payment successful! PaymentIntent ID: ${confirmedIntent.id}`);
+                            ev.complete('success');
+                        });
+
+                        paymentRequest.show();
+                    } else if (paymentMethod === 'stripe') {
                         const now = Date.now();
                         if (now - lastStripeCall < stripeCallCooldown) {
                             console.log('Stripe call throttled to prevent loop');
@@ -1072,7 +1252,6 @@
                         }
                         lastStripeCall = now;
 
-                        // Create PaymentMethod
                         const { error, paymentMethod: stripePaymentMethod } = await stripe.createPaymentMethod({
                             type: 'card',
                             card: cardElement,
@@ -1084,7 +1263,7 @@
                             return;
                         }
 
-                        const total = Math.round(totalInPounds * 100); // Convert to pence
+                        const total = Math.round(totalInPounds * 100);
                         const response = await fetch('https://my-checkout-server-lostparcel-18d58c9d1ce5.herokuapp.com/create-payment-intent', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -1125,7 +1304,6 @@
 
                         alert(`Payment successful! PaymentIntent ID: ${confirmedIntent.id}`);
                     } else if (paymentMethod === 'paypal') {
-                        // PayPal бутоните вече са рендирани, потребителят трябва да кликне върху тях
                         console.log('PayPal payment will be handled by PayPal Buttons');
                     }
                 });
