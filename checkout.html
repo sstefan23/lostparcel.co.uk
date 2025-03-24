@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -8,24 +9,28 @@
         src="https://www.paypal.com/sdk/js?client-id=AcACWRq55R3S54o2VIwnL1IRWwRPzILPFYaAG9l0xLzoCuoAIdFX5boGpt_vNIiREA_TW479V27G1E6U&currency=GBP"
         async></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="libs/p5.min.js"></script>
+    <script src="libs/delaunator.min.js"></script>
     <style>
         body {
             margin: 0;
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #34d399 0%, #9dc8fc 100%);
+            background: #fff;
             color: #333;
             overflow-x: hidden;
             position: relative;
         }
 
-        .particles {
+        #background-animation {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            z-index: 0;
+            z-index: -1;
         }
 
         .checkout-container {
@@ -56,7 +61,7 @@
             justify-content: center;
             align-items: center;
             padding: 25px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(240, 245, 255, 0.6));
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(240, 245, 255, 0.8));
             border-radius: 25px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
             margin: 20px;
@@ -77,7 +82,7 @@
         }
 
         .section h2 {
-            color: #df8e31;
+            color: #333;
             font-size: 34px;
             margin: 20px 0 20px 0;
             text-align: center;
@@ -113,7 +118,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 15px 20px;
-            background: linear-gradient(90deg, rgba(250, 250, 250, 0.5), rgba(255, 255, 255, 0.5));
+            background: linear-gradient(90deg, rgba(250, 250, 250, 0.8), rgba(255, 255, 255, 0.8));
             border: 2px solid #a3d4d9;
             border-radius: 15px;
             height: 60px;
@@ -150,7 +155,7 @@
         .product-row:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(163, 212, 217, 0.5);
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0.7), rgba(250, 250, 250, 0.7));
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.9), rgba(250, 250, 250, 0.9));
         }
 
         .product-row .emoji {
@@ -262,7 +267,7 @@
             color: #333;
             margin: 20px 0;
             padding: 12px 25px;
-            background: linear-gradient(45deg, rgba(255, 255, 255, 0.6), rgba(240, 245, 255, 0.6));
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.8), rgba(240, 245, 255, 0.8));
             border-radius: 15px;
             font-weight: bold;
             text-align: center;
@@ -438,7 +443,7 @@
             width: 100%;
             max-width: 480px;
             padding: 20px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(240, 245, 255, 0.6));
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(240, 245, 255, 0.8));
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             margin: 0 auto 25px auto;
@@ -468,7 +473,7 @@
             max-width: 440px;
             margin: 8px auto;
             padding: 10px 15px;
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.8);
             border: 2px solid #a3d4d9;
             border-radius: 12px;
             font-size: 16px;
@@ -479,7 +484,7 @@
         }
 
         .summary-container:hover {
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.9);
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(163, 212, 217, 0.3);
             border-color: #f7c948;
@@ -507,7 +512,7 @@
             width: 100%;
             max-width: 500px;
             padding: 25px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(240, 245, 255, 0.6));
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(240, 245, 255, 0.8));
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(12px);
@@ -528,6 +533,29 @@
             letter-spacing: 3px;
             font-weight: bold;
             font-family: 'Poppins', sans-serif;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-button:hover {
+            color: #df8e31;
+        }
+
+        #success-message {
+            font-size: 16px;
+            color: #444;
+            margin-bottom: 20px;
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            line-height: 1.5;
         }
 
         @keyframes fadeInModal {
@@ -619,53 +647,215 @@
 
         #payment-request-button {
             display: none;
-            /* По подразбиране скрит */
             margin-bottom: 20px;
         }
 
         #payment-request-button.active {
             display: block !important;
-            /* Изрично показване */
         }
 
         #stripe-container {
             display: none;
-            /* По подразбиране скрит */
             min-height: 50px;
-            /* За да не е празно */
         }
 
         #stripe-container.active {
             display: block !important;
-            /* Изрично показване */
         }
 
         #card-element {
             border: 1px solid #ccc;
             padding: 10px;
             border-radius: 4px;
-            background: #fff;
-            /* Ясен фон */
+            background: rgba(255, 255, 255, 0.9);
         }
 
         #paypal-button-container {
             display: none;
-            /* По подразбиране скрит */
             min-height: 50px;
-            /* За да не е празно */
         }
 
         #paypal-button-container.active {
             display: block !important;
-            /* Изрично показване */
+        }
+
+        #payment-section {
+            background: linear-gradient(90deg, rgba(255, 253, 253, 0.8), rgba(255, 255, 255, 0.8));
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #payment-section h2 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .payment-form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        #payment-method {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .payment-option-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            color: #444;
+            padding: 10px 15px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .payment-icon {
+            font-size: 18px;
+            color: #666;
+            transition: color 0.3s ease;
+            display: inline-block;
+        }
+
+        .payment-option-label input[type="radio"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #666;
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-option-label input[type="radio"]:checked {
+            border-color: #4CAF50;
+            background-color: #4CAF50;
+        }
+
+        .payment-option-label input[type="radio"]:checked::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background-color: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .payment-option-label:hover {
+            border-color: #4CAF50;
+            background-color: rgba(241, 248, 241, 0.9);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .payment-option-label:hover .payment-icon {
+            color: #4CAF50;
+        }
+
+        .payment-option-label input[type="radio"]:checked~.payment-icon,
+        .payment-option-label input[type="radio"]:checked~span {
+            color: #4CAF50;
+            animation: pulse 0.3s ease;
+        }
+
+        .payment-option-label input[type="radio"]:checked~span {
+            font-weight: 600;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        #stripe-container {
+            display: none;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        #stripe-container.active {
+            display: block !important;
+        }
+
+        #card-element {
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        #card-errors {
+            color: #e74c3c;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        #paypal-button-container {
+            display: none;
+            min-height: 50px;
+            width: 100%;
+        }
+
+        #paypal-button-container.active {
+            display: block !important;
+        }
+
+        #payment-request-button {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        #payment-request-button.active {
+            display: block !important;
+        }
+
+        .continue-button {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            align-self: center;
+        }
+
+        .continue-button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
 
 <body>
-    <canvas class="particles"></canvas>
+    <div id="background-animation"></div>
     <div class="checkout-container">
-        <!-- Секция 1: Избор на пакети -->
         <div class="section" id="package-section">
             <h2>Select Your Packages</h2>
             <div class="products-container">
@@ -704,7 +894,6 @@
             <button type="button" class="continue-button" id="continue-to-shipping">Continue to Shipping</button>
         </div>
 
-        <!-- Секция 2: Данни за доставка -->
         <div class="section" id="shipping-section">
             <h2>Shipping Details</h2>
             <form class="checkout-form">
@@ -722,16 +911,25 @@
             </form>
         </div>
 
-        <!-- Секция 3: Данни за плащане -->
         <div class="section" id="payment-section">
             <h2>Payment Details</h2>
-            <form class="checkout-form" id="payment-form">
+            <form class="checkout-form payment-form-container" id="payment-form">
                 <div id="payment-method">
-                    <label><input type="radio" name="payment-option" value="express-checkout"> Google Pay / Apple
-                        Pay</label>
-                    <label><input type="radio" name="payment-option" value="stripe" checked> Pay with Card
-                        (Stripe)</label>
-                    <label><input type="radio" name="payment-option" value="paypal"> Pay with PayPal</label>
+                    <label class="payment-option-label">
+                        <input type="radio" name="payment-option" value="express-checkout">
+                        <i class="fas fa-mobile-alt payment-icon"></i>
+                        <span>Google Pay / Apple Pay</span>
+                    </label>
+                    <label class="payment-option-label">
+                        <input type="radio" name="payment-option" value="stripe" checked>
+                        <i class="fas fa-credit-card payment-icon"></i>
+                        <span>Pay with Card (Stripe)</span>
+                    </label>
+                    <label class="payment-option-label">
+                        <input type="radio" name="payment-option" value="paypal">
+                        <i class="fab fa-paypal payment-icon"></i>
+                        <span>Pay with PayPal</span>
+                    </label>
                 </div>
                 <div id="payment-request-button" style="display: none; margin-bottom: 20px;"></div>
                 <div id="stripe-container" style="display: block;">
@@ -752,15 +950,21 @@
             </div>
         </div>
 
+        <div id="success-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button"
+                    onclick="document.getElementById('success-modal').style.display='none'">×</span>
+                <h2>Payment Successful!</h2>
+                <p id="success-message">Payment successful! PaymentIntent ID: </p>
+            </div>
+        </div>
+
         <script src="https://js.stripe.com/v3/"></script>
         <script
-            src="https://www.paypal.com/sdk/js?client-id=AcACWRq55R3S54o2VIwnL1IRWwRPzILPFYaAG9l0xLzoCuoAIdFX5boGpt_vNIiREA_TW479V27G1E6U&currency=GBP"></script>
+            src="https://www.paypal.com/sdk/js?client-id=AcACWRq55R3S54o2VIwnL1IRWwRPzILPFYaAG9l0xLzoCuoAIdFX5boGpt_vNIiREA_TW479V27G1E6U¤cy=GBP"></script>
 
         <script>
-            // Particle animation
-            // Основният код (с корекции за PayPal и Google Pay/Apple Pay)
             document.addEventListener('DOMContentLoaded', () => {
-                // Price and quantity logic (без промени)
                 const prices = { small: 10, medium: 20, large: 30 };
                 const quantities = {
                     small: document.querySelector('.quantity[data-product="small"]'),
@@ -813,22 +1017,19 @@
                     summaryContent.innerHTML = contentHtml;
                 }
 
-                // Stripe и PayPal инициализация
                 let stripe = null;
                 let cardElement = null;
                 let isStripeInitialized = false;
                 let isPaypalInitialized = false;
                 let lastStripeCall = 0;
-                const stripeCallCooldown = 1000; // 1 секунда
+                const stripeCallCooldown = 1000;
                 let isFormValid = false;
-                let paymentRequest = null; // За Google Pay и Apple Pay
+                let paymentRequest = null;
 
-                // Дефинирай контейнерите веднъж в началото
                 const paypalContainer = document.getElementById('paypal-button-container');
                 const stripeContainer = document.getElementById('stripe-container');
                 const paymentRequestButtonContainer = document.getElementById('payment-request-button');
 
-                // Инициализирай Stripe
                 try {
                     stripe = Stripe('pk_test_51R2z6B2LbXGLRhiwTDKQ2GLW6Wg0nknwchUkxhEjo5jXjxRnTmXSgqudhVzpT2HfWxRNTrnV0r6ynqLXAOnjBM6X00JWuvskc5');
                     console.log('Stripe initialized successfully');
@@ -866,7 +1067,6 @@
                     }
                 }
 
-                // Инициализирай Payment Request за Google Pay и Apple Pay
                 async function initializePaymentRequest() {
                     if (!stripe) {
                         console.error('Stripe not initialized, cannot create Payment Request');
@@ -880,7 +1080,7 @@
                             currency: 'gbp',
                             total: {
                                 label: 'Total',
-                                amount: Math.round(totalInPounds * 100), // В пени
+                                amount: Math.round(totalInPounds * 100),
                             },
                             requestPayerName: true,
                             requestPayerEmail: true,
@@ -888,7 +1088,6 @@
                         });
                         console.log('Payment Request created successfully');
 
-                        // Проверка дали устройството поддържа Google Pay или Apple Pay
                         const result = await paymentRequest.canMakePayment();
                         if (result) {
                             console.log('Device supports Google Pay/Apple Pay:', result);
@@ -907,7 +1106,6 @@
                             paymentRequestButtonContainer.style.display = 'block';
                             console.log('Payment Request Button mounted successfully');
 
-                            // Ако устройството поддържа Google Pay/Apple Pay, избери опцията по подразбиране
                             const expressCheckoutOption = document.getElementById('express-checkout');
                             if (expressCheckoutOption) {
                                 expressCheckoutOption.checked = true;
@@ -940,63 +1138,102 @@
                     }
                 }
 
-                // Функция за инициализация на PayPal
                 function initializePaypal() {
-                    if (typeof paypal === 'undefined') {
-                        console.warn('PayPal SDK not loaded yet. Retrying in 500ms...');
-                        setTimeout(initializePaypal, 500);
-                        return;
-                    }
+                    console.log('Attempting to initialize PayPal...');
 
-                    if (isPaypalInitialized || paypalContainer.hasAttribute('data-rendered')) {
-                        console.log('PayPal already initialized, skipping...');
-                        return;
-                    }
+                    // Добавяме брояч за опити и максимален брой опити
+                    let retryCount = 0;
+                    const maxRetries = 5;
+                    const retryInterval = 500; // 500ms между опитите
 
-                    try {
-                        paypalContainer.innerHTML = '';
-                        paypal.Buttons({
-                            createOrder: (data, actions) => {
-                                const totalInPounds = updatePrices();
-                                return actions.order.create({
-                                    purchase_units: [{
-                                        amount: {
-                                            value: totalInPounds.toFixed(2),
-                                            currency_code: 'GBP'
-                                        }
-                                    }]
-                                });
-                            },
-                            onApprove: (data, actions) => {
-                                return actions.order.capture().then(details => {
-                                    const payerName = details.payer.name.given_name;
+                    function tryInitialize() {
+                        if (retryCount >= maxRetries) {
+                            console.error('Failed to initialize PayPal after maximum retries. Please check the PayPal SDK script or client-id.');
+                            alert('Unable to load PayPal. Please try again later or choose another payment method.');
+                            return;
+                        }
+
+                        if (typeof paypal === 'undefined') {
+                            console.warn(`PayPal SDK not loaded yet. Retrying in ${retryInterval}ms... (Attempt ${retryCount + 1}/${maxRetries})`);
+                            retryCount++;
+                            setTimeout(tryInitialize, retryInterval);
+                            return;
+                        }
+
+                        if (isPaypalInitialized || paypalContainer.hasAttribute('data-rendered')) {
+                            console.log('PayPal already initialized, skipping...');
+                            return;
+                        }
+
+                        try {
+                            console.log('PayPal container visibility before render:', paypalContainer.style.display);
+                            console.log('PayPal container dimensions before render:', {
+                                width: paypalContainer.offsetWidth,
+                                height: paypalContainer.offsetHeight
+                            });
+
+                            paypalContainer.innerHTML = '';
+                            paypal.Buttons({
+                                createOrder: (data, actions) => {
                                     const totalInPounds = updatePrices();
-                                    alert(`Payment completed successfully by ${payerName}! Total: £${totalInPounds.toFixed(2)}`);
-                                    const modal = document.getElementById('order-summary-modal');
-                                    if (modal) modal.style.display = 'none';
-                                });
-                            },
-                            onError: (err) => {
-                                alert('An error occurred during payment. Please try again.');
-                                console.error('PayPal error:', err);
-                            }
-                        }).render('#paypal-button-container');
-                        paypalContainer.setAttribute('data-rendered', 'true');
-                        isPaypalInitialized = true;
-                        console.log('PayPal initialized successfully');
-                    } catch (error) {
-                        console.error('Error initializing PayPal:', error);
+                                    console.log('Creating PayPal order with total:', totalInPounds);
+                                    return actions.order.create({
+                                        purchase_units: [{
+                                            amount: {
+                                                value: totalInPounds.toFixed(2),
+                                                currency_code: 'GBP'
+                                            }
+                                        }]
+                                    });
+                                },
+                                onApprove: (data, actions) => {
+                                    console.log('PayPal payment approved:', data);
+                                    return actions.order.capture().then(details => {
+                                        const payerName = details.payer.name.given_name;
+                                        const totalInPounds = updatePrices();
+                                        const successModal = document.getElementById('success-modal');
+                                        const successMessage = document.getElementById('success-message');
+                                        successMessage.textContent = `Payment completed successfully by ${payerName}! Total: £${totalInPounds.toFixed(2)}`;
+                                        successModal.style.display = 'flex';
+                                        const modal = document.getElementById('order-summary-modal');
+                                        if (modal) modal.style.display = 'none';
+                                    });
+                                },
+                                onError: (err) => {
+                                    console.error('PayPal error during rendering or payment:', err);
+                                    alert('An error occurred during payment. Please try again.');
+                                },
+                                onInit: (data, actions) => {
+                                    console.log('PayPal Buttons initialized:', data);
+                                },
+                                onRender: () => {
+                                    console.log('PayPal Buttons rendered successfully');
+                                    console.log('PayPal container visibility after render:', paypalContainer.style.display);
+                                    console.log('PayPal container dimensions after render:', {
+                                        width: paypalContainer.offsetWidth,
+                                        height: paypalContainer.offsetHeight
+                                    });
+                                }
+                            }).render('#paypal-button-container');
+                            paypalContainer.setAttribute('data-rendered', 'true');
+                            isPaypalInitialized = true;
+                            console.log('PayPal initialized successfully');
+                        } catch (error) {
+                            console.error('Error initializing PayPal:', error);
+                            alert('Failed to initialize PayPal. Please try again or use another payment method.');
+                        }
                     }
+
+                    // Стартираме първия опит
+                    tryInitialize();
                 }
 
-                // Инициализирай Payment Request след зареждане на Stripe
                 if (stripe) {
                     initializePaymentRequest();
                 } else {
                     console.error('Stripe not available, skipping Payment Request initialization');
                 }
 
-                // Continue to Shipping button
                 document.getElementById('continue-to-shipping').addEventListener('click', () => {
                     const total = updatePrices();
                     if (total > 0) {
@@ -1006,7 +1243,6 @@
                     }
                 });
 
-                // Continue to Payment button
                 const continueToPaymentButton = document.getElementById('continue-to-payment');
                 if (continueToPaymentButton) {
                     continueToPaymentButton.addEventListener('click', () => {
@@ -1076,7 +1312,6 @@
                     });
                 }
 
-                // Confirm & Proceed button
                 const confirmOrderButton = document.getElementById('confirm-order');
                 if (confirmOrderButton) {
                     confirmOrderButton.addEventListener('click', () => {
@@ -1089,7 +1324,6 @@
                     });
                 }
 
-                // Quantity controls
                 document.querySelectorAll('.quantity-controls button').forEach(button => {
                     button.addEventListener('click', () => {
                         const product = button.getAttribute('data-product');
@@ -1135,12 +1369,10 @@
                     });
                 });
 
-                // Close modal
                 document.querySelector('.close-modal').addEventListener('click', () => {
                     document.getElementById('order-summary-modal').style.display = 'none';
                 });
 
-                // Payment method toggle
                 const paymentOptions = document.querySelectorAll('input[name="payment-option"]');
                 paymentOptions.forEach(option => {
                     option.addEventListener('change', () => {
@@ -1165,7 +1397,6 @@
                             stripeContainer.style.display = 'none';
                             paypalContainer.classList.add('active');
                             paypalContainer.style.display = 'block';
-                            // Инициализирай PayPal само когато потребителят избере тази опция
                             if (!isPaypalInitialized) {
                                 console.log('Initializing PayPal on demand...');
                                 initializePaypal();
@@ -1174,7 +1405,6 @@
                     });
                 });
 
-                // Payment form submission
                 const paymentForm = document.getElementById('payment-form');
                 paymentForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
@@ -1288,28 +1518,94 @@
                         }
 
                         if (paymentIntent.status === 'succeeded') {
-                            alert(`Payment successful! PaymentIntent ID: ${paymentIntent.id}`);
+                            const successModal = document.getElementById('success-modal');
+                            const successMessage = document.getElementById('success-message');
+                            successMessage.textContent = `Payment successful! PaymentIntent ID: ${paymentIntent.id}`;
+                            successModal.style.display = 'flex';
                             return;
                         }
 
                         const { error: confirmError, paymentIntent: confirmedIntent } = await stripe.confirmCardPayment(data.client_secret, {
                             payment_method: stripePaymentMethod.id
                         });
-
                         if (confirmError) {
-                            console.error('Payment confirmation error:', confirmError);
-                            alert(`Payment confirmation error: ${confirmError.message}`);
-                            return;
+                            console.error('Error confirming payment:', confirmError);
+                            alert(`Payment failed: ${confirmError.message}`);
+                        } else if (confirmedIntent.status === 'succeeded') {
+                            const successModal = document.getElementById('success-modal');
+                            const successMessage = document.getElementById('success-message');
+                            successMessage.textContent = `Payment successful! PaymentIntent ID: ${confirmedIntent.id}`;
+                            successModal.style.display = 'flex';
                         }
-
-                        alert(`Payment successful! PaymentIntent ID: ${confirmedIntent.id}`);
-                    } else if (paymentMethod === 'paypal') {
-                        console.log('PayPal payment will be handled by PayPal Buttons');
                     }
                 });
 
                 updatePrices();
             });
+        </script>
+
+        <script>
+            const s = (sketch) => {
+                let particles = [];
+                const numParticles = 100;
+                const maxDistance = 150;
+                const speed = 0.5;
+
+                sketch.setup = () => {
+                    let canvas = sketch.createCanvas(sketch.windowWidth, sketch.windowHeight);
+                    canvas.parent('background-animation');
+                    canvas.style('position', 'fixed');
+                    canvas.style('top', '0');
+                    canvas.style('left', '0');
+                    canvas.style('z-index', '-1');
+
+                    for (let i = 0; i < numParticles; i++) {
+                        particles.push({
+                            x: sketch.random(sketch.width),
+                            y: sketch.random(sketch.height),
+                            vx: sketch.random(-speed, speed),
+                            vy: sketch.random(-speed, speed),
+                            size: sketch.random(2, 5)
+                        });
+                    }
+                };
+
+                sketch.draw = () => {
+                    sketch.background(10, 20, 40);
+
+                    for (let p of particles) {
+                        p.x += p.vx;
+                        p.y += p.vy;
+
+                        if (p.x < 0) p.x = sketch.width;
+                        if (p.x > sketch.width) p.x = 0;
+                        if (p.y < 0) p.y = sketch.height;
+                        if (p.y > sketch.height) p.y = 0;
+
+                        sketch.fill(100, 150, 255, 200);
+                        sketch.noStroke();
+                        sketch.ellipse(p.x, p.y, p.size, p.size);
+                    }
+
+                    for (let i = 0; i < particles.length; i++) {
+                        for (let j = i + 1; j < particles.length; j++) {
+                            let d = sketch.dist(particles[i].x, particles[i].y, particles[j].x, particles[j].y);
+                            if (d < maxDistance) {
+                                let alpha = sketch.map(d, 0, maxDistance, 100, 0);
+                                sketch.stroke(100, 150, 255, alpha);
+                                sketch.strokeWeight(1);
+                                sketch.line(particles[i].x, particles[i].y, particles[j].x, particles[j].y);
+                            }
+                        }
+                    }
+                };
+
+                sketch.windowResized = () => {
+                    sketch.resizeCanvas(sketch.windowWidth, sketch.windowHeight);
+                };
+            };
+
+            let myp5 = new p5(s);
         </script>
     </div>
 </body>
