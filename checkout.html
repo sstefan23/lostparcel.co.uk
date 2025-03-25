@@ -5,15 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - LostParcel.co.uk</title>
+    <link rel="preload" href="libs/p5.min.js" as="script">
+    <link rel="preload" href="libs/delaunator.min.js" as="script">
+    <script src="libs/p5.min.js"></script>
+    <script src="libs/delaunator.min.js"></script>
     <script id="paypal-sdk"
         src="https://www.paypal.com/sdk/js?client-id=AcACWRq55R3S54o2VIwnL1IRWwRPzILPFYaAG9l0xLzoCuoAIdFX5boGpt_vNIiREA_TW479V27G1E6U&currency=GBP"
-        async></script>
+        defer></script>
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="libs/p5.min.js"></script>
-    <script src="libs/delaunator.min.js"></script>
+
     <style>
         body {
             margin: 0;
@@ -959,9 +963,6 @@
             </div>
         </div>
 
-        <script src="https://js.stripe.com/v3/"></script>
-        <script
-            src="https://www.paypal.com/sdk/js?client-id=AcACWRq55R3S54o2VIwnL1IRWwRPzILPFYaAG9l0xLzoCuoAIdFX5boGpt_vNIiREA_TW479V27G1E6U¤cy=GBP"></script>
 
         <script>
             document.addEventListener('DOMContentLoaded', () => {
@@ -1547,7 +1548,7 @@
         <script>
             const s = (sketch) => {
                 let particles = [];
-                const numParticles = 100;
+                const numParticles = 20;
                 const maxDistance = 150;
                 const speed = 0.5;
 
@@ -1605,9 +1606,17 @@
                 };
             };
 
-            let myp5 = new p5(s);
+            // Проверяваме дали p5 е зареден и стартираме анимацията веднага
+            if (typeof p5 !== 'undefined') {
+                let myp5 = new p5(s);
+                console.log('p5.js animation initialized successfully');
+            } else {
+                console.error('p5.js failed to load. Please check the file path for libs/p5.min.js');
+            }
         </script>
     </div>
+    <script src="https://js.stripe.com/v3/" defer></script>
+
 </body>
 
 </html>
