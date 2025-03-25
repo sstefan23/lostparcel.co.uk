@@ -65,7 +65,7 @@
             justify-content: center;
             align-items: center;
             padding: 25px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(240, 245, 255, 0.8));
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(240, 245, 255, 0.6));
             border-radius: 25px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
             margin: 20px;
@@ -683,12 +683,6 @@
             display: block !important;
         }
 
-        #payment-section {
-            background: linear-gradient(90deg, rgba(255, 253, 253, 0.8), rgba(255, 255, 255, 0.8));
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
 
         #payment-section h2 {
             font-size: 28px;
@@ -1031,15 +1025,40 @@
                 const stripeContainer = document.getElementById('stripe-container');
                 const paymentRequestButtonContainer = document.getElementById('payment-request-button');
 
-                try {
-                    stripe = Stripe('pk_test_51R2z6B2LbXGLRhiwTDKQ2GLW6Wg0nknwchUkxhEjo5jXjxRnTmXSgqudhVzpT2HfWxRNTrnV0r6ynqLXAOnjBM6X00JWuvskc5');
-                    console.log('Stripe initialized successfully');
-                } catch (error) {
-                    console.error('Failed to initialize Stripe:', error);
+                // Функция за динамично зареждане на Stripe
+                function loadStripe() {
+                    return new Promise((resolve, reject) => {
+                        if (typeof Stripe !== 'undefined') {
+                            resolve();
+                            return;
+                        }
+                        const script = document.createElement('script');
+                        script.src = 'https://js.stripe.com/v3/';
+                        script.async = true;
+                        script.onload = () => {
+                            console.log('Stripe SDK loaded successfully');
+                            resolve();
+                        };
+                        script.onerror = () => {
+                            console.error('Failed to load Stripe SDK');
+                            reject(new Error('Failed to load Stripe SDK'));
+                        };
+                        document.head.appendChild(script);
+                    });
                 }
 
-                if (stripe && !isStripeInitialized) {
+                // Инициализация на Stripe само когато потребителят стигне до секцията за плащане
+                async function initializeStripe() {
+                    if (isStripeInitialized) {
+                        console.log('Stripe already initialized, skipping...');
+                        return;
+                    }
+
                     try {
+                        await loadStripe();
+                        stripe = Stripe('pk_test_51R2z6B2LbXGLRhiwTDKQ2GLW6Wg0nknwchUkxhEjo5jXjxRnTmXSgqudhVzpT2HfWxRNTrnV0r6ynqLXAOnjBM6X00JWuvskc5');
+                        console.log('Stripe initialized successfully');
+
                         const elements = stripe.elements();
                         cardElement = elements.create('card', {
                             style: {
@@ -1064,7 +1083,8 @@
 
                         isStripeInitialized = true;
                     } catch (error) {
-                        console.error('Error initializing Stripe card element:', error);
+                        console.error('Error initializing Stripe:', error);
+                        alert('Failed to initialize Stripe. Please try again or use another payment method.');
                     }
                 }
 
@@ -1142,10 +1162,9 @@
                 function initializePaypal() {
                     console.log('Attempting to initialize PayPal...');
 
-                    // Добавяме брояч за опити и максимален брой опити
                     let retryCount = 0;
                     const maxRetries = 5;
-                    const retryInterval = 500; // 500ms между опитите
+                    const retryInterval = 500;
 
                     function tryInitialize() {
                         if (retryCount >= maxRetries) {
@@ -1225,14 +1244,7 @@
                         }
                     }
 
-                    // Стартираме първия опит
                     tryInitialize();
-                }
-
-                if (stripe) {
-                    initializePaymentRequest();
-                } else {
-                    console.error('Stripe not available, skipping Payment Request initialization');
                 }
 
                 document.getElementById('continue-to-shipping').addEventListener('click', () => {
@@ -1315,9 +1327,14 @@
 
                 const confirmOrderButton = document.getElementById('confirm-order');
                 if (confirmOrderButton) {
-                    confirmOrderButton.addEventListener('click', () => {
+                    confirmOrderButton.addEventListener('click', async () => {
                         document.getElementById('order-summary-modal').style.display = 'none';
                         if (isFormValid) {
+                            // Зареждаме Stripe само когато потребителят стигне до секцията за плащане
+                            await initializeStripe();
+                            if (stripe) {
+                                await initializePaymentRequest();
+                            }
                             document.getElementById('payment-section').scrollIntoView({ behavior: 'smooth' });
                         } else {
                             alert('Please correct the shipping details before proceeding to payment.');
@@ -1476,6 +1493,11 @@
 
                         paymentRequest.show();
                     } else if (paymentMethod === 'stripe') {
+                        if (!stripe || !isStripeInitialized) {
+                            alert('Stripe is not yet loaded. Please wait a moment and try again.');
+                            return;
+                        }
+
                         const now = Date.now();
                         if (now - lastStripeCall < stripeCallCooldown) {
                             console.log('Stripe call throttled to prevent loop');
@@ -1594,7 +1616,7 @@
                             if (d < maxDistance) {
                                 let alpha = sketch.map(d, 0, maxDistance, 100, 0);
                                 sketch.stroke(100, 150, 255, alpha);
-                                sketch.strokeWeight(1);
+                                sketch.strokeWeight(2); //дебелина на линиите
                                 sketch.line(particles[i].x, particles[i].y, particles[j].x, particles[j].y);
                             }
                         }
@@ -1615,7 +1637,6 @@
             }
         </script>
     </div>
-    <script src="https://js.stripe.com/v3/" defer></script>
 
 </body>
 
