@@ -839,6 +839,128 @@
             transform: scale(1.05);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            /* Ограничаваме височината до 80% от височината на екрана */
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(240, 245, 255, 0.8));
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            animation: fadeInModal 0.4s ease-out;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+            /* Добавяме скрол, ако съдържанието е твърде голямо */
+        }
+
+        #bitcoin-qr {
+            width: 150px;
+            /* Намаляваме от 200px на 150px */
+            height: 150px;
+            margin: 10px auto;
+            display: block;
+        }
+
+        .modal-content h2 {
+            margin: 0 0 15px;
+            font-size: 28px;
+            color: #df8e31;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: bold;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            /* Запазваме цвета от предишния стил, тъй като не е посочен в предоставения код */
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #df8e31;
+            /* Променяме цвета при ховър да съответства на #df8e31 */
+        }
+
+        #bitcoin-address {
+            font-family: monospace;
+            word-break: break-all;
+            background-color: rgba(0, 0, 0, 0.05);
+            padding: 5px;
+            border-radius: 5px;
+            color: #444;
+            margin: 10px 0;
+        }
+
+        #copy-address {
+            background-color: #F7931A;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: background-color 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        #copy-address:hover {
+            background-color: #e0851a;
+        }
+
+        #crypto-confirm {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        #crypto-confirm:hover {
+            background-color: #45a049;
+        }
+
+        /* Добавяме анимацията fadeInModal, ако не е дефинирана другаде */
+        @keyframes fadeInModal {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
     </style>
 </head>
 
@@ -919,6 +1041,16 @@
                         <i class="fab fa-paypal payment-icon"></i>
                         <span>Pay with PayPal</span>
                     </label>
+                    <label class="payment-option-label">
+                        <input type="radio" name="payment-option" value="crypto">
+                        <svg class="payment-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm3.1 16.9h-1.5v-1.5h1.5v1.5zm0-3.1h-1.5v-4.5h1.5v4.5zm-3.1 3.1h-1.5v-1.5h1.5v1.5zm0-3.1h-1.5v-4.5h1.5v4.5zm-3.1 3.1h-1.5v-1.5h1.5v1.5zm0-3.1h-1.5v-4.5h1.5v4.5zm7.7-6.2c-.2.2-.5.3-.8.3h-1.5v-1.5h1.5c.3 0 .6.1.8.3.2.2.3.5.3.8s-.1.6-.3.8zm-3.1-2.3c-.2.2-.5.3-.8.3h-1.5v-1.5h1.5c.3 0 .6.1.8.3.2.2.3.5.3.8s-.1.6-.3.8zm-3.1 2.3c-.2.2-.5.3-.8.3h-1.5v-1.5h1.5c.3 0 .6.1.8.3.2.2.3.5.3.8s-.1.6-.3.8zm-3.1-2.3c-.2.2-.5.3-.8.3h-1.5v-1.5h1.5c.3 0 .6.1.8.3.2.2.3.5.3.8s-.1.6-.3.8z"
+                                fill="#666" />
+                        </svg>
+                        <span>Bitcoin (BTC)</span>
+                    </label>
                 </div>
                 <div id="payment-request-button" style="display: none; margin-bottom: 20px;"></div>
                 <div id="stripe-container" style="display: block;">
@@ -939,6 +1071,27 @@
             </div>
         </div>
 
+        <div id="crypto-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close-modal"></span>
+                <h2>Pay with Bitcoin (BTC)</h2>
+                <p>Please send the payment to the following Bitcoin wallet address:</p>
+                <p><strong>Bitcoin Address:</strong> <span
+                        id="bitcoin-address">bc1qnfxw57yz8hu945492ydvy39yg0nu76qsfagm94</span></p>
+                <button id="copy-address">Copy Address</button>
+                <p>Scan the QR code below with your wallet app to send the payment:</p>
+                <img id="bitcoin-qr" src="bitcoin-qr.png" alt="Bitcoin QR Code">
+                <p style="color: #e74c3c; font-weight: bold; margin: 10px 0;">Important: Please send the payment before
+                    confirming. Bitcoin transactions may take 10-30 minutes to confirm.</p>
+                <p>After sending the payment, please provide the Transaction ID (TXID) below (optional, but
+                    recommended):</p>
+                <input type="text" id="txid-input" placeholder="Enter Transaction ID (TXID)"
+                    style="width: 100%; padding: 8px; margin: 10px 0; border: 1px solid #e0e0e0; border-radius: 5px; font-family: 'Poppins', sans-serif;">
+                <button id="crypto-confirm">Confirm Payment</button>
+            </div>
+        </div>
+
+
         <div id="success-modal" class="modal">
             <div class="modal-content">
                 <span class="close-button"
@@ -947,6 +1100,7 @@
                 <p id="success-message">Payment successful! PaymentIntent ID: </p>
             </div>
         </div>
+
 
 
         <script>
@@ -1038,11 +1192,11 @@
                     });
                 }
 
-                // Инициализация на Stripe само когато потребителят стигне до секцията за плащане
+                // Инициализация на Stripe
                 async function initializeStripe() {
                     if (isStripeInitialized) {
                         console.log('Stripe already initialized, skipping...');
-                        return;
+                        return true;
                     }
 
                     try {
@@ -1073,9 +1227,11 @@
                         });
 
                         isStripeInitialized = true;
+                        return true;
                     } catch (error) {
                         console.error('Error initializing Stripe:', error);
                         alert('Failed to initialize Stripe. Please try again or use another payment method.');
+                        return false;
                     }
                 }
 
@@ -1322,8 +1478,8 @@
                         document.getElementById('order-summary-modal').style.display = 'none';
                         if (isFormValid) {
                             // Зареждаме Stripe само когато потребителят стигне до секцията за плащане
-                            await initializeStripe();
-                            if (stripe) {
+                            const stripeInitialized = await initializeStripe();
+                            if (stripeInitialized && stripe) {
                                 await initializePaymentRequest();
                             }
                             document.getElementById('payment-section').scrollIntoView({ behavior: 'smooth' });
@@ -1410,6 +1566,13 @@
                                 console.log('Initializing PayPal on demand...');
                                 initializePaypal();
                             }
+                        } else if (option.value === 'crypto') {
+                            paymentRequestButtonContainer.classList.remove('active');
+                            paymentRequestButtonContainer.style.display = 'none';
+                            stripeContainer.classList.remove('active');
+                            stripeContainer.style.display = 'none';
+                            paypalContainer.classList.remove('active');
+                            paypalContainer.style.display = 'none';
                         }
                     });
                 });
@@ -1430,6 +1593,13 @@
                     }
 
                     const paymentMethod = document.querySelector('input[name="payment-option"]:checked').value;
+
+                    // Обработка на Биткойн плащане
+                    if (paymentMethod === 'crypto') {
+                        const cryptoModal = document.getElementById('crypto-modal');
+                        cryptoModal.style.display = 'flex';
+                        return;
+                    }
 
                     if (paymentMethod === 'express-checkout' && paymentRequest) {
                         paymentRequest.on('paymentmethod', async (ev) => {
@@ -1552,6 +1722,44 @@
                             successModal.style.display = 'flex';
                         }
                     }
+                });
+
+                // Обработка на модалния прозорец за Биткойн
+                const cryptoModal = document.getElementById('crypto-modal');
+                const copyAddressButton = document.getElementById('copy-address');
+                const cryptoConfirmButton = document.getElementById('crypto-confirm');
+                const txidInput = document.getElementById('txid-input');
+
+                // Копиране на адреса
+                copyAddressButton.addEventListener('click', () => {
+                    const bitcoinAddress = document.getElementById('bitcoin-address').textContent;
+                    navigator.clipboard.writeText(bitcoinAddress).then(() => {
+                        alert('Bitcoin address copied to clipboard!');
+                    }).catch(err => {
+                        console.error('Failed to copy address:', err);
+                        alert('Failed to copy address. Please copy it manually.');
+                    });
+                });
+
+                // Потвърждение на плащането
+                cryptoConfirmButton.addEventListener('click', () => {
+                    const txid = txidInput.value.trim();
+                    cryptoModal.style.display = 'none';
+                    const successModal = document.getElementById('success-modal');
+                    const successMessage = document.getElementById('success-message');
+                    let message = 'Thank you for your order! We will verify your Bitcoin payment and confirm your order soon. This may take 10-30 minutes.';
+                    if (txid) {
+                        message += ` Transaction ID (TXID) provided: ${txid}.`;
+                    } else {
+                        message += ' You did not provide a Transaction ID (TXID). We will check the wallet address for incoming payments.';
+                    }
+                    successMessage.textContent = message;
+                    successModal.style.display = 'flex';
+                });
+
+                // Затваряне на модалния прозорец
+                cryptoModal.querySelector('.close-modal').addEventListener('click', () => {
+                    cryptoModal.style.display = 'none';
                 });
 
                 updatePrices();
