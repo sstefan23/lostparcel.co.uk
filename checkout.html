@@ -1029,17 +1029,12 @@
                     <label class="payment-option-label">
                         <input type="radio" name="payment-option" value="express-checkout">
                         <i class="fas fa-mobile-alt payment-icon"></i>
-                        <span>Google Pay / Apple Pay</span>
+                        <span>Google Pay / Apple Pay / PayPal</span>
                     </label>
                     <label class="payment-option-label">
                         <input type="radio" name="payment-option" value="stripe" checked>
                         <i class="fas fa-credit-card payment-icon"></i>
                         <span>Pay with Card (Stripe)</span>
-                    </label>
-                    <label class="payment-option-label">
-                        <input type="radio" name="payment-option" value="paypal">
-                        <i class="fab fa-paypal payment-icon"></i>
-                        <span>Pay with PayPal</span>
                     </label>
                     <label class="payment-option-label">
                         <input type="radio" name="payment-option" value="crypto">
@@ -1052,12 +1047,11 @@
                         <span>Bitcoin (BTC)</span>
                     </label>
                 </div>
-                <div id="payment-request-button" style="display: none; margin-bottom: 20px;"></div>
-                <div id="stripe-container" style="display: block;">
+                <div id="payment-request-button" class="payment-container active"></div>
+                <div id="stripe-container" class="payment-container">
                     <div id="card-element"></div>
                     <div id="card-errors" role="alert"></div>
                 </div>
-                <div id="paypal-button-container" style="display: none;"></div>
                 <button type="submit" class="continue-button">Pay Now</button>
             </form>
         </div>
@@ -1160,13 +1154,10 @@
                 let stripe = null;
                 let cardElement = null;
                 let isStripeInitialized = false;
-                let isPaypalInitialized = false;
                 let lastStripeCall = 0;
                 const stripeCallCooldown = 1000;
                 let isFormValid = false;
-                let paymentRequest = null;
 
-                const paypalContainer = document.getElementById('paypal-button-container');
                 const stripeContainer = document.getElementById('stripe-container');
                 const paymentRequestButtonContainer = document.getElementById('payment-request-button');
 
@@ -1202,6 +1193,12 @@
                         stripe = Stripe('pk_test_51R2z6B2LbXGLRhiwTDKQ2GLW6Wg0nknwchUkxhEjo5jXjxRnTmXSgqudhVzpT2HfWxRNTrnV0r6ynqLXAOnjBM6X00JWuvskc5');
                         console.log('Stripe initialized successfully');
 
+                        // Проверяваме за блокирани бисквитки
+                        if (!navigator.cookieEnabled || (document.cookie.indexOf('__stripe_mid') === -1 && document.cookie.indexOf('__stripe_sid') === -1)) {
+                            console.warn('Third-party cookies may be blocked, which could affect payment functionality.');
+                            alert('It looks like third-party cookies are blocked in your browser. Please enable them in your browser settings to ensure payments work correctly.');
+                        }
+
                         const elements = stripe.elements();
                         cardElement = elements.create('card', {
                             style: {
@@ -1233,65 +1230,71 @@
                     }
                 }
 
-                async function initializePaymentRequest() {
+                async function initializeExpressCheckout() {
                     if (!stripe) {
-                        console.error('Stripe not initialized, cannot create Payment Request');
+                        console.error('Stripe not initialized, cannot create Express Checkout');
                         return;
                     }
 
-                    const totalInPounds = updatePrices();
                     try {
-                        paymentRequest = stripe.paymentRequest({
-                            country: 'GB',
+                        const totalInPounds = updatePrices();
+                        const elements = stripe.elements({
+                            mode: 'payment',
                             currency: 'gbp',
-                            total: {
-                                label: 'Total',
-                                amount: Math.round(totalInPounds * 100),
-                            },
-                            requestPayerName: true,
-                            requestPayerEmail: true,
-                            requestPayerPhone: true,
+                            amount: Math.round(totalInPounds * 100),
                         });
-                        console.log('Payment Request created successfully');
 
-                        const result = await paymentRequest.canMakePayment();
-                        if (result) {
-                            console.log('Device supports Google Pay/Apple Pay:', result);
-                            const elements = stripe.elements();
-                            const prButton = elements.create('paymentRequestButton', {
-                                paymentRequest: paymentRequest,
-                                style: {
-                                    paymentRequestButton: {
-                                        type: 'default',
-                                        theme: 'dark',
-                                    },
+                        const expressCheckoutElement = elements.create('expressCheckout');
+                        expressCheckoutElement.mount('#payment-request-button');
+                        paymentRequestButtonContainer.style.display = 'block';
+                        console.log('Express Checkout Element mounted successfully');
+
+                        expressCheckoutElement.on('confirm', async (event) => {
+                            const totalInPounds = updatePrices();
+                            const total = Math.round(totalInPounds * 100);
+
+                            const response = await fetch('https://my-checkout-server-lostparcel-18d58c9d1ce5.herokuapp.com/create-payment-intent', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    amount: total,
+                                    currency: 'gbp',
+                                }),
+                            });
+
+                            const data = await response.json();
+                            if (data.error) {
+                                console.error('Server error:', data.error);
+                                alert(`Server error: ${data.error}`);
+                                return;
+                            }
+
+                            const { error } = await stripe.confirmPayment({
+                                elements,
+                                clientSecret: data.client_secret,
+                                confirmParams: {
+                                    return_url: window.location.href,
                                 },
                             });
 
-                            prButton.mount('#payment-request-button');
-                            paymentRequestButtonContainer.style.display = 'block';
-                            console.log('Payment Request Button mounted successfully');
-
-                            const expressCheckoutOption = document.getElementById('express-checkout');
-                            if (expressCheckoutOption) {
-                                expressCheckoutOption.checked = true;
-                                stripeContainer.style.display = 'none';
-                                paypalContainer.style.display = 'none';
-                            }
-                        } else {
-                            console.log('Device does not support Google Pay/Apple Pay');
-                            paymentRequestButtonContainer.style.display = 'none';
-                            const expressCheckoutOption = document.getElementById('express-checkout');
-                            const expressCheckoutLabel = expressCheckoutOption ? expressCheckoutOption.nextElementSibling : null;
-                            if (expressCheckoutOption && expressCheckoutLabel) {
-                                expressCheckoutOption.style.display = 'none';
-                                expressCheckoutLabel.style.display = 'none';
+                            if (error) {
+                                console.error('Payment confirmation error:', error);
+                                alert(`Payment confirmation error: ${error.message}`);
                             } else {
-                                console.warn('Express checkout option or label not found in DOM');
+                                const successModal = document.getElementById('success-modal');
+                                const successMessage = document.getElementById('success-message');
+                                successMessage.textContent = 'Payment successful!';
+                                successModal.style.display = 'flex';
                             }
+                        });
+
+                        const expressCheckoutOption = document.getElementById('express-checkout');
+                        if (expressCheckoutOption) {
+                            expressCheckoutOption.checked = true;
+                            stripeContainer.style.display = 'none';
                         }
                     } catch (error) {
-                        console.error('Error initializing Payment Request:', error);
+                        console.error('Error initializing Express Checkout:', error);
                         paymentRequestButtonContainer.style.display = 'none';
                         const expressCheckoutOption = document.getElementById('express-checkout');
                         const expressCheckoutLabel = expressCheckoutOption ? expressCheckoutOption.nextElementSibling : null;
@@ -1304,94 +1307,6 @@
                     }
                 }
 
-                function initializePaypal() {
-                    console.log('Attempting to initialize PayPal...');
-
-                    let retryCount = 0;
-                    const maxRetries = 5;
-                    const retryInterval = 500;
-
-                    function tryInitialize() {
-                        if (retryCount >= maxRetries) {
-                            console.error('Failed to initialize PayPal after maximum retries. Please check the PayPal SDK script or client-id.');
-                            alert('Unable to load PayPal. Please try again later or choose another payment method.');
-                            return;
-                        }
-
-                        if (typeof paypal === 'undefined') {
-                            console.warn(`PayPal SDK not loaded yet. Retrying in ${retryInterval}ms... (Attempt ${retryCount + 1}/${maxRetries})`);
-                            retryCount++;
-                            setTimeout(tryInitialize, retryInterval);
-                            return;
-                        }
-
-                        if (isPaypalInitialized || paypalContainer.hasAttribute('data-rendered')) {
-                            console.log('PayPal already initialized, skipping...');
-                            return;
-                        }
-
-                        try {
-                            console.log('PayPal container visibility before render:', paypalContainer.style.display);
-                            console.log('PayPal container dimensions before render:', {
-                                width: paypalContainer.offsetWidth,
-                                height: paypalContainer.offsetHeight
-                            });
-
-                            paypalContainer.innerHTML = '';
-                            paypal.Buttons({
-                                createOrder: (data, actions) => {
-                                    const totalInPounds = updatePrices();
-                                    console.log('Creating PayPal order with total:', totalInPounds);
-                                    return actions.order.create({
-                                        purchase_units: [{
-                                            amount: {
-                                                value: totalInPounds.toFixed(2),
-                                                currency_code: 'GBP'
-                                            }
-                                        }]
-                                    });
-                                },
-                                onApprove: (data, actions) => {
-                                    console.log('PayPal payment approved:', data);
-                                    return actions.order.capture().then(details => {
-                                        const payerName = details.payer.name.given_name;
-                                        const totalInPounds = updatePrices();
-                                        const successModal = document.getElementById('success-modal');
-                                        const successMessage = document.getElementById('success-message');
-                                        successMessage.textContent = `Payment completed successfully by ${payerName}! Total: £${totalInPounds.toFixed(2)}`;
-                                        successModal.style.display = 'flex';
-                                        const modal = document.getElementById('order-summary-modal');
-                                        if (modal) modal.style.display = 'none';
-                                    });
-                                },
-                                onError: (err) => {
-                                    console.error('PayPal error during rendering or payment:', err);
-                                    alert('An error occurred during payment. Please try again.');
-                                },
-                                onInit: (data, actions) => {
-                                    console.log('PayPal Buttons initialized:', data);
-                                },
-                                onRender: () => {
-                                    console.log('PayPal Buttons rendered successfully');
-                                    console.log('PayPal container visibility after render:', paypalContainer.style.display);
-                                    console.log('PayPal container dimensions after render:', {
-                                        width: paypalContainer.offsetWidth,
-                                        height: paypalContainer.offsetHeight
-                                    });
-                                }
-                            }).render('#paypal-button-container');
-                            paypalContainer.setAttribute('data-rendered', 'true');
-                            isPaypalInitialized = true;
-                            console.log('PayPal initialized successfully');
-                        } catch (error) {
-                            console.error('Error initializing PayPal:', error);
-                            alert('Failed to initialize PayPal. Please try again or use another payment method.');
-                        }
-                    }
-
-                    tryInitialize();
-                }
-
                 document.getElementById('continue-to-shipping').addEventListener('click', () => {
                     const total = updatePrices();
                     if (total > 0) {
@@ -1401,7 +1316,6 @@
                     }
                 });
 
-                // Предварително зареждане на Stripe при фокус върху полето Full Name
                 const fullNameInput = document.getElementById('full-name');
                 if (fullNameInput) {
                     fullNameInput.addEventListener('focus', async () => {
@@ -1487,14 +1401,12 @@
                         document.getElementById('order-summary-modal').style.display = 'none';
                         if (isFormValid) {
                             document.getElementById('payment-section').scrollIntoView({ behavior: 'smooth' });
-                            // Stripe вече е зареден при фокус върху Full Name, но ще се уверим, че Payment Request е инициализиран
                             if (isStripeInitialized && stripe) {
-                                await initializePaymentRequest();
+                                await initializeExpressCheckout();
                             } else {
-                                // Ако по някаква причина Stripe не е зареден, опитваме отново
                                 const stripeInitialized = await initializeStripe();
                                 if (stripeInitialized && stripe) {
-                                    await initializePaymentRequest();
+                                    await initializeExpressCheckout();
                                 }
                             }
                         } else {
@@ -1516,16 +1428,6 @@
                         updatePrices();
                         const modal = document.getElementById('order-summary-modal');
                         if (modal && modal.style.display === 'flex') updateSummary();
-
-                        if (paymentRequest) {
-                            const totalInPounds = updatePrices();
-                            paymentRequest.update({
-                                total: {
-                                    label: 'Total',
-                                    amount: Math.round(totalInPounds * 100),
-                                },
-                            });
-                        }
                     });
                 });
 
@@ -1535,16 +1437,6 @@
                         updatePrices();
                         const modal = document.getElementById('order-summary-modal');
                         if (modal && modal.style.display === 'flex') updateSummary();
-
-                        if (paymentRequest) {
-                            const totalInPounds = updatePrices();
-                            paymentRequest.update({
-                                total: {
-                                    label: 'Total',
-                                    amount: Math.round(totalInPounds * 100),
-                                },
-                            });
-                        }
                     });
                 });
 
@@ -1560,33 +1452,16 @@
                             paymentRequestButtonContainer.style.display = 'block';
                             stripeContainer.classList.remove('active');
                             stripeContainer.style.display = 'none';
-                            paypalContainer.classList.remove('active');
-                            paypalContainer.style.display = 'none';
                         } else if (option.value === 'stripe') {
                             paymentRequestButtonContainer.classList.remove('active');
                             paymentRequestButtonContainer.style.display = 'none';
                             stripeContainer.classList.add('active');
                             stripeContainer.style.display = 'block';
-                            paypalContainer.classList.remove('active');
-                            paypalContainer.style.display = 'none';
-                        } else if (option.value === 'paypal') {
-                            paymentRequestButtonContainer.classList.remove('active');
-                            paymentRequestButtonContainer.style.display = 'none';
-                            stripeContainer.classList.remove('active');
-                            stripeContainer.style.display = 'none';
-                            paypalContainer.classList.add('active');
-                            paypalContainer.style.display = 'block';
-                            if (!isPaypalInitialized) {
-                                console.log('Initializing PayPal on demand...');
-                                initializePaypal();
-                            }
                         } else if (option.value === 'crypto') {
                             paymentRequestButtonContainer.classList.remove('active');
                             paymentRequestButtonContainer.style.display = 'none';
                             stripeContainer.classList.remove('active');
                             stripeContainer.style.display = 'none';
-                            paypalContainer.classList.remove('active');
-                            paypalContainer.style.display = 'none';
                         }
                     });
                 });
@@ -1614,58 +1489,9 @@
                         return;
                     }
 
-                    if (paymentMethod === 'express-checkout' && paymentRequest) {
-                        paymentRequest.on('paymentmethod', async (ev) => {
-                            const { paymentMethod } = ev;
-
-                            const total = Math.round(totalInPounds * 100);
-                            const response = await fetch('https://my-checkout-server-lostparcel-18d58c9d1ce5.herokuapp.com/create-payment-intent', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    payment_method_id: paymentMethod.id,
-                                    amount: total
-                                })
-                            });
-
-                            const data = await response.json();
-                            if (data.error) {
-                                console.error('Server error:', data.error);
-                                alert(`Server error: ${data.error}`);
-                                ev.complete('fail');
-                                return;
-                            }
-
-                            const { paymentIntent, error: retrieveError } = await stripe.retrievePaymentIntent(data.client_secret);
-                            if (retrieveError) {
-                                console.error('Error retrieving PaymentIntent:', retrieveError);
-                                alert(`Error retrieving PaymentIntent: ${retrieveError.message}`);
-                                ev.complete('fail');
-                                return;
-                            }
-
-                            if (paymentIntent.status === 'succeeded') {
-                                alert(`Payment successful! PaymentIntent ID: ${paymentIntent.id}`);
-                                ev.complete('success');
-                                return;
-                            }
-
-                            const { error: confirmError, paymentIntent: confirmedIntent } = await stripe.confirmCardPayment(data.client_secret, {
-                                payment_method: paymentMethod.id
-                            });
-
-                            if (confirmError) {
-                                console.error('Payment confirmation error:', confirmError);
-                                alert(`Payment confirmation error: ${confirmError.message}`);
-                                ev.complete('fail');
-                                return;
-                            }
-
-                            alert(`Payment successful! PaymentIntent ID: ${confirmedIntent.id}`);
-                            ev.complete('success');
-                        });
-
-                        paymentRequest.show();
+                    if (paymentMethod === 'express-checkout') {
+                        // Express Checkout Element ще се обработи автоматично чрез събитието 'confirm'
+                        return;
                     } else if (paymentMethod === 'stripe') {
                         if (!stripe || !isStripeInitialized) {
                             alert('Stripe is not yet loaded. Please wait a moment and try again.');
@@ -1776,7 +1602,6 @@
                 });
 
                 updatePrices();
-
             });
         </script>
 
