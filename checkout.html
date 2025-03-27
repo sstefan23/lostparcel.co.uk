@@ -1444,24 +1444,30 @@
                     document.getElementById('order-summary-modal').style.display = 'none';
                 });
 
-                const paymentOptions = document.querySelectorAll('input[name="payment-option"]');
-                paymentOptions.forEach(option => {
+                document.querySelectorAll('input[name="payment-option"]').forEach(option => {
                     option.addEventListener('change', () => {
+                        const payNowButton = document.querySelector('#payment-form .continue-button');
                         if (option.value === 'express-checkout') {
                             paymentRequestButtonContainer.classList.add('active');
                             paymentRequestButtonContainer.style.display = 'block';
                             stripeContainer.classList.remove('active');
                             stripeContainer.style.display = 'none';
+                            // Скриваме "Pay Now" бутона
+                            payNowButton.style.display = 'none';
                         } else if (option.value === 'stripe') {
                             paymentRequestButtonContainer.classList.remove('active');
                             paymentRequestButtonContainer.style.display = 'none';
                             stripeContainer.classList.add('active');
                             stripeContainer.style.display = 'block';
+                            // Показваме "Pay Now" бутона
+                            payNowButton.style.display = 'block';
                         } else if (option.value === 'crypto') {
                             paymentRequestButtonContainer.classList.remove('active');
                             paymentRequestButtonContainer.style.display = 'none';
                             stripeContainer.classList.remove('active');
                             stripeContainer.style.display = 'none';
+                            // Показваме "Pay Now" бутона за Bitcoin
+                            payNowButton.style.display = 'block';
                         }
                     });
                 });
