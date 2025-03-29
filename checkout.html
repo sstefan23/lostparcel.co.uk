@@ -9,10 +9,6 @@
     <link rel="preload" href="libs/delaunator.min.js" as="script">
     <script src="libs/p5.min.js"></script>
     <script src="libs/delaunator.min.js"></script>
-    <script id="paypal-sdk"
-        src="https://www.paypal.com/sdk/js?client-id=AcACWRq55R3S54o2VIwnL1IRWwRPzILPFYaAG9l0xLzoCuoAIdFX5boGpt_vNIiREA_TW479V27G1E6U&currency=GBP"
-        defer></script>
-
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
@@ -949,17 +945,63 @@
             background-color: #45a049;
         }
 
-        /* Добавяме анимацията fadeInModal, ако не е дефинирана другаде */
-        @keyframes fadeInModal {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
+        /* Стил за модалния спинър */
+        #loading-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            /* По-висок z-index, за да е над всички други модали */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading-spinner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(8px);
+            animation: fadeInModal 0.4s ease-out;
+        }
+
+        /* Стил за самия спинър */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(163, 212, 217, 0.3);
+            border-top: 4px solid #f7c948;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Анимация за въртене */
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
             }
 
-            to {
-                opacity: 1;
-                transform: scale(1);
+            100% {
+                transform: rotate(360deg);
             }
+        }
+
+        /* Стил за текста под спинъра */
+        .loading-spinner p {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
         }
     </style>
 </head>
@@ -1027,12 +1069,12 @@
             <form class="checkout-form payment-form-container" id="payment-form">
                 <div id="payment-method">
                     <label class="payment-option-label">
-                        <input type="radio" name="payment-option" value="express-checkout">
+                        <input type="radio" name="payment-option" value="express-checkout" checked>
                         <i class="fas fa-mobile-alt payment-icon"></i>
                         <span>Google Pay / Apple Pay / PayPal</span>
                     </label>
                     <label class="payment-option-label">
-                        <input type="radio" name="payment-option" value="stripe" checked>
+                        <input type="radio" name="payment-option" value="stripe">
                         <i class="fas fa-credit-card payment-icon"></i>
                         <span>Pay with Card (Stripe)</span>
                     </label>
@@ -1085,7 +1127,6 @@
             </div>
         </div>
 
-
         <div id="success-modal" class="modal">
             <div class="modal-content">
                 <span class="close-button"
@@ -1094,423 +1135,466 @@
                 <p id="success-message">Payment successful! PaymentIntent ID: </p>
             </div>
         </div>
+    </div>
 
+    <div id="loading-modal" class="modal" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p id="loading-text">Processing your payment...</p>
+        </div>
+    </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const prices = { small: 10, medium: 20, large: 30 };
+            const quantities = {
+                small: document.querySelector('.quantity[data-product="small"]'),
+                medium: document.querySelector('.quantity[data-product="medium"]'),
+                large: document.querySelector('.quantity[data-product="large"]')
+            };
+            const priceDisplays = {
+                small: document.getElementById('small-price'),
+                medium: document.getElementById('medium-price'),
+                large: document.getElementById('large-price')
+            };
+            const totalPrice = document.getElementById('total-price');
 
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const prices = { small: 10, medium: 20, large: 30 };
-                const quantities = {
-                    small: document.querySelector('.quantity[data-product="small"]'),
-                    medium: document.querySelector('.quantity[data-product="medium"]'),
-                    large: document.querySelector('.quantity[data-product="large"]')
-                };
-                const priceDisplays = {
-                    small: document.getElementById('small-price'),
-                    medium: document.getElementById('medium-price'),
-                    large: document.getElementById('large-price')
-                };
-                const totalPrice = document.getElementById('total-price');
+            function updatePrices() {
+                let total = 0;
+                for (const product in quantities) {
+                    const qty = parseInt(quantities[product].value) || 0;
+                    const price = prices[product] * qty;
+                    priceDisplays[product].textContent = `£${price}`;
+                    total += price;
+                }
+                totalPrice.textContent = `Total: £${total}`;
+                return total;
+            }
 
-                function updatePrices() {
-                    let total = 0;
-                    for (const product in quantities) {
-                        const qty = parseInt(quantities[product].value) || 0;
-                        const price = prices[product] * qty;
-                        priceDisplays[product].textContent = `£${price}`;
-                        total += price;
-                    }
-                    totalPrice.textContent = `Total: £${total}`;
-                    return total;
+            function updateSummary() {
+                const summaryContent = document.getElementById('summary-content');
+                let contentHtml = '';
+                const smallQty = parseInt(quantities.small.value) || 0;
+                const mediumQty = parseInt(quantities.medium.value) || 0;
+                const largeQty = parseInt(quantities.large.value) || 0;
+
+                if (smallQty > 0) {
+                    contentHtml += `<div class="summary-container">${smallQty} x Small Parcel - £${prices.small * smallQty}</div>`;
+                }
+                if (mediumQty > 0) {
+                    contentHtml += `<div class="summary-container">${mediumQty} x Medium Parcel - £${prices.medium * mediumQty}</div>`;
+                }
+                if (largeQty > 0) {
+                    contentHtml += `<div class="summary-container">${largeQty} x Large Parcel - £${prices.large * largeQty}</div>`;
+                }
+                if (contentHtml === '') {
+                    contentHtml = `<div class="summary-container">No items selected</div>`;
                 }
 
-                function updateSummary() {
-                    const summaryContent = document.getElementById('summary-content');
-                    let contentHtml = '';
-                    const smallQty = parseInt(quantities.small.value) || 0;
-                    const mediumQty = parseInt(quantities.medium.value) || 0;
-                    const largeQty = parseInt(quantities.large.value) || 0;
+                const shippingInfo = `${document.getElementById('full-name').value}, ${document.getElementById('address').value}, ${document.getElementById('city').value}, ${document.getElementById('postal-code').value}`;
+                contentHtml += `<div class="summary-container"><strong>Shipping:</strong> ${shippingInfo || 'Not provided'}</div>`;
+                contentHtml += `<div class="summary-container"><strong>Total:</strong> £${updatePrices()}</div>`;
 
-                    if (smallQty > 0) {
-                        contentHtml += `<div class="summary-container">${smallQty} x Small Parcel - £${prices.small * smallQty}</div>`;
-                    }
-                    if (mediumQty > 0) {
-                        contentHtml += `<div class="summary-container">${mediumQty} x Medium Parcel - £${prices.medium * mediumQty}</div>`;
-                    }
-                    if (largeQty > 0) {
-                        contentHtml += `<div class="summary-container">${largeQty} x Large Parcel - £${prices.large * largeQty}</div>`;
-                    }
-                    if (contentHtml === '') {
-                        contentHtml = `<div class="summary-container">No items selected</div>`;
-                    }
+                summaryContent.innerHTML = contentHtml;
+            }
 
-                    const shippingInfo = `${document.getElementById('full-name').value}, ${document.getElementById('address').value}, ${document.getElementById('city').value}, ${document.getElementById('postal-code').value}`;
-                    contentHtml += `<div class="summary-container"><strong>Shipping:</strong> ${shippingInfo || 'Not provided'}</div>`;
-                    contentHtml += `<div class="summary-container"><strong>Total:</strong> £${updatePrices()}</div>`;
+            let stripe = null;
+            let cardElement = null;
+            let isStripeInitialized = false;
+            let lastStripeCall = 0;
+            const stripeCallCooldown = 1000;
+            let isFormValid = false;
 
-                    summaryContent.innerHTML = contentHtml;
-                }
+            const stripeContainer = document.getElementById('stripe-container');
+            const paymentRequestButtonContainer = document.getElementById('payment-request-button');
+            const payNowButton = document.querySelector('#payment-form .continue-button');
 
-                let stripe = null;
-                let cardElement = null;
-                let isStripeInitialized = false;
-                let lastStripeCall = 0;
-                const stripeCallCooldown = 1000;
-                let isFormValid = false;
+            // Функция за показване на спинъра с динамичен текст
+            const showLoadingModal = (text) => {
+                const loadingModal = document.getElementById('loading-modal');
+                const loadingText = document.getElementById('loading-text');
+                loadingText.textContent = text; // Променяме текста
+                loadingModal.style.display = 'flex'; // Показваме спинъра
+            };
 
-                const stripeContainer = document.getElementById('stripe-container');
-                const paymentRequestButtonContainer = document.getElementById('payment-request-button');
+            // Функция за скриване на спинъра
+            const hideLoadingModal = () => {
+                const loadingModal = document.getElementById('loading-modal');
+                loadingModal.style.display = 'none';
+            };
 
-                function loadStripe() {
-                    return new Promise((resolve, reject) => {
-                        if (typeof Stripe !== 'undefined') {
-                            resolve();
-                            return;
-                        }
-                        const script = document.createElement('script');
-                        script.src = 'https://js.stripe.com/v3/';
-                        script.async = true;
-                        script.onload = () => {
-                            console.log('Stripe SDK loaded successfully');
-                            resolve();
-                        };
-                        script.onerror = () => {
-                            console.error('Failed to load Stripe SDK');
-                            reject(new Error('Failed to load Stripe SDK'));
-                        };
-                        document.head.appendChild(script);
-                    });
-                }
-
-                async function initializeStripe() {
-                    if (isStripeInitialized) {
-                        console.log('Stripe already initialized, skipping...');
-                        return true;
-                    }
-
-                    try {
-                        await loadStripe();
-                        stripe = Stripe('pk_test_51R2z6B2LbXGLRhiwTDKQ2GLW6Wg0nknwchUkxhEjo5jXjxRnTmXSgqudhVzpT2HfWxRNTrnV0r6ynqLXAOnjBM6X00JWuvskc5');
-                        console.log('Stripe initialized successfully');
-
-                        // Проверяваме за блокирани бисквитки
-                        if (!navigator.cookieEnabled || (document.cookie.indexOf('__stripe_mid') === -1 && document.cookie.indexOf('__stripe_sid') === -1)) {
-                            console.warn('Third-party cookies may be blocked, which could affect payment functionality.');
-                            alert('It looks like third-party cookies are blocked in your browser. Please enable them in your browser settings to ensure payments work correctly.');
-                        }
-
-                        const elements = stripe.elements();
-                        cardElement = elements.create('card', {
-                            style: {
-                                base: {
-                                    fontSize: '16px',
-                                    color: '#32325d',
-                                    fontFamily: '"Poppins", sans-serif',
-                                }
-                            }
-                        });
-                        cardElement.mount('#card-element');
-                        console.log('Stripe card element mounted successfully');
-
-                        const cardErrors = document.getElementById('card-errors');
-                        cardElement.on('change', (event) => {
-                            if (event.error) {
-                                cardErrors.textContent = event.error.message;
-                            } else {
-                                cardErrors.textContent = '';
-                            }
-                        });
-
-                        isStripeInitialized = true;
-                        return true;
-                    } catch (error) {
-                        console.error('Error initializing Stripe:', error);
-                        alert('Failed to initialize Stripe. Please try again or use another payment method.');
-                        return false;
-                    }
-                }
-
-                async function initializeExpressCheckout() {
-                    if (!stripe) {
-                        console.error('Stripe not initialized, cannot create Express Checkout');
+            function loadStripe() {
+                return new Promise((resolve, reject) => {
+                    if (typeof Stripe !== 'undefined') {
+                        resolve();
                         return;
                     }
+                    const script = document.createElement('script');
+                    script.src = 'https://js.stripe.com/v3/';
+                    script.async = true;
+                    script.onload = () => {
+                        console.log('Stripe SDK loaded successfully');
+                        resolve();
+                    };
+                    script.onerror = () => {
+                        console.error('Failed to load Stripe SDK');
+                        reject(new Error('Failed to load Stripe SDK'));
+                    };
+                    document.head.appendChild(script);
+                });
+            }
 
-                    try {
-                        const totalInPounds = updatePrices();
-                        const elements = stripe.elements({
-                            mode: 'payment',
-                            currency: 'gbp',
-                            amount: Math.round(totalInPounds * 100),
-                        });
-
-                        const expressCheckoutElement = elements.create('expressCheckout');
-                        expressCheckoutElement.mount('#payment-request-button');
-                        paymentRequestButtonContainer.style.display = 'block';
-                        console.log('Express Checkout Element mounted successfully');
-
-                        expressCheckoutElement.on('confirm', async (event) => {
-                            const totalInPounds = updatePrices();
-                            const total = Math.round(totalInPounds * 100);
-
-                            const response = await fetch('https://my-checkout-server-lostparcel-18d58c9d1ce5.herokuapp.com/create-payment-intent', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    amount: total,
-                                    currency: 'gbp',
-                                }),
-                            });
-
-                            const data = await response.json();
-                            if (data.error) {
-                                console.error('Server error:', data.error);
-                                alert(`Server error: ${data.error}`);
-                                return;
-                            }
-
-                            const { error } = await stripe.confirmPayment({
-                                elements,
-                                clientSecret: data.client_secret,
-                                confirmParams: {
-                                    return_url: window.location.href,
-                                },
-                            });
-
-                            if (error) {
-                                console.error('Payment confirmation error:', error);
-                                alert(`Payment confirmation error: ${error.message}`);
-                            } else {
-                                const successModal = document.getElementById('success-modal');
-                                const successMessage = document.getElementById('success-message');
-                                successMessage.textContent = 'Payment successful!';
-                                successModal.style.display = 'flex';
-                            }
-                        });
-
-                        const expressCheckoutOption = document.getElementById('express-checkout');
-                        if (expressCheckoutOption) {
-                            expressCheckoutOption.checked = true;
-                            stripeContainer.style.display = 'none';
-                        }
-                    } catch (error) {
-                        console.error('Error initializing Express Checkout:', error);
-                        paymentRequestButtonContainer.style.display = 'none';
-                        const expressCheckoutOption = document.getElementById('express-checkout');
-                        const expressCheckoutLabel = expressCheckoutOption ? expressCheckoutOption.nextElementSibling : null;
-                        if (expressCheckoutOption && expressCheckoutLabel) {
-                            expressCheckoutOption.style.display = 'none';
-                            expressCheckoutLabel.style.display = 'none';
-                        } else {
-                            console.warn('Express checkout option or label not found in DOM');
-                        }
-                    }
+            async function initializeStripe() {
+                if (isStripeInitialized) {
+                    console.log('Stripe already initialized, skipping...');
+                    return true;
                 }
 
-                document.getElementById('continue-to-shipping').addEventListener('click', () => {
-                    const total = updatePrices();
-                    if (total > 0) {
-                        document.getElementById('shipping-section').scrollIntoView({ behavior: 'smooth' });
-                    } else {
-                        alert('Please select at least one package!');
-                    }
-                });
+                try {
+                    await loadStripe();
+                    stripe = Stripe('pk_test_51R2z6B2LbXGLRhiwTDKQ2GLW6Wg0nknwchUkxhEjo5jXjxRnTmXSgqudhVzpT2HfWxRNTrnV0r6ynqLXAOnjBM6X00JWuvskc5');
+                    console.log('Stripe initialized successfully');
 
-                const fullNameInput = document.getElementById('full-name');
-                if (fullNameInput) {
-                    fullNameInput.addEventListener('focus', async () => {
-                        if (!isStripeInitialized) {
-                            console.log('User focused on Full Name field, initializing Stripe...');
-                            await initializeStripe();
-                        }
-                    });
-                }
-
-                const continueToPaymentButton = document.getElementById('continue-to-payment');
-                if (continueToPaymentButton) {
-                    continueToPaymentButton.addEventListener('click', () => {
-                        const fields = {
-                            'full-name': {
-                                value: document.getElementById('full-name').value.trim(),
-                                validate: val => val.length >= 2,
-                                message: 'Full name must be at least 2 characters long'
-                            },
-                            'address': {
-                                value: document.getElementById('address').value.trim(),
-                                validate: val => val.length >= 5,
-                                message: 'Address must be at least 5 characters long'
-                            },
-                            'city': {
-                                value: document.getElementById('city').value.trim(),
-                                validate: val => val.length >= 2,
-                                message: 'City must be at least 2 characters long'
-                            },
-                            'postal-code': {
-                                value: document.getElementById('postal-code').value.trim(),
-                                validate: val => /^[A-Z]{1,2}[0-9]{1,2}[A-Z]?\s?[0-9][A-Z]{2}$/i.test(val),
-                                message: 'Invalid UK postal code (e.g., SW1A 1AA)'
-                            },
-                            'phone': {
-                                value: document.getElementById('phone').value.trim(),
-                                validate: val => /^\+44\s?\d{9,10}$/.test(val),
-                                message: 'Invalid UK phone (e.g., +44 123 456 7890)'
-                            }
-                        };
-
-                        let isValid = true;
-                        let errorMessages = [];
-
-                        Object.keys(fields).forEach(id => {
-                            const input = document.getElementById(id);
-                            input.classList.remove('error');
-                        });
-
-                        for (const [id, field] of Object.entries(fields)) {
-                            const input = document.getElementById(id);
-                            if (!field.validate(field.value)) {
-                                input.classList.add('error');
-                                errorMessages.push(field.message);
-                                isValid = false;
-                            }
-                        }
-
-                        isFormValid = isValid;
-
-                        if (isValid) {
-                            updateSummary();
-                            const shippingSection = document.getElementById('shipping-section');
-                            if (shippingSection) {
-                                const shippingSectionPosition = shippingSection.getBoundingClientRect().top + window.scrollY;
-                                window.scrollTo({
-                                    top: shippingSectionPosition,
-                                    behavior: 'smooth'
-                                });
-                            }
-                            setTimeout(() => {
-                                document.getElementById('order-summary-modal').style.display = 'flex';
-                            }, 500);
-                        } else {
-                            alert('Please correct the following errors:\n' + errorMessages.join('\n'));
-                        }
-                    });
-                }
-
-                const confirmOrderButton = document.getElementById('confirm-order');
-                if (confirmOrderButton) {
-                    confirmOrderButton.addEventListener('click', async () => {
-                        document.getElementById('order-summary-modal').style.display = 'none';
-                        if (isFormValid) {
-                            document.getElementById('payment-section').scrollIntoView({ behavior: 'smooth' });
-                            if (isStripeInitialized && stripe) {
-                                await initializeExpressCheckout();
-                            } else {
-                                const stripeInitialized = await initializeStripe();
-                                if (stripeInitialized && stripe) {
-                                    await initializeExpressCheckout();
-                                }
-                            }
-                        } else {
-                            alert('Please correct the shipping details before proceeding to payment.');
-                        }
-                    });
-                }
-
-                document.querySelectorAll('.quantity-controls button').forEach(button => {
-                    button.addEventListener('click', () => {
-                        const product = button.getAttribute('data-product');
-                        let qty = parseInt(quantities[product].value) || 0;
-                        if (button.classList.contains('increase')) {
-                            qty += 1;
-                        } else if (button.classList.contains('decrease') && qty > 0) {
-                            qty -= 1;
-                        }
-                        quantities[product].value = qty;
-                        updatePrices();
-                        const modal = document.getElementById('order-summary-modal');
-                        if (modal && modal.style.display === 'flex') updateSummary();
-                    });
-                });
-
-                document.querySelectorAll('.quantity').forEach(input => {
-                    input.addEventListener('input', () => {
-                        if (input.value < 0) input.value = 0;
-                        updatePrices();
-                        const modal = document.getElementById('order-summary-modal');
-                        if (modal && modal.style.display === 'flex') updateSummary();
-                    });
-                });
-
-                document.querySelector('.close-modal').addEventListener('click', () => {
-                    document.getElementById('order-summary-modal').style.display = 'none';
-                });
-
-                document.querySelectorAll('input[name="payment-option"]').forEach(option => {
-                    option.addEventListener('change', () => {
-                        const payNowButton = document.querySelector('#payment-form .continue-button');
-                        if (option.value === 'express-checkout') {
-                            paymentRequestButtonContainer.classList.add('active');
-                            paymentRequestButtonContainer.style.display = 'block';
-                            stripeContainer.classList.remove('active');
-                            stripeContainer.style.display = 'none';
-                            // Скриваме "Pay Now" бутона
-                            payNowButton.style.display = 'none';
-                        } else if (option.value === 'stripe') {
-                            paymentRequestButtonContainer.classList.remove('active');
-                            paymentRequestButtonContainer.style.display = 'none';
-                            stripeContainer.classList.add('active');
-                            stripeContainer.style.display = 'block';
-                            // Показваме "Pay Now" бутона
-                            payNowButton.style.display = 'block';
-                        } else if (option.value === 'crypto') {
-                            paymentRequestButtonContainer.classList.remove('active');
-                            paymentRequestButtonContainer.style.display = 'none';
-                            stripeContainer.classList.remove('active');
-                            stripeContainer.style.display = 'none';
-                            // Показваме "Pay Now" бутона за Bitcoin
-                            payNowButton.style.display = 'block';
-                        }
-                    });
-                });
-
-                const paymentForm = document.getElementById('payment-form');
-                paymentForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-
-                    if (!isFormValid) {
-                        alert('Please correct the shipping details before proceeding to payment.');
-                        return;
+                    if (!navigator.cookieEnabled || (document.cookie.indexOf('__stripe_mid') === -1 && document.cookie.indexOf('__stripe_sid') === -1)) {
+                        console.warn('Third-party cookies may be blocked, which could affect payment functionality.');
+                        alert('It looks like third-party cookies are blocked in your browser. Please enable them in your browser settings to ensure payments work correctly.');
                     }
 
+                    const elements = stripe.elements();
+                    cardElement = elements.create('card', {
+                        style: {
+                            base: {
+                                fontSize: '16px',
+                                color: '#32325d',
+                                fontFamily: '"Poppins", sans-serif',
+                            }
+                        }
+                    });
+                    cardElement.mount('#card-element');
+                    console.log('Stripe card element mounted successfully');
+
+                    const cardErrors = document.getElementById('card-errors');
+                    cardElement.on('change', (event) => {
+                        if (event.error) {
+                            cardErrors.textContent = event.error.message;
+                        } else {
+                            cardErrors.textContent = '';
+                        }
+                    });
+
+                    isStripeInitialized = true;
+                    return true;
+                } catch (error) {
+                    console.error('Error initializing Stripe:', error);
+                    alert('Failed to initialize Stripe. Please try again or use another payment method.');
+                    return false;
+                }
+            }
+
+            async function initializeExpressCheckout() {
+                if (!stripe) {
+                    console.error('Stripe not initialized, cannot create Express Checkout');
+                    return;
+                }
+
+                try {
                     const totalInPounds = updatePrices();
-                    if (totalInPounds <= 0) {
-                        alert('Please select at least one package!');
-                        return;
-                    }
+                    const elements = stripe.elements({
+                        mode: 'payment',
+                        currency: 'gbp',
+                        amount: Math.round(totalInPounds * 100),
+                    });
 
-                    const paymentMethod = document.querySelector('input[name="payment-option"]:checked').value;
+                    const expressCheckoutElement = elements.create('expressCheckout');
 
-                    if (paymentMethod === 'crypto') {
-                        const cryptoModal = document.getElementById('crypto-modal');
-                        cryptoModal.style.display = 'flex';
-                        return;
-                    }
+                    // Показваме спинъра с текст "Loading payment options..."
+                    showLoadingModal('Loading payment options...');
 
-                    if (paymentMethod === 'express-checkout') {
-                        // Express Checkout Element ще се обработи автоматично чрез събитието 'confirm'
-                        return;
-                    } else if (paymentMethod === 'stripe') {
-                        if (!stripe || !isStripeInitialized) {
-                            alert('Stripe is not yet loaded. Please wait a moment and try again.');
+                    const startTime = Date.now();
+
+                    expressCheckoutElement.mount('#payment-request-button');
+                    paymentRequestButtonContainer.style.display = 'block';
+                    console.log('Express Checkout Element mounted successfully');
+
+                    expressCheckoutElement.on('ready', async () => {
+                        console.log('Express Checkout buttons are ready');
+                        const elapsedTime = Date.now() - startTime;
+                        const minimumDisplayTime = 1000;
+
+                        if (elapsedTime < minimumDisplayTime) {
+                            await new Promise(resolve => setTimeout(resolve, minimumDisplayTime - elapsedTime));
+                        }
+
+                        hideLoadingModal();
+                    });
+
+                    expressCheckoutElement.on('confirm', async (event) => {
+                        const totalInPounds = updatePrices();
+                        const total = Math.round(totalInPounds * 100);
+
+                        const response = await fetch('https://my-checkout-server-lostparcel-18d58c9d1ce5.herokuapp.com/create-payment-intent', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                amount: total,
+                                currency: 'gbp',
+                            }),
+                        });
+
+                        const data = await response.json();
+                        if (data.error) {
+                            console.error('Server error:', data.error);
+                            alert(`Server error: ${data.error}`);
                             return;
                         }
 
-                        const now = Date.now();
-                        if (now - lastStripeCall < stripeCallCooldown) {
-                            console.log('Stripe call throttled to prevent loop');
-                            return;
-                        }
-                        lastStripeCall = now;
+                        const { error } = await stripe.confirmPayment({
+                            elements,
+                            clientSecret: data.client_secret,
+                            confirmParams: {
+                                return_url: window.location.href,
+                            },
+                        });
 
+                        if (error) {
+                            console.error('Payment confirmation error:', error);
+                            alert(`Payment confirmation error: ${error.message}`);
+                        } else {
+                            const successModal = document.getElementById('success-modal');
+                            const successMessage = document.getElementById('success-message');
+                            successMessage.textContent = 'Payment successful!';
+                            successModal.style.display = 'flex';
+                        }
+                    });
+
+                    const expressCheckoutOption = document.getElementById('express-checkout');
+                    if (expressCheckoutOption) {
+                        expressCheckoutOption.checked = true;
+                        stripeContainer.style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error('Error initializing Express Checkout:', error);
+                    paymentRequestButtonContainer.style.display = 'none';
+                    const expressCheckoutOption = document.getElementById('express-checkout');
+                    const expressCheckoutLabel = expressCheckoutOption ? expressCheckoutOption.nextElementSibling : null;
+                    if (expressCheckoutOption && expressCheckoutLabel) {
+                        expressCheckoutOption.style.display = 'none';
+                        expressCheckoutLabel.style.display = 'none';
+                    } else {
+                        console.warn('Express checkout option or label not found in DOM');
+                    }
+                    hideLoadingModal();
+                }
+            }
+
+            document.getElementById('continue-to-shipping').addEventListener('click', () => {
+                const total = updatePrices();
+                if (total > 0) {
+                    document.getElementById('shipping-section').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert('Please select at least one package!');
+                }
+            });
+
+            const fullNameInput = document.getElementById('full-name');
+            if (fullNameInput) {
+                fullNameInput.addEventListener('focus', async () => {
+                    if (!isStripeInitialized) {
+                        console.log('User focused on Full Name field, initializing Stripe...');
+                        await initializeStripe();
+                    }
+                });
+            }
+
+            const continueToPaymentButton = document.getElementById('continue-to-payment');
+            if (continueToPaymentButton) {
+                continueToPaymentButton.addEventListener('click', () => {
+                    const fields = {
+                        'full-name': {
+                            value: document.getElementById('full-name').value.trim(),
+                            validate: val => val.length >= 2,
+                            message: 'Full name must be at least 2 characters long'
+                        },
+                        'address': {
+                            value: document.getElementById('address').value.trim(),
+                            validate: val => val.length >= 5,
+                            message: 'Address must be at least 5 characters long'
+                        },
+                        'city': {
+                            value: document.getElementById('city').value.trim(),
+                            validate: val => val.length >= 2,
+                            message: 'City must be at least 2 characters long'
+                        },
+                        'postal-code': {
+                            value: document.getElementById('postal-code').value.trim(),
+                            validate: val => /^[A-Z]{1,2}[0-9]{1,2}[A-Z]?\s?[0-9][A-Z]{2}$/i.test(val),
+                            message: 'Invalid UK postal code (e.g., SW1A 1AA)'
+                        },
+                        'phone': {
+                            value: document.getElementById('phone').value.trim(),
+                            validate: val => /^\+44\s?\d{9,10}$/.test(val),
+                            message: 'Invalid UK phone (e.g., +44 123 456 7890)'
+                        }
+                    };
+
+                    let isValid = true;
+                    let errorMessages = [];
+
+                    Object.keys(fields).forEach(id => {
+                        const input = document.getElementById(id);
+                        input.classList.remove('error');
+                    });
+
+                    for (const [id, field] of Object.entries(fields)) {
+                        const input = document.getElementById(id);
+                        if (!field.validate(field.value)) {
+                            input.classList.add('error');
+                            errorMessages.push(field.message);
+                            isValid = false;
+                        }
+                    }
+
+                    isFormValid = isValid;
+
+                    if (isValid) {
+                        updateSummary();
+                        const shippingSection = document.getElementById('shipping-section');
+                        if (shippingSection) {
+                            const shippingSectionPosition = shippingSection.getBoundingClientRect().top + window.scrollY;
+                            window.scrollTo({
+                                top: shippingSectionPosition,
+                                behavior: 'smooth'
+                            });
+                        }
+                        // Показваме спинъра с текст "Loading Payment Details..."
+                        showLoadingModal('Loading Payment Details...');
+                        setTimeout(() => {
+                            document.getElementById('order-summary-modal').style.display = 'flex';
+                            // Скриваме спинъра след показване на модала
+                            hideLoadingModal();
+                        }, 500);
+                    } else {
+                        alert('Please correct the following errors:\n' + errorMessages.join('\n'));
+                    }
+                });
+            }
+
+            const confirmOrderButton = document.getElementById('confirm-order');
+            if (confirmOrderButton) {
+                confirmOrderButton.addEventListener('click', async () => {
+                    document.getElementById('order-summary-modal').style.display = 'none';
+                    if (isFormValid) {
+                        document.getElementById('payment-section').scrollIntoView({ behavior: 'smooth' });
+                        if (isStripeInitialized && stripe) {
+                            await initializeExpressCheckout();
+                        } else {
+                            const stripeInitialized = await initializeStripe();
+                            if (stripeInitialized && stripe) {
+                                await initializeExpressCheckout();
+                            }
+                        }
+                    } else {
+                        alert('Please correct the shipping details before proceeding to payment.');
+                    }
+                });
+            }
+
+            document.querySelectorAll('.quantity-controls button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const product = button.getAttribute('data-product');
+                    let qty = parseInt(quantities[product].value) || 0;
+                    if (button.classList.contains('increase')) {
+                        qty += 1;
+                    } else if (button.classList.contains('decrease') && qty > 0) {
+                        qty -= 1;
+                    }
+                    quantities[product].value = qty;
+                    updatePrices();
+                    const modal = document.getElementById('order-summary-modal');
+                    if (modal && modal.style.display === 'flex') updateSummary();
+                });
+            });
+
+            document.querySelectorAll('.quantity').forEach(input => {
+                input.addEventListener('input', () => {
+                    if (input.value < 0) input.value = 0;
+                    updatePrices();
+                    const modal = document.getElementById('order-summary-modal');
+                    if (modal && modal.style.display === 'flex') updateSummary();
+                });
+            });
+
+            document.querySelector('.close-modal').addEventListener('click', () => {
+                document.getElementById('order-summary-modal').style.display = 'none';
+            });
+
+            document.querySelectorAll('input[name="payment-option"]').forEach(option => {
+                option.addEventListener('change', () => {
+                    if (option.value === 'express-checkout') {
+                        paymentRequestButtonContainer.classList.add('active');
+                        paymentRequestButtonContainer.style.display = 'block';
+                        stripeContainer.classList.remove('active');
+                        stripeContainer.style.display = 'none';
+                        payNowButton.style.display = 'none';
+                    } else if (option.value === 'stripe') {
+                        paymentRequestButtonContainer.classList.remove('active');
+                        paymentRequestButtonContainer.style.display = 'none';
+                        stripeContainer.classList.add('active');
+                        stripeContainer.style.display = 'block';
+                        payNowButton.style.display = 'block';
+                    } else if (option.value === 'crypto') {
+                        paymentRequestButtonContainer.classList.remove('active');
+                        paymentRequestButtonContainer.style.display = 'none';
+                        stripeContainer.classList.remove('active');
+                        stripeContainer.style.display = 'none';
+                        payNowButton.style.display = 'block';
+                    }
+                });
+            });
+
+            const paymentForm = document.getElementById('payment-form');
+            paymentForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                if (!isFormValid) {
+                    alert('Please correct the shipping details before proceeding to payment.');
+                    return;
+                }
+
+                const totalInPounds = updatePrices();
+                if (totalInPounds <= 0) {
+                    alert('Please select at least one package!');
+                    return;
+                }
+
+                const paymentMethod = document.querySelector('input[name="payment-option"]:checked').value;
+
+                if (paymentMethod === 'crypto') {
+                    const cryptoModal = document.getElementById('crypto-modal');
+                    cryptoModal.style.display = 'flex';
+                    return;
+                }
+
+                if (paymentMethod === 'express-checkout') {
+                    return;
+                } else if (paymentMethod === 'stripe') {
+                    if (!stripe || !isStripeInitialized) {
+                        alert('Stripe is not yet loaded. Please wait a moment and try again.');
+                        return;
+                    }
+
+                    // Показваме спинъра с текст "Processing your payment..."
+                    showLoadingModal('Processing your payment...');
+
+                    const now = Date.now();
+                    if (now - lastStripeCall < stripeCallCooldown) {
+                        console.log('Stripe call throttled to prevent loop');
+                        hideLoadingModal();
+                        return;
+                    }
+                    lastStripeCall = now;
+
+                    try {
                         const { error, paymentMethod: stripePaymentMethod } = await stripe.createPaymentMethod({
                             type: 'card',
                             card: cardElement,
@@ -1519,6 +1603,7 @@
                         if (error) {
                             alert(`Payment error: ${error.message}`);
                             console.error(error);
+                            hideLoadingModal();
                             return;
                         }
 
@@ -1536,6 +1621,7 @@
                         if (data.error) {
                             console.error('Server error:', data.error);
                             alert(`Server error: ${data.error}`);
+                            hideLoadingModal();
                             return;
                         }
 
@@ -1543,6 +1629,7 @@
                         if (retrieveError) {
                             console.error('Error retrieving PaymentIntent:', retrieveError);
                             alert(`Error retrieving PaymentIntent: ${retrieveError.message}`);
+                            hideLoadingModal();
                             return;
                         }
 
@@ -1551,6 +1638,7 @@
                             const successMessage = document.getElementById('success-message');
                             successMessage.textContent = `Payment successful! PaymentIntent ID: ${paymentIntent.id}`;
                             successModal.style.display = 'flex';
+                            hideLoadingModal();
                             return;
                         }
 
@@ -1560,128 +1648,129 @@
                         if (confirmError) {
                             console.error('Error confirming payment:', confirmError);
                             alert(`Payment failed: ${confirmError.message}`);
+                            hideLoadingModal();
                         } else if (confirmedIntent.status === 'succeeded') {
                             const successModal = document.getElementById('success-modal');
                             const successMessage = document.getElementById('success-message');
                             successMessage.textContent = `Payment successful! PaymentIntent ID: ${confirmedIntent.id}`;
                             successModal.style.display = 'flex';
+                            hideLoadingModal();
                         }
+                    } catch (error) {
+                        console.error('Unexpected error during payment:', error);
+                        alert('An unexpected error occurred. Please try again.');
+                        hideLoadingModal();
                     }
-                });
-
-                // Обработка на модалния прозорец за Биткойн
-                const cryptoModal = document.getElementById('crypto-modal');
-                const copyAddressButton = document.getElementById('copy-address');
-                const cryptoConfirmButton = document.getElementById('crypto-confirm');
-                const txidInput = document.getElementById('txid-input');
-
-                // Копиране на адреса
-                copyAddressButton.addEventListener('click', () => {
-                    const bitcoinAddress = document.getElementById('bitcoin-address').textContent;
-                    navigator.clipboard.writeText(bitcoinAddress).then(() => {
-                        alert('Bitcoin address copied to clipboard!');
-                    }).catch(err => {
-                        console.error('Failed to copy address:', err);
-                        alert('Failed to copy address. Please copy it manually.');
-                    });
-                });
-
-                // Потвърждение на плащането
-                cryptoConfirmButton.addEventListener('click', () => {
-                    const txid = txidInput.value.trim();
-                    cryptoModal.style.display = 'none';
-                    const successModal = document.getElementById('success-modal');
-                    const successMessage = document.getElementById('success-message');
-                    let message = 'Thank you for your order! We will verify your Bitcoin payment and confirm your order soon. This may take 10-30 minutes.';
-                    if (txid) {
-                        message += ` Transaction ID (TXID) provided: ${txid}.`;
-                    } else {
-                        message += ' You did not provide a Transaction ID (TXID). We will check the wallet address for incoming payments.';
-                    }
-                    successMessage.textContent = message;
-                    successModal.style.display = 'flex';
-                });
-
-                // Затваряне на модалния прозорец
-                cryptoModal.querySelector('.close-modal').addEventListener('click', () => {
-                    cryptoModal.style.display = 'none';
-                });
-
-                updatePrices();
+                }
             });
-        </script>
 
-        <script>
-            const s = (sketch) => {
-                let particles = [];
-                const numParticles = 20;
-                const maxDistance = 150;
-                const speed = 0.5;
+            const cryptoModal = document.getElementById('crypto-modal');
+            const copyAddressButton = document.getElementById('copy-address');
+            const cryptoConfirmButton = document.getElementById('crypto-confirm');
+            const txidInput = document.getElementById('txid-input');
 
-                sketch.setup = () => {
-                    let canvas = sketch.createCanvas(sketch.windowWidth, sketch.windowHeight);
-                    canvas.parent('background-animation');
-                    canvas.style('position', 'fixed');
-                    canvas.style('top', '0');
-                    canvas.style('left', '0');
-                    canvas.style('z-index', '-1');
+            copyAddressButton.addEventListener('click', () => {
+                const bitcoinAddress = document.getElementById('bitcoin-address').textContent;
+                navigator.clipboard.writeText(bitcoinAddress).then(() => {
+                    alert('Bitcoin address copied to clipboard!');
+                }).catch(err => {
+                    console.error('Failed to copy address:', err);
+                    alert('Failed to copy address. Please copy it manually.');
+                });
+            });
 
-                    for (let i = 0; i < numParticles; i++) {
-                        particles.push({
-                            x: sketch.random(sketch.width),
-                            y: sketch.random(sketch.height),
-                            vx: sketch.random(-speed, speed),
-                            vy: sketch.random(-speed, speed),
-                            size: sketch.random(2, 5)
-                        });
-                    }
-                };
+            cryptoConfirmButton.addEventListener('click', () => {
+                const txid = txidInput.value.trim();
+                cryptoModal.style.display = 'none';
+                const successModal = document.getElementById('success-modal');
+                const successMessage = document.getElementById('success-message');
+                let message = 'Thank you for your order! We will verify your Bitcoin payment and confirm your order soon. This may take 10-30 minutes.';
+                if (txid) {
+                    message += ` Transaction ID (TXID) provided: ${txid}.`;
+                } else {
+                    message += ' You did not provide a Transaction ID (TXID). We will check the wallet address for incoming payments.';
+                }
+                successMessage.textContent = message;
+                successModal.style.display = 'flex';
+            });
 
-                sketch.draw = () => {
-                    sketch.background(10, 20, 40);
+            cryptoModal.querySelector('.close-modal').addEventListener('click', () => {
+                cryptoModal.style.display = 'none';
+            });
 
-                    for (let p of particles) {
-                        p.x += p.vx;
-                        p.y += p.vy;
+            updatePrices();
+        });
+    </script>
 
-                        if (p.x < 0) p.x = sketch.width;
-                        if (p.x > sketch.width) p.x = 0;
-                        if (p.y < 0) p.y = sketch.height;
-                        if (p.y > sketch.height) p.y = 0;
+    <script>
+        const s = (sketch) => {
+            let particles = [];
+            const numParticles = 20;
+            const maxDistance = 150;
+            const speed = 0.5;
 
-                        sketch.fill(100, 150, 255, 200);
-                        sketch.noStroke();
-                        sketch.ellipse(p.x, p.y, p.size, p.size);
-                    }
+            sketch.setup = () => {
+                let canvas = sketch.createCanvas(sketch.windowWidth, sketch.windowHeight);
+                canvas.parent('background-animation');
+                canvas.style('position', 'fixed');
+                canvas.style('top', '0');
+                canvas.style('left', '0');
+                canvas.style('z-index', '-1');
 
-                    for (let i = 0; i < particles.length; i++) {
-                        for (let j = i + 1; j < particles.length; j++) {
-                            let d = sketch.dist(particles[i].x, particles[i].y, particles[j].x, particles[j].y);
-                            if (d < maxDistance) {
-                                let alpha = sketch.map(d, 0, maxDistance, 100, 0);
-                                sketch.stroke(100, 150, 255, alpha);
-                                sketch.strokeWeight(2); //дебелина на линиите
-                                sketch.line(particles[i].x, particles[i].y, particles[j].x, particles[j].y);
-                            }
-                        }
-                    }
-                };
-
-                sketch.windowResized = () => {
-                    sketch.resizeCanvas(sketch.windowWidth, sketch.windowHeight);
-                };
+                for (let i = 0; i < numParticles; i++) {
+                    particles.push({
+                        x: sketch.random(sketch.width),
+                        y: sketch.random(sketch.height),
+                        vx: sketch.random(-speed, speed),
+                        vy: sketch.random(-speed, speed),
+                        size: sketch.random(2, 5)
+                    });
+                }
             };
 
-            // Проверяваме дали p5 е зареден и стартираме анимацията веднага
-            if (typeof p5 !== 'undefined') {
-                let myp5 = new p5(s);
-                console.log('p5.js animation initialized successfully');
-            } else {
-                console.error('p5.js failed to load. Please check the file path for libs/p5.min.js');
-            }
-        </script>
-    </div>
+            sketch.draw = () => {
+                sketch.background(10, 20, 40);
 
+                for (let p of particles) {
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0) p.x = sketch.width;
+                    if (p.x > sketch.width) p.x = 0;
+                    if (p.y < 0) p.y = sketch.height;
+                    if (p.y > sketch.height) p.y = 0;
+
+                    sketch.fill(100, 150, 255, 200);
+                    sketch.noStroke();
+                    sketch.ellipse(p.x, p.y, p.size, p.size);
+                }
+
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        let d = sketch.dist(particles[i].x, particles[i].y, particles[j].x, particles[j].y);
+                        if (d < maxDistance) {
+                            let alpha = sketch.map(d, 0, maxDistance, 100, 0);
+                            sketch.stroke(100, 150, 255, alpha);
+                            sketch.strokeWeight(2); //дебелина на линиите
+                            sketch.line(particles[i].x, particles[i].y, particles[j].x, particles[j].y);
+                        }
+                    }
+                }
+            };
+
+            sketch.windowResized = () => {
+                sketch.resizeCanvas(sketch.windowWidth, sketch.windowHeight);
+            };
+        };
+
+        // Проверяваме дали p5 е зареден и стартираме анимацията веднага
+        if (typeof p5 !== 'undefined') {
+            let myp5 = new p5(s);
+            console.log('p5.js animation initialized successfully');
+        } else {
+            console.error('p5.js failed to load. Please check the file path for libs/p5.min.js');
+        }
+    </script>
 </body>
 
 </html>
